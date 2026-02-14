@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mycop — AI Code Security Scanner</title>
+  <meta name="description"
+    content="Detect and auto-fix vulnerabilities in AI-generated code. 20 built-in security rules, 5 AI providers, SARIF output. Open source.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --text: #1a1a2e;
+      --text-secondary: #6c757d;
+      --accent: #0066ff;
+      --accent-hover: #0052cc;
+      --border: #e9ecef;
+      --terminal-bg: #1e1e2e;
+      --terminal-text: #cdd6f4;
+      --red: #f38ba8;
+      --yellow: #f9e2af;
+      --green: #a6e3a1;
+      --blue: #89b4fa;
+      --purple: #cba6f7;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    code,
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: var(--bg-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #edf0f3;
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #eef4ff;
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .install-cmd {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+
+    .install-cmd code {
+      color: var(--green);
+    }
+
+    .install-cmd button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .install-cmd button:hover {
+      color: #fff;
+    }
+
+    .install-cmd button.copied {
+      color: var(--green);
+    }
+
+    /* Terminal */
+    .terminal-section {
+      padding: 0 0 80px;
+    }
+
+    .terminal {
+      background: var(--terminal-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #181825;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.r {
+      background: #f38ba8;
+    }
+
+    .terminal-dot.y {
+      background: #f9e2af;
+    }
+
+    .terminal-dot.g {
+      background: #a6e3a1;
+    }
+
+    .terminal-bar span {
+      flex: 1;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-body {
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--terminal-text);
+      overflow-x: auto;
+    }
+
+    .terminal-body .prompt {
+      color: var(--green);
+    }
+
+    .terminal-body .cmd {
+      color: #fff;
+    }
+
+    .terminal-body .dim {
+      color: #6c7086;
+    }
+
+    .terminal-body .sev-critical {
+      color: #f38ba8;
+      font-weight: 700;
+    }
+
+    .terminal-body .sev-high {
+      color: #fab387;
+      font-weight: 700;
+    }
+
+    .terminal-body .sev-medium {
+      color: #f9e2af;
+    }
+
+    .terminal-body .file {
+      color: #89b4fa;
+    }
+
+    .terminal-body .rule {
+      color: #cba6f7;
+    }
+
+    .terminal-body .msg {
+      color: var(--terminal-text);
+    }
+
+    .terminal-body .fix {
+      color: #a6e3a1;
+    }
+
+    .terminal-body .summary {
+      color: #f9e2af;
+      font-weight: 500;
+    }
+
+    /* Features */
+    .features {
+      padding: 80px 0;
+      background: var(--bg-alt);
+    }
+
+    .section-label {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 48px;
+      max-width: 520px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: #eef4ff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.25rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    /* Languages */
+    .languages {
+      padding: 80px 0;
+    }
+
+    .lang-grid {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .lang-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 32px 48px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: box-shadow 0.2s;
+    }
+
+    .lang-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .lang-card svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .lang-card span {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Install */
+    .install {
+      padding: 80px 0;
+      background: var(--bg-alt);
+    }
+
+    .install-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .install-tab {
+      padding: 8px 18px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+
+    .install-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .install-panel {
+      display: none;
+      background: var(--terminal-bg);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      max-width: 600px;
+    }
+
+    .install-panel.active {
+      display: block;
+    }
+
+    .install-panel code {
+      color: var(--green);
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+
+    .install-panel .dim {
+      color: #6c7086;
+    }
+
+    /* Integrations */
+    .integrations {
+      padding: 80px 0;
+    }
+
+    .integrations-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .integration-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .integration-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .integration-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .integration-header p {
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+    }
+
+    .integration-code {
+      background: var(--terminal-bg);
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.7;
+      color: var(--terminal-text);
+      overflow-x: auto;
+    }
+
+    .integration-code .key {
+      color: #89b4fa;
+    }
+
+    .integration-code .str {
+      color: #a6e3a1;
+    }
+
+    .integration-code .comment {
+      color: #6c7086;
+    }
+
+    /* Rules */
+    .rules {
+      padding: 80px 0;
+      background: var(--bg-alt);
+    }
+
+    .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    .rules-table th {
+      background: var(--bg-alt);
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rules-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rules-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rules-table .rule-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .rules-table .na {
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 48px 0 40px;
+      }
+
+      .features-grid,
+      .integrations-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lang-grid {
+        gap: 16px;
+      }
+
+      .lang-card {
+        padding: 24px 36px;
+      }
+
+      .nav-links .hide-mobile {
+        display: none;
+      }
+
+      .rules-table {
+        font-size: 0.8rem;
+      }
+
+      .rules-table th,
+      .rules-table td {
+        padding: 8px 10px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .install-tabs {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        mycop
+      </a>
+      <div class="nav-links">
+        <a href="#features" class="hide-mobile">Features</a>
+        <a href="#install" class="hide-mobile">Install</a>
+        <a href="#integrations" class="hide-mobile">Integrations</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        Open-source security scanner
+      </div>
+      <h1>Catch vulnerabilities in<br><span>AI-generated code</span></h1>
+      <p>mycop scans Python, JavaScript, and TypeScript for security issues that AI coding assistants commonly
+        introduce. 20 built-in rules, AI-powered auto-fix, zero config.</p>
+      <div class="hero-actions">
+        <div class="install-cmd">
+          <span class="dim">$</span>
+          <code>curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh</code>
+          <button onclick="copyInstall(this)" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
+          </button>
+        </div>
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn btn-primary">
+          View on GitHub
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terminal Demo -->
+  <section class="terminal-section">
+    <div class="container">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <span>mycop</span>
+          <div style="width:36px"></div>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="cmd">mycop scan src/</span>
+
+          <span class="dim">Scanning 12 files...</span>
+
+          <span class="sev-critical">CRITICAL</span> <span class="file">src/auth.py:24</span> <span
+            class="rule">PY-SEC-001</span>
+          <span class="msg">SQL injection via string formatting in query</span>
+          <span class="dim">query = f"SELECT * FROM users WHERE id = {user_id}"</span>
+
+          <span class="sev-high">HIGH</span> <span class="file">src/utils.js:8</span> <span
+            class="rule">JS-SEC-002</span>
+          <span class="msg">Dangerous eval() call with user-controlled input</span>
+          <span class="dim">const result = eval(req.body.expression)</span>
+
+          <span class="sev-medium">MEDIUM</span> <span class="file">src/config.py:15</span> <span
+            class="rule">PY-SEC-003</span>
+          <span class="msg">Hardcoded secret detected in source code</span>
+          <span class="dim">API_KEY = "sk-live-a1b2c3d4e5f6"</span>
+
+          <span class="summary">Found 3 findings (1 critical, 1 high, 1 medium)</span>
+
+          <span class="prompt">$</span> <span class="cmd">mycop fix src/ --dry-run</span>
+          <span class="fix"> Fixed src/auth.py — parameterized query</span>
+          <span class="fix"> Fixed src/utils.js — replaced eval with safe parser</span>
+          <span class="fix"> Fixed src/config.py — moved secret to environment variable</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Security scanning, built for modern dev workflows</h2>
+      <p class="section-subtitle">Everything you need to keep AI-generated code safe, from detection to automated
+        remediation.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <h3>20 Built-in Rules</h3>
+          <p>Covers OWASP Top 10 including SQL injection, XSS, command injection, hardcoded secrets, and more. Mapped to
+            CWE identifiers.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <h3>AI-Powered Auto-Fix</h3>
+          <p>Automatically rewrites vulnerable code using Claude, GPT-4, Ollama, or any supported provider. Review diffs
+            before applying.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            </svg>
+          </div>
+          <h3>Inline Ignore</h3>
+          <p>Suppress specific findings with <code class="mono"
+              style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px"># mycop-ignore:RULE-ID</code>
+            comments. Supports all rules or specific IDs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+          </div>
+          <h3>Multiple Output Formats</h3>
+          <p>Terminal output with colored context, JSON for scripting, and SARIF for IDE and CI integration like GitHub
+            Code Scanning.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+          </div>
+          <h3>5 AI Providers</h3>
+          <p>Auto-detects Claude CLI, Anthropic API, OpenAI, Ollama, or falls back to rule-based hints. No AI required
+            for scanning.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <path d="M12 9v4M12 17h.01" />
+            </svg>
+          </div>
+          <h3>Configurable Thresholds</h3>
+          <p>Set minimum severity to report and separate fail threshold for CI gates via CLI flags or <code class="mono"
+              style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">.scanrc.yml</code> config.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Languages -->
+  <section class="languages" id="languages">
+    <div class="container" style="text-align:center">
+      <div class="section-label">Language Support</div>
+      <h2 class="section-title">Scan the languages you ship</h2>
+      <p class="section-subtitle" style="margin:0 auto 48px">Pattern matching and AST-level analysis for the most common
+        AI-assisted languages.</p>
+      <div class="lang-grid">
+        <div class="lang-card">
+          <svg viewBox="0 0 128 128">
+            <linearGradient id="py-a" x1="70.252" x2="170.659" y1="1237.476" y2="1151.089"
+              gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#5A9FD4" />
+              <stop offset="1" stop-color="#306998" />
+            </linearGradient>
+            <linearGradient id="py-b" x1="209.474" x2="173.62" y1="1098.811" y2="1149.537"
+              gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FFD43B" />
+              <stop offset="1" stop-color="#FFE873" />
+            </linearGradient>
+            <path fill="url(#py-a)"
+              d="M63.391 1.988c-4.222.02-8.252.379-11.8 1.007-10.45 1.846-12.346 5.71-12.346 12.837v9.411h24.693v3.137H29.977c-7.176 0-13.46 4.313-15.426 12.521-2.268 9.405-2.368 15.275 0 25.096 1.755 7.311 5.947 12.519 13.124 12.519h8.491V67.234c0-8.151 7.051-15.34 15.426-15.34h24.665c6.866 0 12.346-5.654 12.346-12.548V15.833c0-6.693-5.646-11.72-12.346-12.837-4.244-.706-8.645-1.027-12.866-1.008zM50.037 9.557c2.55 0 4.634 2.117 4.634 4.721 0 2.593-2.083 4.69-4.634 4.69-2.56 0-4.633-2.097-4.633-4.69-.001-2.604 2.073-4.721 4.633-4.721z" />
+            <path fill="url(#py-b)"
+              d="M91.682 28.38v10.966c0 8.5-7.208 15.655-15.426 15.655H51.591c-6.756 0-12.346 5.783-12.346 12.549v23.515c0 6.691 5.818 10.628 12.346 12.547 7.816 2.297 15.312 2.713 24.665 0 6.216-1.801 12.346-5.423 12.346-12.547v-9.412H63.938v-3.138h37.012c7.176 0 9.852-5.005 12.348-12.519 2.578-7.735 2.467-15.174 0-25.096-1.774-7.145-5.161-12.521-12.348-12.521h-9.268zM77.809 87.927c2.561 0 4.634 2.097 4.634 4.692 0 2.602-2.074 4.719-4.634 4.719-2.55 0-4.633-2.117-4.633-4.719 0-2.595 2.083-4.692 4.633-4.692z" />
+          </svg>
+          <span>Python</span>
+        </div>
+        <div class="lang-card">
+          <svg viewBox="0 0 128 128">
+            <path fill="#F0DB4F" d="M1.408 1.408h125.184v125.185H1.408z" />
+            <path fill="#323330"
+              d="M116.347 96.736c-.917-5.711-4.641-10.508-15.672-14.981-3.832-1.761-8.104-3.022-9.377-5.926-.452-1.69-.512-2.642-.226-3.665.821-3.32 4.784-4.355 7.925-3.403 2.023.678 3.938 2.237 5.093 4.724 5.402-3.498 5.391-3.475 9.163-5.879-1.381-2.141-2.118-3.129-3.022-4.045-3.249-3.629-7.676-5.498-14.756-5.355l-3.688.477c-3.534.893-6.902 2.748-8.877 5.235-5.926 6.724-4.236 18.492 2.975 23.335 7.104 5.332 17.54 6.545 18.873 11.531 1.297 6.104-4.486 8.08-10.234 7.378-4.236-.881-6.592-3.034-9.139-6.949-4.688 2.713-4.688 2.713-9.508 5.485 1.143 2.499 2.344 3.63 4.26 5.795 9.068 9.198 31.76 8.746 35.83-5.176.165-.478 1.261-3.666.38-8.581zM69.462 58.943H57.753l-.048 30.272c0 6.438.333 12.34-.714 14.149-1.713 3.558-6.152 3.117-8.175 2.427-2.059-1.012-3.106-2.451-4.319-4.485-.333-.584-.583-1.036-.667-1.071l-9.52 5.83c1.583 3.249 3.915 6.069 6.902 7.901 4.462 2.678 10.459 3.499 16.731 2.059 4.082-1.189 7.604-3.652 9.448-7.401 2.666-4.915 2.094-10.864 2.07-17.444.06-10.735.001-21.468.001-32.237z" />
+          </svg>
+          <span>JavaScript</span>
+        </div>
+        <div class="lang-card">
+          <svg viewBox="0 0 128 128">
+            <path fill="#007acc"
+              d="M2 63.91v62.5h125v-125H2zm100.73-5.01v11.06h-16v60.47H74.04V69.96H58v-11.06h44.73z" />
+            <path fill="#fff"
+              d="M2 63.91v62.5h125v-125H2zm100.73-5.01v11.06h-16v60.47H74.04V69.96H58v-11.06h44.73zM41.88 73.56c.01 6.18 0 12.37.01 18.55.01 3.11-.05 6.34.76 9.36.97 3.61 3.78 5.97 7.45 6.47 2.63.36 5.27.03 7.69-1.04.07-.03.14-.08.21-.11v11.47c-2.97 1.37-6.34 1.88-9.6 1.87-3.34 0-6.73-.51-9.68-2.11-2.78-1.52-5.02-4-6.32-6.92-1.02-2.28-1.54-4.78-1.76-7.28-.28-3.18-.19-6.37-.19-9.56V73.56h-8.82V62.9h8.82V49.44h12.56V62.9h13.41v10.66H41.88z" />
+          </svg>
+          <span>TypeScript</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="install" id="install">
+    <div class="container">
+      <div class="section-label">Installation</div>
+      <h2 class="section-title">Get started in seconds</h2>
+      <p class="section-subtitle">Choose your preferred installation method.</p>
+      <div class="install-tabs">
+        <button class="install-tab active" onclick="switchTab(this, 'tab-script')">Install Script</button>
+        <button class="install-tab" onclick="switchTab(this, 'tab-brew')">Homebrew</button>
+        <button class="install-tab" onclick="switchTab(this, 'tab-cargo')">Cargo</button>
+        <button class="install-tab" onclick="switchTab(this, 'tab-docker')">Docker</button>
+      </div>
+      <div class="install-panel active" id="tab-script">
+        <code><span class="dim"># macOS &amp; Linux</span><br>curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh<br><br><span class="dim"># Verify installation</span><br>mycop --version</code>
+      </div>
+      <div class="install-panel" id="tab-brew">
+        <code>brew install mycop/tap/mycop</code>
+      </div>
+      <div class="install-panel" id="tab-cargo">
+        <code>cargo install mycop</code>
+      </div>
+      <div class="install-panel" id="tab-docker">
+        <code>docker run --rm -v "$(pwd):/src" -w /src mycop scan .</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations -->
+  <section class="integrations" id="integrations">
+    <div class="container">
+      <div class="section-label">Integrations</div>
+      <h2 class="section-title">Fits into your existing workflow</h2>
+      <p class="section-subtitle">Use mycop in CI, as a git hook, or directly in your editor.</p>
+      <div class="integrations-grid">
+        <div class="integration-card">
+          <div class="integration-header">
+            <h3>GitHub Action</h3>
+            <p>Add security scanning to your CI pipeline</p>
+          </div>
+          <div class="integration-code">
+            <span class="key">- name</span>: <span class="str">mycop Security Scan</span>
+            <span class="key">uses</span>: <span class="str">AbdumajidRashidov/mycop/action@main</span>
+            <span class="key">with</span>:
+            <span class="key">paths</span>: <span class="str">'.'</span>
+            <span class="key">fail-on</span>: <span class="str">'high'</span>
+            <span class="key">format</span>: <span class="str">'sarif'</span>
+          </div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
+            <h3>Pre-commit Hook</h3>
+            <p>Catch issues before they reach the repo</p>
+          </div>
+          <div class="integration-code">
+            <span class="comment"># .pre-commit-config.yaml</span>
+            <span class="key">repos</span>:
+            - <span class="key">repo</span>: <span class="str">https://github.com/AbdumajidRashidov/mycop</span>
+            <span class="key">rev</span>: <span class="str">main</span>
+            <span class="key">hooks</span>:
+            - <span class="key">id</span>: <span class="str">mycop</span>
+          </div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
+            <h3>VS Code Extension</h3>
+            <p>Real-time security diagnostics in your editor</p>
+          </div>
+          <div class="integration-code">
+            <span class="comment">// Scans on save automatically</span>
+            <span class="comment">// Findings in Problems panel</span>
+            <span class="comment">// Commands:</span>
+            <span class="str"> "mycop: Scan Current File"</span>
+            <span class="str"> "mycop: Scan Workspace"</span>
+
+            <span class="comment">// Configure in settings.json:</span>
+            <span class="str"> "mycop.severity": "medium"</span>
+            <span class="str"> "mycop.scanOnSave": true</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rules -->
+  <section class="rules" id="rules">
+    <div class="container">
+      <div class="section-label">Security Rules</div>
+      <h2 class="section-title">20 rules covering OWASP Top 10</h2>
+      <p class="section-subtitle">Each rule is mapped to CWE identifiers for standards compliance.</p>
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Python</th>
+            <th>JavaScript</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SQL Injection (CWE-89)</td>
+            <td class="rule-id">PY-SEC-001</td>
+            <td class="na">&mdash;</td>
+          </tr>
+          <tr>
+            <td>Command Injection (CWE-78)</td>
+            <td class="rule-id">PY-SEC-002</td>
+            <td class="na">&mdash;</td>
+          </tr>
+          <tr>
+            <td>Hardcoded Secrets (CWE-798)</td>
+            <td class="rule-id">PY-SEC-003</td>
+            <td class="rule-id">JS-SEC-004</td>
+          </tr>
+          <tr>
+            <td>Insecure Random (CWE-330)</td>
+            <td class="rule-id">PY-SEC-004</td>
+            <td class="rule-id">JS-SEC-005</td>
+          </tr>
+          <tr>
+            <td>Eval/Exec Injection (CWE-95)</td>
+            <td class="rule-id">PY-SEC-005</td>
+            <td class="rule-id">JS-SEC-002</td>
+          </tr>
+          <tr>
+            <td>Path Traversal (CWE-22)</td>
+            <td class="rule-id">PY-SEC-006</td>
+            <td class="rule-id">JS-SEC-006</td>
+          </tr>
+          <tr>
+            <td>Insecure Deserialization (CWE-502)</td>
+            <td class="rule-id">PY-SEC-007</td>
+            <td class="rule-id">JS-SEC-009</td>
+          </tr>
+          <tr>
+            <td>Missing Auth (CWE-862)</td>
+            <td class="rule-id">PY-SEC-008</td>
+            <td class="na">&mdash;</td>
+          </tr>
+          <tr>
+            <td>XSS (CWE-79)</td>
+            <td class="rule-id">PY-SEC-009</td>
+            <td class="rule-id">JS-SEC-001, JS-SEC-010</td>
+          </tr>
+          <tr>
+            <td>Log Injection (CWE-117)</td>
+            <td class="rule-id">PY-SEC-010</td>
+            <td class="na">&mdash;</td>
+          </tr>
+          <tr>
+            <td>Prototype Pollution (CWE-1321)</td>
+            <td class="na">&mdash;</td>
+            <td class="rule-id">JS-SEC-003</td>
+          </tr>
+          <tr>
+            <td>SSRF (CWE-918)</td>
+            <td class="na">&mdash;</td>
+            <td class="rule-id">JS-SEC-007</td>
+          </tr>
+          <tr>
+            <td>NoSQL Injection (CWE-943)</td>
+            <td class="na">&mdash;</td>
+            <td class="rule-id">JS-SEC-008</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <span>MIT License &middot; Built with Rust</span>
+      <div class="footer-links">
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank">GitHub</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop/issues" target="_blank">Issues</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copyInstall(btn) {
+      const text = 'curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh';
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+        }, 2000);
+      });
+    }
+
+    function switchTab(tab, panelId) {
+      document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>
