@@ -295,7 +295,7 @@ repos:
       - id: mycop
 ```
 
-### VS Code Extension
+### VS Code Extension (Coming Soon)
 
 The `vscode-extension/` directory contains a VS Code extension that provides:
 
