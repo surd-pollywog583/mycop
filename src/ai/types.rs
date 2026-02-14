@@ -29,9 +29,6 @@ pub trait AiBackend: Send + Sync {
     /// Explain a vulnerability finding
     fn explain(&self, finding: &Finding, code_context: &str) -> Result<String>;
 
-    /// Suggest a fix for a vulnerability finding
-    fn suggest_fix(&self, finding: &Finding, code_context: &str) -> Result<String>;
-
     /// Deep review an entire file for security issues
     fn deep_review(&self, file_content: &str, language: &str) -> Result<String>;
 
@@ -43,17 +40,4 @@ pub trait AiBackend: Send + Sync {
         file_content: &str,
         findings: &[&Finding],
     ) -> Result<String>;
-}
-
-/// AI response for a finding
-#[derive(Debug, Clone)]
-pub struct AiExplanation {
-    pub explanation: String,
-}
-
-/// AI response with fix suggestion
-#[derive(Debug, Clone)]
-pub struct AiFix {
-    pub explanation: String,
-    pub fixed_code: String,
 }

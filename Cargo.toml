@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 description = "AI Code Security Scanner — detect vulnerabilities in AI-generated code"
 license = "MIT"
-repository = "https://github.com/mycop/mycop"
+repository = "https://github.com/AbdumajidRashidov/mycop"
+readme = "README.md"
 keywords = ["security", "scanner", "sast", "ai", "vulnerability"]
 categories = ["command-line-utilities", "development-tools"]
+exclude = ["tests/", "dist/", "vscode-extension/", ".github/"]
 
 [lib]
 name = "mycop"
@@ -44,7 +46,6 @@ colored = "2"
 
 # Error handling
 anyhow = "1"
-thiserror = "2"
 
 # Streaming iterator (required by tree-sitter QueryMatches)
 streaming-iterator = "0.1"
@@ -57,9 +58,6 @@ indicatif = "0.17"
 
 # HTTP client (for AI API calls)
 reqwest = { version = "0.12", features = ["json", "blocking"] }
-
-# Async runtime
-tokio = { version = "1", features = ["full"] }
 
 # Chrono for timestamps
 chrono = "0.4"

@@ -6,6 +6,12 @@ use crate::rules::matcher::Finding;
 /// Offline fallback: uses fix_hint from YAML rules, no LLM calls
 pub struct RuleBasedBackend;
 
+impl Default for RuleBasedBackend {
+    fn default() -> Self {
+        Self
+    }
+}
+
 impl RuleBasedBackend {
     pub fn new() -> Self {
         Self
@@ -32,21 +38,13 @@ impl AiBackend for RuleBasedBackend {
         Ok(explanation)
     }
 
-    fn suggest_fix(&self, finding: &Finding, _code_context: &str) -> Result<String> {
-        match &finding.fix_hint {
-            Some(hint) => Ok(format!("Suggested fix:\n{}", hint)),
-            None => Ok(format!(
-                "No specific fix suggestion available for {}. Please review the vulnerability description and apply appropriate security measures.",
-                finding.rule_name
-            )),
-        }
-    }
-
     fn deep_review(&self, _file_content: &str, _language: &str) -> Result<String> {
-        Ok("Deep review requires an AI provider (Claude CLI, Anthropic API, OpenAI, or Ollama).\n\
+        Ok(
+            "Deep review requires an AI provider (Claude CLI, Anthropic API, OpenAI, or Ollama).\n\
             Run with --ai-provider to specify a provider, or ensure one is available.\n\
             Without AI, use `mycop scan` for rule-based vulnerability detection."
-            .to_string())
+                .to_string(),
+        )
     }
 
     fn fix_file(

@@ -1,0 +1,82 @@
+{
+  "name": "mycop-vscode",
+  "displayName": "mycop - AI Security Scanner",
+  "description": "AI-powered code security scanner - detect vulnerabilities in your code",
+  "version": "0.1.0",
+  "publisher": "mycop",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdumajidRashidov/mycop"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "security",
+    "scanner",
+    "sast",
+    "vulnerability",
+    "ai"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mycop.scanWorkspace",
+        "title": "mycop: Scan Workspace"
+      },
+      {
+        "command": "mycop.scanFile",
+        "title": "mycop: Scan Current File"
+      }
+    ],
+    "configuration": {
+      "title": "mycop",
+      "properties": {
+        "mycop.executablePath": {
+          "type": "string",
+          "default": "mycop",
+          "description": "Path to the mycop executable"
+        },
+        "mycop.severity": {
+          "type": "string",
+          "default": "low",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "description": "Minimum severity level to display"
+        },
+        "mycop.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically scan files when saved"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

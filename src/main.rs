@@ -1,5 +1,4 @@
 mod ai;
-mod ast;
 mod cli;
 mod config;
 mod fixer;
@@ -9,6 +8,7 @@ mod scanner;
 
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::process::ExitCode;
 use std::time::Instant;
 
 use anyhow::Result;
@@ -22,17 +22,28 @@ use reporter::Reporter;
 use rules::RuleRegistry;
 use scanner::Scanner;
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
     let cli = Cli::parse();
 
+    let result = run(cli);
+    match result {
+        Ok(code) => code,
+        Err(e) => {
+            eprintln!("Error: {:#}", e);
+            ExitCode::FAILURE
+        }
+    }
+}
+
+fn run(cli: Cli) -> Result<ExitCode> {
     match cli.command {
         Commands::Scan {
             paths,
             explain,
             fix,
-            apply: _,
             format,
             severity,
+            fail_on,
             diff,
             ai_provider,
             config,
@@ -41,15 +52,19 @@ fn main() -> Result<()> {
                 // --fix now triggers the agentic auto-fix flow (same as `mycop fix`)
                 cmd_fix(paths, severity, false, ai_provider, diff)?;
             } else {
-                cmd_scan(
+                let should_fail = cmd_scan(
                     paths,
                     explain,
                     format,
                     severity,
+                    fail_on,
                     diff,
                     ai_provider,
                     config,
                 )?;
+                if should_fail {
+                    return Ok(ExitCode::FAILURE);
+                }
             }
         }
         Commands::Fix {
@@ -79,22 +94,49 @@ fn main() -> Result<()> {
         },
     }
 
-    Ok(())
+    Ok(ExitCode::SUCCESS)
 }
 
+/// Returns Ok(true) if findings exceed the fail_on threshold (for exit code)
+#[allow(clippy::too_many_arguments)]
 fn cmd_scan(
     paths: Vec<PathBuf>,
     explain: bool,
     format: OutputFormat,
     severity: Option<SeverityFilter>,
+    fail_on: Option<SeverityFilter>,
     diff: bool,
     ai_provider_choice: Option<cli::AiProviderChoice>,
     _config_path: Option<PathBuf>,
-) -> Result<()> {
+) -> Result<bool> {
     let start = Instant::now();
 
     // Load config
-    let _config = ScanConfig::load(&std::env::current_dir()?)?;
+    let config = ScanConfig::load(&std::env::current_dir()?)?;
+    let ignore_patterns = config
+        .as_ref()
+        .map(|c| c.ignore.clone())
+        .unwrap_or_default();
+
+    // Apply config defaults (CLI flags take priority)
+    let severity = severity.or_else(|| {
+        config
+            .as_ref()
+            .and_then(|c| c.min_severity.as_deref())
+            .and_then(parse_severity_filter)
+    });
+    let ai_provider_choice = ai_provider_choice.or_else(|| {
+        config
+            .as_ref()
+            .and_then(|c| c.ai_provider.as_deref())
+            .and_then(parse_ai_provider_choice)
+    });
+    let fail_on = fail_on.or_else(|| {
+        config
+            .as_ref()
+            .and_then(|c| c.fail_on.as_deref())
+            .and_then(parse_severity_filter)
+    });
 
     // Load rules
     let registry = RuleRegistry::load_default()?;
@@ -103,8 +145,7 @@ fn cmd_scan(
     if rule_count == 0 {
         eprintln!(
             "{}",
-            "Warning: no rules loaded. Make sure the rules/ directory exists."
-                .yellow()
+            "Warning: no rules loaded. Make sure the rules/ directory exists.".yellow()
         );
     }
 
@@ -112,12 +153,12 @@ fn cmd_scan(
     let files = if diff {
         scanner::file_discovery::discover_diff_files(&std::env::current_dir()?)?
     } else {
-        scanner::file_discovery::discover_files(&paths)?
+        scanner::file_discovery::discover_files(&paths, &ignore_patterns)?
     };
 
     if files.is_empty() {
         println!("\n  {} No supported files found to scan.\n", "i".blue());
-        return Ok(());
+        return Ok(false);
     }
 
     // Show scanning progress
@@ -157,10 +198,7 @@ fn cmd_scan(
         };
 
         if format == OutputFormat::Terminal {
-            println!(
-                "  [AI] Using provider: {}\n",
-                provider.to_string().cyan()
-            );
+            println!("  [AI] Using provider: {}\n", provider.to_string().cyan());
         }
 
         let backend = ai::create_backend(&provider);
@@ -214,21 +252,21 @@ fn cmd_scan(
 
     let elapsed = start.elapsed();
     if format == OutputFormat::Terminal {
-        println!(
-            "  Scan completed in {:.2}s\n",
-            elapsed.as_secs_f64()
-        );
+        println!("  Scan completed in {:.2}s\n", elapsed.as_secs_f64());
     }
 
-    // Exit with non-zero if critical/high findings
-    if findings
+    // Determine fail threshold (default: High)
+    let fail_threshold = match fail_on {
+        Some(SeverityFilter::Critical) => 4,
+        Some(SeverityFilter::High) => 3,
+        Some(SeverityFilter::Medium) => 2,
+        Some(SeverityFilter::Low) => 1,
+        None => 3, // default: fail on high+critical
+    };
+    let should_fail = findings
         .iter()
-        .any(|f| f.severity.ordinal() >= 3)
-    {
-        std::process::exit(1);
-    }
-
-    Ok(())
+        .any(|f| f.severity.ordinal() >= fail_threshold);
+    Ok(should_fail)
 }
 
 fn cmd_fix(
@@ -256,16 +294,26 @@ fn cmd_fix(
         provider.to_string().cyan()
     );
     if dry_run {
-        println!("  {} Dry run mode — no files will be modified", ">".yellow());
+        println!(
+            "  {} Dry run mode — no files will be modified",
+            ">".yellow()
+        );
     }
     println!();
+
+    // Load config for ignore patterns
+    let config = ScanConfig::load(&std::env::current_dir()?)?;
+    let ignore_patterns = config
+        .as_ref()
+        .map(|c| c.ignore.clone())
+        .unwrap_or_default();
 
     // Load rules and discover files
     let registry = RuleRegistry::load_default()?;
     let files = if diff {
         scanner::file_discovery::discover_diff_files(&std::env::current_dir()?)?
     } else {
-        scanner::file_discovery::discover_files(&paths)?
+        scanner::file_discovery::discover_files(&paths, &ignore_patterns)?
     };
 
     if files.is_empty() {
@@ -289,7 +337,10 @@ fn cmd_fix(
     }
 
     if findings.is_empty() {
-        println!("  {} No security issues found — nothing to fix.\n", "OK".green().bold());
+        println!(
+            "  {} No security issues found — nothing to fix.\n",
+            "OK".green().bold()
+        );
         return Ok(());
     }
 
@@ -370,11 +421,7 @@ fn cmd_fix(
         // Write file (unless dry run)
         if !dry_run {
             std::fs::write(file_path, &fixed)?;
-            println!(
-                "    {} Wrote {}",
-                "OK".green().bold(),
-                file_display
-            );
+            println!("    {} Wrote {}", "OK".green().bold(), file_display);
         } else {
             println!(
                 "    {} Would write {} (dry run)",
@@ -448,10 +495,7 @@ fn cmd_review(file: PathBuf, ai_provider_choice: Option<cli::AiProviderChoice>) 
         "\n  [Review] Deep security review of {}",
         file.display().to_string().white().bold()
     );
-    println!(
-        "  [AI] Using provider: {}\n",
-        provider.to_string().cyan()
-    );
+    println!("  [AI] Using provider: {}\n", provider.to_string().cyan());
 
     let backend = ai::create_backend(&provider);
 
@@ -474,18 +518,80 @@ fn cmd_review(file: PathBuf, ai_provider_choice: Option<cli::AiProviderChoice>) 
 }
 
 fn cmd_init() -> Result<()> {
-    let path = std::env::current_dir()?.join(".scanrc.yml");
+    let cwd = std::env::current_dir()?;
+    let path = cwd.join(".scanrc.yml");
 
     if path.exists() {
-        println!("  .scanrc.yml already exists");
+        println!("  .scanrc.yml already exists.");
         return Ok(());
     }
 
-    std::fs::write(&path, ScanConfig::default_content())?;
-    println!(
-        "  {} Created .scanrc.yml",
-        "OK".green().bold()
+    // Detect project type
+    let has_python = cwd.join("requirements.txt").exists()
+        || cwd.join("pyproject.toml").exists()
+        || cwd.join("setup.py").exists();
+    let has_js = cwd.join("package.json").exists();
+
+    let mut ignore = Vec::new();
+    if has_python {
+        ignore.extend_from_slice(&[
+            "\"**/*_test.py\"",
+            "\"**/test_*.py\"",
+            "\"**/__pycache__/**\"",
+            "\"**/venv/**\"",
+            "\"**/.venv/**\"",
+        ]);
+    }
+    if has_js {
+        ignore.extend_from_slice(&[
+            "\"**/*.test.js\"",
+            "\"**/*.spec.ts\"",
+            "\"**/node_modules/**\"",
+            "\"**/dist/**\"",
+            "\"**/build/**\"",
+        ]);
+    }
+    if ignore.is_empty() {
+        ignore.push("\"**/test/**\"");
+    }
+
+    let ignore_block: String = ignore.iter().map(|p| format!("  - {}\n", p)).collect();
+
+    let detected = if has_python && has_js {
+        "Python + JavaScript"
+    } else if has_python {
+        "Python"
+    } else if has_js {
+        "JavaScript/TypeScript"
+    } else {
+        "General"
+    };
+
+    let content = format!(
+        "# mycop configuration file\n\
+         # Detected: {}\n\
+         # See https://github.com/AbdumajidRashidov/mycop for documentation\n\n\
+         # File patterns to ignore (glob syntax)\n\
+         ignore:\n\
+         {}\n\
+         # Minimum severity level: critical, high, medium, low\n\
+         # min_severity: medium\n\n\
+         # Minimum severity to cause non-zero exit: critical, high, medium, low\n\
+         # fail_on: high\n\n\
+         # AI provider override: claude-cli, anthropic, openai, ollama, none\n\
+         # ai_provider: null  # auto-detect\n",
+        detected, ignore_block
     );
+
+    std::fs::write(&path, content)?;
+
+    println!("  {} Created .scanrc.yml", "OK".green().bold());
+    if has_python {
+        println!("  {} Detected Python project", ">".cyan());
+    }
+    if has_js {
+        println!("  {} Detected JavaScript/TypeScript project", ">".cyan());
+    }
 
     Ok(())
 }
@@ -499,10 +605,7 @@ fn cmd_rules_list(language: Option<String>, severity: Option<SeverityFilter>) ->
         return Ok(());
     }
 
-    println!(
-        "\n  Available rules ({} total):\n",
-        all_rules.len()
-    );
+    println!("\n  Available rules ({} total):\n", all_rules.len());
 
     for rule in &all_rules {
         // Filter by language
@@ -547,10 +650,7 @@ fn cmd_rules_list(language: Option<String>, severity: Option<SeverityFilter>) ->
 }
 
 fn cmd_deps_check(path: PathBuf) -> Result<()> {
-    println!(
-        "\n  Checking dependencies in {}...\n",
-        path.display()
-    );
+    println!("\n  Checking dependencies in {}...\n", path.display());
 
     // Check for requirements.txt
     let req_path = if path.is_file() {
@@ -560,10 +660,7 @@ fn cmd_deps_check(path: PathBuf) -> Result<()> {
     };
 
     if req_path.exists()
-        && req_path
-            .file_name()
-            .and_then(|f| f.to_str())
-            == Some("requirements.txt")
+        && req_path.file_name().and_then(|f| f.to_str()) == Some("requirements.txt")
     {
         let content = std::fs::read_to_string(&req_path)?;
         println!("  Checking Python packages in {}:", req_path.display());
@@ -579,23 +676,17 @@ fn cmd_deps_check(path: PathBuf) -> Result<()> {
             println!("    - {}", pkg);
         }
         println!();
-        println!(
-            "  Dependency hallucination check requires an AI provider."
-        );
+        println!("  Dependency hallucination check requires an AI provider.");
         println!("  Run with --ai-provider to enable deep package verification.\n");
     }
 
     // Check for package.json
-    let pkg_path = if path.is_file()
-        && path
-            .file_name()
-            .and_then(|f| f.to_str())
-            == Some("package.json")
-    {
-        path.clone()
-    } else {
-        path.join("package.json")
-    };
+    let pkg_path =
+        if path.is_file() && path.file_name().and_then(|f| f.to_str()) == Some("package.json") {
+            path.clone()
+        } else {
+            path.join("package.json")
+        };
 
     if pkg_path.exists() {
         let content = std::fs::read_to_string(&pkg_path)?;
@@ -626,3 +717,23 @@ fn read_context(file: &PathBuf, line: usize, context: usize) -> Result<String> {
     Ok(lines[start..end].join("\n"))
 }
 
+fn parse_severity_filter(s: &str) -> Option<SeverityFilter> {
+    match s.to_lowercase().as_str() {
+        "critical" => Some(SeverityFilter::Critical),
+        "high" => Some(SeverityFilter::High),
+        "medium" => Some(SeverityFilter::Medium),
+        "low" => Some(SeverityFilter::Low),
+        _ => None,
+    }
+}
+
+fn parse_ai_provider_choice(s: &str) -> Option<cli::AiProviderChoice> {
+    match s.to_lowercase().as_str() {
+        "claude-cli" => Some(cli::AiProviderChoice::ClaudeCli),
+        "anthropic" => Some(cli::AiProviderChoice::Anthropic),
+        "openai" => Some(cli::AiProviderChoice::Openai),
+        "ollama" => Some(cli::AiProviderChoice::Ollama),
+        "none" => Some(cli::AiProviderChoice::None),
+        _ => None,
+    }
+}

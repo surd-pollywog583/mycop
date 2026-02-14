@@ -1,1 +1,13 @@
 /target
+*.swp
+*.swo
+*~
+.DS_Store
+.idea/
+.vscode/
+*.log
+!/dist/homebrew/
+*.tar.gz
+*.zip
+.env
+.env.*

@@ -2,33 +2,90 @@ use anyhow::Result;
 use std::collections::HashMap;
 use std::path::Path;
 
-use crate::rules::parser::{self, Rule, Severity};
+use crate::rules::parser::{self, Rule};
 use crate::scanner::language::Language;
 
 /// Embedded rule YAML files compiled into the binary
 static EMBEDDED_RULES: &[(&str, &str)] = &[
     // Python rules
-    ("python", include_str!("../../rules/python/sql-injection.yml")),
-    ("python", include_str!("../../rules/python/os-command-injection.yml")),
-    ("python", include_str!("../../rules/python/hardcoded-secrets.yml")),
-    ("python", include_str!("../../rules/python/insecure-random.yml")),
+    (
+        "python",
+        include_str!("../../rules/python/sql-injection.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/os-command-injection.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/hardcoded-secrets.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/insecure-random.yml"),
+    ),
     ("python", include_str!("../../rules/python/eval-exec.yml")),
-    ("python", include_str!("../../rules/python/path-traversal.yml")),
-    ("python", include_str!("../../rules/python/insecure-deserialization.yml")),
-    ("python", include_str!("../../rules/python/missing-auth.yml")),
-    ("python", include_str!("../../rules/python/xss-template.yml")),
-    ("python", include_str!("../../rules/python/log-injection.yml")),
+    (
+        "python",
+        include_str!("../../rules/python/path-traversal.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/insecure-deserialization.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/missing-auth.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/xss-template.yml"),
+    ),
+    (
+        "python",
+        include_str!("../../rules/python/log-injection.yml"),
+    ),
     // JavaScript rules
-    ("javascript", include_str!("../../rules/javascript/xss-innerhtml.yml")),
-    ("javascript", include_str!("../../rules/javascript/eval-injection.yml")),
-    ("javascript", include_str!("../../rules/javascript/prototype-pollution.yml")),
-    ("javascript", include_str!("../../rules/javascript/hardcoded-secrets.yml")),
-    ("javascript", include_str!("../../rules/javascript/insecure-random.yml")),
-    ("javascript", include_str!("../../rules/javascript/path-traversal.yml")),
-    ("javascript", include_str!("../../rules/javascript/ssrf.yml")),
-    ("javascript", include_str!("../../rules/javascript/nosql-injection.yml")),
-    ("javascript", include_str!("../../rules/javascript/insecure-deserialization.yml")),
-    ("javascript", include_str!("../../rules/javascript/dangerouslysetinnerhtml.yml")),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/xss-innerhtml.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/eval-injection.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/prototype-pollution.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/hardcoded-secrets.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/insecure-random.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/path-traversal.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/ssrf.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/nosql-injection.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/insecure-deserialization.yml"),
+    ),
+    (
+        "javascript",
+        include_str!("../../rules/javascript/dangerouslysetinnerhtml.yml"),
+    ),
 ];
 
 pub struct RuleRegistry {
@@ -65,7 +122,9 @@ impl RuleRegistry {
         // Also check for additional rules on disk (project-local or user config)
         let extra_dirs = vec![
             std::env::current_dir().unwrap_or_default().join("rules"),
-            std::env::current_dir().unwrap_or_default().join(".mycop-rules"),
+            std::env::current_dir()
+                .unwrap_or_default()
+                .join(".mycop-rules"),
             dirs_rules_path(),
         ];
 
@@ -83,7 +142,7 @@ impl RuleRegistry {
     }
 
     /// Load only the embedded (compiled-in) rules
-    fn load_embedded() -> Result<Self> {
+    pub(crate) fn load_embedded() -> Result<Self> {
         let mut rules: HashMap<String, Vec<Rule>> = HashMap::new();
 
         for (lang, yaml_content) in EMBEDDED_RULES {
@@ -114,22 +173,9 @@ impl RuleRegistry {
         self.rules.values().flat_map(|rules| rules.iter()).collect()
     }
 
-    /// Filter rules by severity
-    pub fn rules_with_min_severity(&self, language: &Language, min: &Severity) -> Vec<&Rule> {
-        self.rules_for_language(language)
-            .into_iter()
-            .filter(|r| r.severity.ordinal() >= min.ordinal())
-            .collect()
-    }
-
     /// Get count of loaded rules
     pub fn rule_count(&self) -> usize {
         self.rules.values().map(|r| r.len()).sum()
-    }
-
-    /// List available languages
-    pub fn languages(&self) -> Vec<&str> {
-        self.rules.keys().map(|k| k.as_str()).collect()
     }
 }
 
@@ -164,5 +210,63 @@ fn dirs_config_path() -> Option<std::path::PathBuf> {
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     {
         None
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_load_embedded_rules() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        assert!(
+            registry.rule_count() >= 20,
+            "Expected at least 20 embedded rules, got {}",
+            registry.rule_count()
+        );
+    }
+
+    #[test]
+    fn test_rules_for_language_python() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let py_rules = registry.rules_for_language(&Language::Python);
+        assert!(
+            py_rules.len() >= 10,
+            "Expected at least 10 Python rules, got {}",
+            py_rules.len()
+        );
+    }
+
+    #[test]
+    fn test_rules_for_language_javascript() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let js_rules = registry.rules_for_language(&Language::JavaScript);
+        assert!(
+            js_rules.len() >= 10,
+            "Expected at least 10 JavaScript rules, got {}",
+            js_rules.len()
+        );
+    }
+
+    #[test]
+    fn test_typescript_uses_javascript_rules() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let ts_rules = registry.rules_for_language(&Language::TypeScript);
+        let js_rules = registry.rules_for_language(&Language::JavaScript);
+        assert_eq!(ts_rules.len(), js_rules.len());
+    }
+
+    #[test]
+    fn test_all_rules() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let all = registry.all_rules();
+        assert_eq!(all.len(), registry.rule_count());
+    }
+
+    #[test]
+    fn test_load_nonexistent_dir() {
+        let registry = RuleRegistry::load(Path::new("/nonexistent/path/12345")).unwrap();
+        assert_eq!(registry.rule_count(), 0);
     }
 }
