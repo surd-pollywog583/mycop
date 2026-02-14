@@ -7,6 +7,158 @@
   <title>mycop — AI Code Security Scanner</title>
   <meta name="description"
     content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules, 5 AI providers, SARIF output. Open source.">
+  <link rel="canonical" href="https://abdumajidrashidov.github.io/mycop/">
+  <meta name="theme-color" content="#0066ff">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="mycop — AI Code Security Scanner">
+  <meta property="og:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules covering OWASP Top 10 & CWE Top 25. Supports Python, JavaScript, and TypeScript.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://abdumajidrashidov.github.io/mycop/">
+  <meta property="og:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="mycop — AI Code Security Scanner for Python, JavaScript, and TypeScript">
+  <meta property="og:site_name" content="mycop">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="mycop — AI Code Security Scanner">
+  <meta name="twitter:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in rules, SARIF output, zero config.">
+  <meta name="twitter:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+
+  <!-- Structured Data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "mycop",
+    "description": "AI Code Security Scanner — detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules covering OWASP Top 10 and CWE Top 25.",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "Security Scanner",
+    "operatingSystem": "macOS, Linux, Windows",
+    "softwareVersion": "0.2.1",
+    "programmingLanguage": "Rust",
+    "downloadUrl": "https://crates.io/crates/mycop",
+    "installUrl": "https://github.com/AbdumajidRashidov/mycop#installation",
+    "url": "https://abdumajidrashidov.github.io/mycop/",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "100 built-in security rules covering OWASP Top 10 and CWE Top 25",
+      "AI-powered auto-fix with Claude, GPT-4, and Ollama support",
+      "Python, JavaScript, and TypeScript scanning",
+      "SARIF, JSON, and terminal output formats",
+      "GitHub Actions integration",
+      "Pre-commit hook support",
+      "AST-level analysis with tree-sitter",
+      "Configurable severity thresholds",
+      "Git diff scanning mode"
+    ],
+    "author": {
+      "@type": "Person",
+      "name": "Abdumajid Rashidov",
+      "url": "https://github.com/AbdumajidRashidov"
+    },
+    "codeRepository": "https://github.com/AbdumajidRashidov/mycop",
+    "sameAs": [
+      "https://github.com/AbdumajidRashidov/mycop",
+      "https://crates.io/crates/mycop"
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is mycop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "mycop is an open-source AI code security scanner built in Rust. It detects and auto-fixes vulnerabilities in AI-generated Python, JavaScript, and TypeScript code using 100 built-in security rules covering OWASP Top 10 and CWE Top 25 categories."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I install mycop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can install mycop via the install script (curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh), Homebrew (brew install AbdumajidRashidov/tap/mycop), Cargo (cargo install mycop), or Docker."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What languages does mycop support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "mycop supports Python, JavaScript, and TypeScript with 50 Python rules and 50 JavaScript/TypeScript rules using both pattern matching and AST-level analysis via tree-sitter."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does mycop require an AI API key?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. mycop works without any AI API key for scanning and detection. AI is optional and used only for auto-fix and explanation features. It supports Claude CLI, Anthropic API, OpenAI, and Ollama as AI providers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What security vulnerabilities does mycop detect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "mycop detects SQL injection (CWE-89), XSS (CWE-79), command injection (CWE-78), hardcoded secrets (CWE-798), insecure deserialization (CWE-502), path traversal (CWE-22), SSRF (CWE-918), weak cryptography (CWE-327), and 20+ more categories mapped to CWE identifiers."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to scan code for security vulnerabilities with mycop",
+    "description": "Install mycop and scan your Python, JavaScript, or TypeScript codebase for security vulnerabilities in under a minute.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Install mycop",
+        "text": "Run: curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Scan your code",
+        "text": "Run: mycop scan . — This scans all Python, JavaScript, and TypeScript files in the current directory."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Auto-fix vulnerabilities",
+        "text": "Run: mycop fix . — This uses AI to automatically fix detected vulnerabilities. Review the diffs before applying."
+      }
+    ],
+    "tool": {
+      "@type": "HowToTool",
+      "name": "mycop CLI"
+    },
+    "totalTime": "PT2M"
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -610,6 +762,64 @@
       color: var(--text-secondary);
     }
 
+    /* FAQ */
+    .faq {
+      padding: 80px 0;
+    }
+
+    .faq-list {
+      max-width: 720px;
+    }
+
+    .faq-list details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      transition: box-shadow 0.2s;
+    }
+
+    .faq-list details:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .faq-list details[open] {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .faq-list summary {
+      padding: 18px 24px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .faq-list summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-list summary::after {
+      content: '+';
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .faq-list details[open] summary::after {
+      content: '\2212';
+    }
+
+    .faq-list .faq-answer {
+      padding: 0 24px 18px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
     /* Footer */
     footer {
       padding: 40px 0;
@@ -715,6 +925,8 @@
       </div>
     </div>
   </nav>
+
+  <main>
 
   <!-- Hero -->
   <section class="hero">
@@ -1124,6 +1336,39 @@ mycop --version</code></div>
       </table>
     </div>
   </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Frequently asked questions</h2>
+      <p class="section-subtitle">Common questions about mycop and how it works.</p>
+      <div class="faq-list">
+        <details>
+          <summary>What is mycop?</summary>
+          <div class="faq-answer">mycop is an open-source AI code security scanner built in Rust. It detects and auto-fixes vulnerabilities in AI-generated Python, JavaScript, and TypeScript code using 100 built-in security rules covering OWASP Top 10 and CWE Top 25 categories. It uses both pattern matching and AST-level analysis via tree-sitter for accurate detection.</div>
+        </details>
+        <details>
+          <summary>How do I install mycop?</summary>
+          <div class="faq-answer">You can install mycop via the install script (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh</code>), Homebrew (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">brew install AbdumajidRashidov/tap/mycop</code>), Cargo (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">cargo install mycop</code>), or Docker.</div>
+        </details>
+        <details>
+          <summary>What languages does mycop support?</summary>
+          <div class="faq-answer">mycop supports Python, JavaScript, and TypeScript with 50 Python rules and 50 JavaScript/TypeScript rules. It uses both regex pattern matching and AST-level analysis via tree-sitter for each language.</div>
+        </details>
+        <details>
+          <summary>Does mycop require an AI API key?</summary>
+          <div class="faq-answer">No. mycop works without any AI API key for scanning and detection. AI is optional and used only for the auto-fix (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">mycop fix</code>) and explanation (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">--explain</code>) features. It supports Claude CLI, Anthropic API, OpenAI, and Ollama as AI providers, with automatic detection.</div>
+        </details>
+        <details>
+          <summary>What security vulnerabilities does mycop detect?</summary>
+          <div class="faq-answer">mycop detects SQL injection (CWE-89), XSS (CWE-79), command injection (CWE-78), hardcoded secrets (CWE-798), insecure deserialization (CWE-502), path traversal (CWE-22), SSRF (CWE-918), weak cryptography (CWE-327/328), insecure TLS (CWE-295), JWT vulnerabilities (CWE-345), open redirects (CWE-601), CORS misconfiguration (CWE-942), ReDoS (CWE-1333), timing attacks (CWE-208), and 20+ more categories &mdash; all mapped to CWE identifiers.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  </main>
 
   <!-- Footer -->
   <footer>
