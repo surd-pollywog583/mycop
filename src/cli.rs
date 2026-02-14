@@ -27,13 +27,9 @@ pub enum Commands {
         #[arg(long)]
         explain: bool,
 
-        /// Get AI-suggested fixes for each finding
+        /// Auto-fix all security vulnerabilities using AI (same as `mycop fix`)
         #[arg(long)]
         fix: bool,
-
-        /// Auto-apply AI-suggested fixes to files (requires --fix)
-        #[arg(long, requires = "fix")]
-        apply: bool,
 
         /// Output format
         #[arg(long, value_enum, default_value = "terminal")]
@@ -42,6 +38,10 @@ pub enum Commands {
         /// Minimum severity level to report
         #[arg(long, value_enum)]
         severity: Option<SeverityFilter>,
+
+        /// Minimum severity to fail with exit code 1 (default: high)
+        #[arg(long, value_enum)]
+        fail_on: Option<SeverityFilter>,
 
         /// Only scan files changed in git diff
         #[arg(long)]

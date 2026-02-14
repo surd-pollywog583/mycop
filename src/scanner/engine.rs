@@ -22,22 +22,23 @@ impl Scanner {
     pub fn scan_files(&self, files: &[PathBuf]) -> Result<Vec<Finding>> {
         let findings: Arc<Mutex<Vec<Finding>>> = Arc::new(Mutex::new(Vec::new()));
 
-        files.par_iter().for_each(|file| {
-            match self.scan_file(file) {
+        files
+            .par_iter()
+            .for_each(|file| match self.scan_file(file) {
                 Ok(file_findings) => {
-                    let mut all = findings.lock().unwrap();
-                    all.extend(file_findings);
+                    if let Ok(mut all) = findings.lock() {
+                        all.extend(file_findings);
+                    }
                 }
                 Err(e) => {
                     eprintln!("Warning: failed to scan {}: {}", file.display(), e);
                 }
-            }
-        });
+            });
 
         let mut results = Arc::try_unwrap(findings)
-            .unwrap()
+            .map_err(|_| anyhow::anyhow!("Failed to unwrap Arc — references still held"))?
             .into_inner()
-            .unwrap();
+            .map_err(|e| anyhow::anyhow!("Mutex poisoned: {}", e))?;
 
         // Sort by severity (critical first) then by file path
         results.sort_by(|a, b| {
@@ -62,8 +63,7 @@ impl Scanner {
         let mut findings = Vec::new();
 
         for rule in rules {
-            let rule_findings =
-                crate::rules::matcher::match_rule(rule, &content, path, &language)?;
+            let rule_findings = crate::rules::matcher::match_rule(rule, &content, path, &language)?;
             findings.extend(rule_findings);
         }
 

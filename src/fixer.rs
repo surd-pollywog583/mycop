@@ -158,12 +158,9 @@ fn group_changes<'a>(changes: &'a [Change<'a>]) -> Vec<DiffChunk<'a>> {
     let mut i = 0;
     while i < changes.len() {
         // Skip equal lines until we find a change
-        match changes[i] {
-            Change::Equal(_, _, _) => {
-                i += 1;
-                continue;
-            }
-            _ => {}
+        if let Change::Equal(_, _, _) = changes[i] {
+            i += 1;
+            continue;
         }
 
         // Found a change, build a chunk with context
@@ -199,8 +196,12 @@ fn group_changes<'a>(changes: &'a [Change<'a>]) -> Vec<DiffChunk<'a>> {
         let mut old_count = 0;
         let mut new_count = 0;
 
-        for k in chunk_start..=chunk_end.min(changes.len() - 1) {
-            match &changes[k] {
+        for change in changes
+            .iter()
+            .take(chunk_end.min(changes.len() - 1) + 1)
+            .skip(chunk_start)
+        {
+            match change {
                 Change::Equal(line, oi, ni) => {
                     if old_start == usize::MAX {
                         old_start = *oi;
@@ -231,9 +232,17 @@ fn group_changes<'a>(changes: &'a [Change<'a>]) -> Vec<DiffChunk<'a>> {
 
         if !lines.is_empty() {
             chunks.push(DiffChunk {
-                old_start: if old_start == usize::MAX { 0 } else { old_start },
+                old_start: if old_start == usize::MAX {
+                    0
+                } else {
+                    old_start
+                },
                 old_count,
-                new_start: if new_start == usize::MAX { 0 } else { new_start },
+                new_start: if new_start == usize::MAX {
+                    0
+                } else {
+                    new_start
+                },
                 new_count,
                 lines,
             });
@@ -243,4 +252,71 @@ fn group_changes<'a>(changes: &'a [Change<'a>]) -> Vec<DiffChunk<'a>> {
     }
 
     chunks
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_fixed_file_xml_tags() {
+        let response = "Here is the fix:\n<FIXED_FILE>\nfn main() {\n    println!(\"safe\");\n}\n</FIXED_FILE>\nDone.";
+        let result = extract_fixed_file(response);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "fn main() {\n    println!(\"safe\");\n}");
+    }
+
+    #[test]
+    fn test_extract_fixed_file_markdown_fallback() {
+        let response = "Here is the fix:\n```python\ndef safe():\n    pass\n```\nDone.";
+        let result = extract_fixed_file(response);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "def safe():\n    pass");
+    }
+
+    #[test]
+    fn test_extract_fixed_file_none_for_garbage() {
+        let response = "I can't fix this. Please review manually.";
+        assert!(extract_fixed_file(response).is_none());
+    }
+
+    #[test]
+    fn test_extract_fixed_file_empty_tags() {
+        let response = "<FIXED_FILE></FIXED_FILE>";
+        let result = extract_fixed_file(response);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "");
+    }
+
+    #[test]
+    fn compute_diff_equal() {
+        let old = vec!["a", "b", "c"];
+        let new = vec!["a", "b", "c"];
+        let changes = compute_diff(&old, &new);
+        assert!(changes.iter().all(|c| matches!(c, Change::Equal(_, _, _))));
+    }
+
+    #[test]
+    fn compute_diff_additions() {
+        let old = vec!["a", "c"];
+        let new = vec!["a", "b", "c"];
+        let changes = compute_diff(&old, &new);
+        let adds: Vec<_> = changes
+            .iter()
+            .filter(|c| matches!(c, Change::Add(_, _)))
+            .collect();
+        assert_eq!(adds.len(), 1);
+    }
+
+    #[test]
+    fn compute_diff_deletions() {
+        let old = vec!["a", "b", "c"];
+        let new = vec!["a", "c"];
+        let changes = compute_diff(&old, &new);
+        let removes: Vec<_> = changes
+            .iter()
+            .filter(|c| matches!(c, Change::Remove(_, _)))
+            .collect();
+        assert_eq!(removes.len(), 1);
+    }
 }

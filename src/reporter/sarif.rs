@@ -7,6 +7,12 @@ use crate::rules::parser::Severity;
 
 pub struct SarifReporter;
 
+impl Default for SarifReporter {
+    fn default() -> Self {
+        Self
+    }
+}
+
 impl SarifReporter {
     pub fn new() -> Self {
         Self
@@ -110,4 +116,56 @@ fn collect_unique_rules(findings: &[Finding]) -> Vec<serde_json::Value> {
     }
 
     rules
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::rules::matcher::Finding;
+    use std::path::PathBuf;
+
+    fn make_finding(rule_id: &str, severity: Severity) -> Finding {
+        Finding {
+            rule_id: rule_id.to_string(),
+            rule_name: "test-rule".to_string(),
+            severity,
+            file: PathBuf::from("test.py"),
+            line: 10,
+            column: 1,
+            matched_text: "eval(input)".to_string(),
+            context_before: vec![],
+            context_after: vec![],
+            message: "Dangerous eval".to_string(),
+            fix_hint: None,
+            cwe: Some("CWE-95".to_string()),
+            owasp: None,
+            description: "Eval injection".to_string(),
+            references: vec![],
+        }
+    }
+
+    #[test]
+    fn test_sarif_schema_structure() {
+        let findings = vec![make_finding("PY-SEC-005", Severity::High)];
+        let ai_results = HashMap::new();
+        let reporter = SarifReporter::new();
+        let result = reporter.report(&findings, &ai_results).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+
+        assert_eq!(parsed["version"], "2.1.0");
+        assert!(parsed["runs"].is_array());
+        assert_eq!(parsed["runs"][0]["tool"]["driver"]["name"], "mycop");
+        assert!(parsed["runs"][0]["results"].is_array());
+        assert_eq!(parsed["runs"][0]["results"][0]["ruleId"], "PY-SEC-005");
+        assert_eq!(parsed["runs"][0]["results"][0]["level"], "error");
+    }
+
+    #[test]
+    fn test_severity_mapping() {
+        assert_eq!(severity_to_sarif_level(&Severity::Critical), "error");
+        assert_eq!(severity_to_sarif_level(&Severity::High), "error");
+        assert_eq!(severity_to_sarif_level(&Severity::Medium), "warning");
+        assert_eq!(severity_to_sarif_level(&Severity::Low), "note");
+        assert_eq!(severity_to_sarif_level(&Severity::Info), "note");
+    }
 }

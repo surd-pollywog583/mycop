@@ -1,0 +1,80 @@
+name: 'mycop Security Scan'
+description: 'AI-powered security scanner for detecting vulnerabilities in code'
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  paths:
+    description: 'Files or directories to scan'
+    required: false
+    default: '.'
+  severity:
+    description: 'Minimum severity to report (low, medium, high, critical)'
+    required: false
+    default: ''
+  fail-on:
+    description: 'Minimum severity to fail the check (low, medium, high, critical)'
+    required: false
+    default: 'high'
+  format:
+    description: 'Output format (terminal, json, sarif)'
+    required: false
+    default: 'terminal'
+  version:
+    description: 'mycop version to install (e.g. v0.1.0 or latest)'
+    required: false
+    default: 'latest'
+  diff-only:
+    description: 'Only scan files changed in the PR'
+    required: false
+    default: 'false'
+
+outputs:
+  findings-count:
+    description: 'Total number of findings'
+    value: ${{ steps.scan.outputs.findings-count }}
+  sarif-file:
+    description: 'Path to SARIF file (when format=sarif)'
+    value: ${{ steps.scan.outputs.sarif-file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install mycop
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        if [ "$VERSION" = "latest" ]; then
+          curl -fsSL https://raw.githubusercontent.com/mycop/mycop/main/install.sh | sh
+        else
+          MYCOP_VERSION="$VERSION" curl -fsSL https://raw.githubusercontent.com/mycop/mycop/main/install.sh | sh
+        fi
+
+    - name: Run scan
+      shell: bash
+      id: scan
+      run: |
+        ARGS="scan ${{ inputs.paths }}"
+
+        if [ -n "${{ inputs.severity }}" ]; then
+          ARGS="$ARGS --severity ${{ inputs.severity }}"
+        fi
+
+        if [ -n "${{ inputs.fail-on }}" ]; then
+          ARGS="$ARGS --fail-on ${{ inputs.fail-on }}"
+        fi
+
+        if [ "${{ inputs.diff-only }}" = "true" ]; then
+          ARGS="$ARGS --diff"
+        fi
+
+        if [ "${{ inputs.format }}" = "sarif" ]; then
+          ARGS="$ARGS --format sarif"
+          mycop $ARGS > mycop-results.sarif 2>&1 || EXIT_CODE=$?
+          echo "sarif-file=mycop-results.sarif" >> "$GITHUB_OUTPUT"
+          exit ${EXIT_CODE:-0}
+        else
+          ARGS="$ARGS --format ${{ inputs.format }}"
+          mycop $ARGS
+        fi

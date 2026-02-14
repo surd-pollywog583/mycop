@@ -1,0 +1,6 @@
+- id: mycop
+  name: mycop security scan
+  entry: mycop scan --format terminal --fail-on high
+  language: system
+  types_or: [python, javascript, ts]
+  pass_filenames: true

@@ -1,17 +1,23 @@
 use anyhow::Result;
+use glob::Pattern;
 use ignore::WalkBuilder;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use super::language::Language;
 
-/// Discover files to scan, respecting .gitignore
-pub fn discover_files(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
+/// Discover files to scan, respecting .gitignore and custom ignore patterns
+pub fn discover_files(paths: &[PathBuf], ignore_patterns: &[String]) -> Result<Vec<PathBuf>> {
+    let patterns: Vec<Pattern> = ignore_patterns
+        .iter()
+        .filter_map(|p| Pattern::new(p).ok())
+        .collect();
+
     let mut files = Vec::new();
 
     for path in paths {
         if path.is_file() {
-            if Language::from_extension(path).is_some() {
+            if Language::from_extension(path).is_some() && !is_ignored(path, &patterns) {
                 files.push(path.clone());
             }
         } else if path.is_dir() {
@@ -25,7 +31,10 @@ pub fn discover_files(paths: &[PathBuf]) -> Result<Vec<PathBuf>> {
             for entry in walker {
                 let entry = entry?;
                 let entry_path = entry.path();
-                if entry_path.is_file() && Language::from_extension(entry_path).is_some() {
+                if entry_path.is_file()
+                    && Language::from_extension(entry_path).is_some()
+                    && !is_ignored(entry_path, &patterns)
+                {
                     files.push(entry_path.to_path_buf());
                 }
             }
@@ -83,4 +92,9 @@ fn parse_git_output(output: &[u8], base: &Path) -> Result<Vec<PathBuf>> {
         .filter(|p| Language::from_extension(p).is_some())
         .collect();
     Ok(files)
+}
+
+fn is_ignored(path: &Path, patterns: &[Pattern]) -> bool {
+    let path_str = path.to_string_lossy();
+    patterns.iter().any(|p| p.matches(&path_str))
 }

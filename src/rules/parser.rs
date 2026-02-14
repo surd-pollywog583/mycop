@@ -106,3 +106,84 @@ pub fn parse_rules_dir(dir: &Path) -> Result<Vec<Rule>> {
 
     Ok(rules)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_rule_yaml() {
+        let yaml = r#"
+id: TEST-001
+name: test-rule
+severity: high
+language: python
+description: "Test rule"
+pattern:
+  type: regex
+  regex:
+    - "eval\\("
+message: "Do not use eval"
+"#;
+        let rule: Rule = serde_yaml::from_str(yaml).unwrap();
+        assert_eq!(rule.id, "TEST-001");
+        assert_eq!(rule.severity, Severity::High);
+        assert_eq!(rule.pattern.pattern_type, PatternType::Regex);
+        assert_eq!(rule.pattern.regex.len(), 1);
+        assert!(rule.cwe.is_none());
+        assert!(rule.fix_hint.is_none());
+    }
+
+    #[test]
+    fn test_parse_rule_with_all_fields() {
+        let yaml = r#"
+id: TEST-002
+name: full-rule
+severity: critical
+language: javascript
+cwe: CWE-79
+owasp: "A07:2021"
+description: "Full test rule"
+pattern:
+  type: ast
+  query: "(call_expression)"
+  regex:
+    - "innerHTML"
+message: "XSS risk"
+fix_hint: "Use textContent"
+references:
+  - "https://example.com"
+"#;
+        let rule: Rule = serde_yaml::from_str(yaml).unwrap();
+        assert_eq!(rule.id, "TEST-002");
+        assert_eq!(rule.severity, Severity::Critical);
+        assert_eq!(rule.cwe, Some("CWE-79".to_string()));
+        assert_eq!(rule.owasp, Some("A07:2021".to_string()));
+        assert_eq!(rule.fix_hint, Some("Use textContent".to_string()));
+        assert_eq!(rule.references.len(), 1);
+        assert_eq!(rule.pattern.pattern_type, PatternType::Ast);
+        assert!(rule.pattern.query.is_some());
+    }
+
+    #[test]
+    fn test_severity_labels() {
+        assert_eq!(Severity::Critical.label(), "CRITICAL");
+        assert_eq!(Severity::High.label(), "HIGH");
+        assert_eq!(Severity::Medium.label(), "MEDIUM");
+        assert_eq!(Severity::Low.label(), "LOW");
+        assert_eq!(Severity::Info.label(), "INFO");
+    }
+
+    #[test]
+    fn test_severity_display() {
+        assert_eq!(format!("{}", Severity::Critical), "CRITICAL");
+        assert_eq!(format!("{}", Severity::Low), "LOW");
+    }
+
+    #[test]
+    fn test_parse_invalid_yaml_errors() {
+        let yaml = "this is not valid: [";
+        let result: Result<Rule, _> = serde_yaml::from_str(yaml);
+        assert!(result.is_err());
+    }
+}

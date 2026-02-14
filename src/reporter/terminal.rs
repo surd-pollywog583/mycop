@@ -7,6 +7,12 @@ use crate::rules::parser::Severity;
 
 pub struct TerminalReporter;
 
+impl Default for TerminalReporter {
+    fn default() -> Self {
+        Self
+    }
+}
+
 impl TerminalReporter {
     pub fn new() -> Self {
         Self
@@ -42,11 +48,10 @@ impl Reporter for TerminalReporter {
                 .map(|c| format!(" ({})", c))
                 .unwrap_or_default();
             println!(
-                "  {} {} {}{}",
+                "  {} {} {}",
                 severity_str,
                 finding.rule_name.replace('-', " ").bold(),
-                cwe_str.dimmed(),
-                ""
+                cwe_str.dimmed()
             );
             println!();
 
@@ -54,11 +59,7 @@ impl Reporter for TerminalReporter {
             let start_line = finding.line.saturating_sub(finding.context_before.len());
             for (i, line) in finding.context_before.iter().enumerate() {
                 let line_num = start_line + i;
-                println!(
-                    "     {} {}",
-                    format!("{:>4} │", line_num).dimmed(),
-                    line
-                );
+                println!("     {} {}", format!("{:>4} │", line_num).dimmed(), line);
             }
 
             // The matched line (highlighted)
@@ -66,20 +67,13 @@ impl Reporter for TerminalReporter {
                 "  {}  {} {}",
                 "→".red().bold(),
                 format!("{:>4} │", finding.line).dimmed(),
-                highlight_match(
-                    &get_line_from_finding(finding),
-                    &finding.matched_text
-                )
+                highlight_match(&get_line_from_finding(finding), &finding.matched_text)
             );
 
             // Context after
             for (i, line) in finding.context_after.iter().enumerate() {
                 let line_num = finding.line + i + 1;
-                println!(
-                    "     {} {}",
-                    format!("{:>4} │", line_num).dimmed(),
-                    line
-                );
+                println!("     {} {}", format!("{:>4} │", line_num).dimmed(), line);
             }
 
             // Message
@@ -89,7 +83,7 @@ impl Reporter for TerminalReporter {
             // AI explanation/fix if available
             if let Some(ai_text) = ai_results.get(&idx) {
                 println!();
-                println!("  {} {}", "💡 AI:".cyan().bold(), "");
+                println!("  {}", "💡 AI:".cyan().bold());
                 for line in ai_text.lines() {
                     println!("     {}", line);
                 }
@@ -118,7 +112,11 @@ impl Reporter for TerminalReporter {
         }
 
         let total = findings.len();
-        print!("  Found {} issue{}: ", total, if total == 1 { "" } else { "s" });
+        print!(
+            "  Found {} issue{}: ",
+            total,
+            if total == 1 { "" } else { "s" }
+        );
 
         let mut parts = Vec::new();
         if critical > 0 {
@@ -154,12 +152,7 @@ fn highlight_match(line: &str, matched: &str) -> String {
     if let Some(pos) = line.find(matched) {
         let before = &line[..pos];
         let after = &line[pos + matched.len()..];
-        format!(
-            "{}{}{}",
-            before,
-            matched.red().underline(),
-            after
-        )
+        format!("{}{}{}", before, matched.red().underline(), after)
     } else {
         line.to_string()
     }

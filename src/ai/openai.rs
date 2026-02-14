@@ -14,7 +14,10 @@ impl OpenAiBackend {
     pub fn new(api_key: String) -> Self {
         Self {
             api_key,
-            client: reqwest::blocking::Client::new(),
+            client: reqwest::blocking::Client::builder()
+                .timeout(std::time::Duration::from_secs(120))
+                .build()
+                .unwrap_or_else(|_| reqwest::blocking::Client::new()),
         }
     }
 
@@ -65,11 +68,6 @@ impl AiBackend for OpenAiBackend {
         self.call_api(&prompt_text, 1024)
     }
 
-    fn suggest_fix(&self, finding: &Finding, code_context: &str) -> Result<String> {
-        let prompt_text = prompt::fix_prompt(finding, code_context);
-        self.call_api(&prompt_text, 1024)
-    }
-
     fn deep_review(&self, file_content: &str, language: &str) -> Result<String> {
         let prompt_text = prompt::review_prompt(file_content, language);
         self.call_api(&prompt_text, 4096)
@@ -82,8 +80,7 @@ impl AiBackend for OpenAiBackend {
         file_content: &str,
         findings: &[&Finding],
     ) -> Result<String> {
-        let prompt_text =
-            prompt::fix_file_prompt(file_path, language, file_content, findings);
+        let prompt_text = prompt::fix_file_prompt(file_path, language, file_content, findings);
         self.call_api(&prompt_text, 16384)
     }
 }

@@ -34,45 +34,6 @@ Keep your response concise and actionable. No markdown headers."#,
     )
 }
 
-/// Generate prompt for suggesting a fix
-pub fn fix_prompt(finding: &Finding, code_context: &str) -> String {
-    format!(
-        r#"You are a security expert. Fix this vulnerability.
-
-Vulnerability: {} ({})
-Severity: {}
-CWE: {}
-File: {}:{}
-
-Vulnerable code:
-```
-{}
-```
-
-Matched pattern: {}
-{}
-
-Provide:
-1. A brief explanation of the fix (1-2 sentences)
-2. The corrected code (just the fixed version, ready to use)
-
-Format the fixed code in a code block. Keep explanation minimal."#,
-        finding.rule_name,
-        finding.description,
-        finding.severity,
-        finding.cwe.as_deref().unwrap_or("N/A"),
-        finding.file.display(),
-        finding.line,
-        code_context,
-        finding.matched_text,
-        finding
-            .fix_hint
-            .as_ref()
-            .map(|h| format!("\nHint: {}", h))
-            .unwrap_or_default(),
-    )
-}
-
 /// Generate prompt for fixing an entire file (agentic mode)
 /// Groups all findings for a file into one prompt, asks AI to return the complete fixed file.
 pub fn fix_file_prompt(
@@ -154,4 +115,71 @@ For each issue found, provide:
 If no significant issues are found, say so clearly."#,
         language, language, file_content
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::rules::parser::Severity;
+    use std::path::PathBuf;
+
+    fn make_finding(rule_id: &str) -> Finding {
+        Finding {
+            rule_id: rule_id.to_string(),
+            rule_name: "sql-injection".to_string(),
+            severity: Severity::High,
+            file: PathBuf::from("app.py"),
+            line: 42,
+            column: 1,
+            matched_text: "cursor.execute(f\"SELECT * FROM users WHERE id={uid}\")".to_string(),
+            context_before: vec![],
+            context_after: vec![],
+            message: "SQL injection via f-string".to_string(),
+            fix_hint: Some("Use parameterized queries".to_string()),
+            cwe: Some("CWE-89".to_string()),
+            owasp: Some("A03:2021".to_string()),
+            description: "SQL injection vulnerability".to_string(),
+            references: vec![],
+        }
+    }
+
+    #[test]
+    fn test_explain_prompt_format() {
+        let finding = make_finding("PY-SEC-001");
+        let prompt = explain_prompt(&finding, "some code context");
+        assert!(prompt.contains("sql-injection"));
+        assert!(prompt.contains("CWE-89"));
+        assert!(prompt.contains("app.py:42"));
+        assert!(prompt.contains("some code context"));
+    }
+
+    #[test]
+    fn test_fix_file_prompt_contains_vulnerabilities() {
+        let finding = make_finding("PY-SEC-001");
+        let findings: Vec<&Finding> = vec![&finding];
+        let prompt = fix_file_prompt("app.py", "python", "import sqlite3\n", &findings);
+        assert!(prompt.contains("Line 42"));
+        assert!(prompt.contains("sql injection"));
+        assert!(prompt.contains("Hint: Use parameterized queries"));
+        assert!(prompt.contains("<FIXED_FILE>"));
+    }
+
+    #[test]
+    fn test_fix_file_prompt_contains_file_content() {
+        let finding = make_finding("PY-SEC-001");
+        let findings: Vec<&Finding> = vec![&finding];
+        let content = "import sqlite3\ndef query(uid):\n    pass\n";
+        let prompt = fix_file_prompt("app.py", "python", content, &findings);
+        assert!(prompt.contains(content));
+        assert!(prompt.contains("<FILE>"));
+        assert!(prompt.contains("</FILE>"));
+    }
+
+    #[test]
+    fn test_review_prompt_format() {
+        let prompt = review_prompt("def foo(): pass", "python");
+        assert!(prompt.contains("Language: python"));
+        assert!(prompt.contains("def foo(): pass"));
+        assert!(prompt.contains("CRITICAL/HIGH/MEDIUM/LOW"));
+    }
 }

@@ -53,10 +53,20 @@ pub fn provider_from_choice(choice: &AiProviderChoice) -> AiProvider {
         AiProviderChoice::ClaudeCli => AiProvider::ClaudeCli,
         AiProviderChoice::Anthropic => {
             let key = std::env::var("ANTHROPIC_API_KEY").unwrap_or_default();
+            if key.is_empty() {
+                eprintln!(
+                    "Warning: ANTHROPIC_API_KEY is not set. Export it or choose a different --ai-provider."
+                );
+            }
             AiProvider::AnthropicApi(key)
         }
         AiProviderChoice::Openai => {
             let key = std::env::var("OPENAI_API_KEY").unwrap_or_default();
+            if key.is_empty() {
+                eprintln!(
+                    "Warning: OPENAI_API_KEY is not set. Export it or choose a different --ai-provider."
+                );
+            }
             AiProvider::OpenAiApi(key)
         }
         AiProviderChoice::Ollama => AiProvider::Ollama,
