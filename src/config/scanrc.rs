@@ -45,7 +45,7 @@ impl ScanConfig {
     #[allow(dead_code)]
     pub fn default_content() -> &'static str {
         r#"# mycop configuration file
-# See https://github.com/mycop/mycop for documentation
+# See https://github.com/AbdumajidRashidov/mycop for documentation
 
 # File patterns to ignore (glob syntax)
 ignore:

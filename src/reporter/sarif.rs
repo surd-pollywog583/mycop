@@ -62,7 +62,7 @@ impl Reporter for SarifReporter {
                         "driver": {
                             "name": "mycop",
                             "version": env!("CARGO_PKG_VERSION"),
-                            "informationUri": "https://github.com/mycop/mycop",
+                            "informationUri": "https://github.com/AbdumajidRashidov/mycop",
                             "rules": rules
                         }
                     },

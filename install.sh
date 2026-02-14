@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-REPO="mycop/mycop"
+REPO="AbdumajidRashidov/mycop"
 VERSION="${MYCOP_VERSION:-latest}"
 
 OS=$(uname -s)

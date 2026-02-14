@@ -46,9 +46,9 @@ runs:
       run: |
         VERSION="${{ inputs.version }}"
         if [ "$VERSION" = "latest" ]; then
-          curl -fsSL https://raw.githubusercontent.com/mycop/mycop/main/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh
         else
-          MYCOP_VERSION="$VERSION" curl -fsSL https://raw.githubusercontent.com/mycop/mycop/main/install.sh | sh
+          MYCOP_VERSION="$VERSION" curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh
         fi
 
     - name: Run scan

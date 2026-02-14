@@ -15,7 +15,7 @@ brew install mycop/tap/mycop
 cargo install mycop
 
 # or via install script
-curl -fsSL https://raw.githubusercontent.com/mycop/mycop/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh
 ```
 
 ## Features

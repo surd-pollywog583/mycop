@@ -570,7 +570,7 @@ fn cmd_init() -> Result<()> {
     let content = format!(
         "# mycop configuration file\n\
          # Detected: {}\n\
-         # See https://github.com/mycop/mycop for documentation\n\n\
+         # See https://github.com/AbdumajidRashidov/mycop for documentation\n\n\
          # File patterns to ignore (glob syntax)\n\
          ignore:\n\
          {}\n\
