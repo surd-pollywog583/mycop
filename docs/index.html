@@ -484,7 +484,8 @@
       background: var(--terminal-bg);
       border-radius: var(--radius);
       padding: 20px 24px;
-      max-width: 600px;
+      max-width: 100%;
+      overflow-x: auto;
     }
 
     .install-panel.active {
@@ -495,7 +496,8 @@
       color: var(--green);
       font-size: 0.85rem;
       line-height: 1.8;
-      white-space: pre;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
 
     .install-panel .dim {
