@@ -721,7 +721,7 @@
       <div class="hero-actions">
         <div class="install-cmd">
           <span class="dim">$</span>
-          <code>curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh</code>
+          <code>cargo install mycop</code>
           <button onclick="copyInstall(this)" title="Copy">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -1074,7 +1074,7 @@ mycop --version</code></div>
 
   <script>
     function copyInstall(btn) {
-      const text = 'curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh';
+      const text = 'cargo install mycop';
       navigator.clipboard.writeText(text).then(() => {
         btn.classList.add('copied');
         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
