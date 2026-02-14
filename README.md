@@ -31,7 +31,7 @@ cargo install mycop
 ### Docker
 
 ```bash
-docker run --rm -v "$(pwd):/src" -w /src mycop scan .
+docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan .
 ```
 
 ### Build from source
@@ -310,10 +310,10 @@ See [vscode-extension/README.md](vscode-extension/README.md) for setup instructi
 
 ```bash
 # Scan current directory
-docker run --rm -v "$(pwd):/src" -w /src mycop scan .
+docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan .
 
 # Scan with specific options
-docker run --rm -v "$(pwd):/src" -w /src mycop scan . --format json --severity high
+docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan . --format json --severity high
 ```
 
 ## License
