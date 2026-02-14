@@ -47,10 +47,7 @@ static EMBEDDED_RULES: &[(&str, &str)] = &[
     ),
     // Python rules (011-050)
     ("python", include_str!("../../rules/python/ssrf.yml")),
-    (
-        "python",
-        include_str!("../../rules/python/xxe-parsing.yml"),
-    ),
+    ("python", include_str!("../../rules/python/xxe-parsing.yml")),
     (
         "python",
         include_str!("../../rules/python/ldap-injection.yml"),
@@ -75,10 +72,7 @@ static EMBEDDED_RULES: &[(&str, &str)] = &[
         "python",
         include_str!("../../rules/python/weak-hash-sha1.yml"),
     ),
-    (
-        "python",
-        include_str!("../../rules/python/weak-cipher.yml"),
-    ),
+    ("python", include_str!("../../rules/python/weak-cipher.yml")),
     ("python", include_str!("../../rules/python/ecb-mode.yml")),
     (
         "python",
@@ -153,10 +147,7 @@ static EMBEDDED_RULES: &[(&str, &str)] = &[
         "python",
         include_str!("../../rules/python/dns-resolution-user-input.yml"),
     ),
-    (
-        "python",
-        include_str!("../../rules/python/bare-except.yml"),
-    ),
+    ("python", include_str!("../../rules/python/bare-except.yml")),
     (
         "python",
         include_str!("../../rules/python/assert-for-auth.yml"),
