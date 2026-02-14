@@ -32,5 +32,11 @@ INSTALL_DIR="${MYCOP_INSTALL_DIR:-/usr/local/bin}"
 echo "Downloading mycop for ${TARGET}..."
 curl -fsSL "$DOWNLOAD_URL" | tar xz -C /tmp
 echo "Installing to ${INSTALL_DIR}..."
-install -m 755 /tmp/mycop "${INSTALL_DIR}/mycop"
+if [ -w "${INSTALL_DIR}" ]; then
+    install -m 755 /tmp/mycop "${INSTALL_DIR}/mycop"
+else
+    echo "Elevated permissions required. You may be prompted for your password."
+    sudo install -m 755 /tmp/mycop "${INSTALL_DIR}/mycop"
+fi
+rm -f /tmp/mycop
 echo "mycop installed successfully! Run 'mycop --version' to verify."
