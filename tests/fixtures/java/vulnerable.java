@@ -2,9 +2,8 @@ import java.sql.*;
 import java.util.Random;
 import java.io.*;
 import java.security.MessageDigest;
-import javax.servlet.http.*;
 
-public class Vulnerable {
+class vulnerable {
 
     // SQL Injection - string concatenation
     public void getUser(Connection conn, String id) throws Exception {
@@ -38,10 +37,12 @@ public class Vulnerable {
         factory.newDocumentBuilder().parse(is);
     }
 
-    // XSS in servlet
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String name = request.getParameter("name");
-        response.getWriter().println("<h1>Hello " + name + "</h1>");
+    // XSS - writing user input to output
+    public void handleRequest(InputStream input, OutputStream output) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        String name = reader.readLine();
+        PrintWriter writer = new PrintWriter(output);
+        writer.println("<h1>Hello " + name + "</h1>");
     }
 
     // Insecure deserialization
@@ -70,9 +71,8 @@ public class Vulnerable {
     }
 
     // Error info leak
-    public void handleError(HttpServletResponse response, Exception e) throws Exception {
+    public void handleError(Exception e) throws Exception {
         e.printStackTrace();
-        response.getWriter().print(e.getMessage());
     }
 
     private void dangerousMethod() throws Exception {
