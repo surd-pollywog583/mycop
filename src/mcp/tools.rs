@@ -175,9 +175,7 @@ fn scan_impl(params: ScanParams) -> anyhow::Result<ScanResult> {
     let registry = RuleRegistry::load_default()?;
     let rules_loaded = registry.rule_count();
 
-    let resolved = params
-        .resolved_paths()
-        .map_err(|e| anyhow::anyhow!(e))?;
+    let resolved = params.resolved_paths();
     let paths: Vec<PathBuf> = resolved.iter().map(PathBuf::from).collect();
 
     let files = if params.diff.unwrap_or(false) {

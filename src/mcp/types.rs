@@ -23,13 +23,17 @@ pub struct ScanParams {
 }
 
 impl ScanParams {
-    /// Resolve path/paths into a single Vec<String>, requiring at least one.
-    pub fn resolved_paths(&self) -> Result<Vec<String>, String> {
-        match (&self.path, &self.paths) {
-            (Some(p), _) => Ok(vec![p.clone()]),
-            (None, Some(ps)) if !ps.is_empty() => Ok(ps.clone()),
-            _ => Err("Either 'path' (string) or 'paths' (array of strings) must be provided".into()),
+    /// Resolve path/paths into a single Vec<String>. Defaults to "." if neither is provided.
+    pub fn resolved_paths(&self) -> Vec<String> {
+        if let Some(p) = &self.path {
+            return vec![p.clone()];
         }
+        if let Some(ps) = &self.paths {
+            if !ps.is_empty() {
+                return ps.clone();
+            }
+        }
+        vec![".".to_string()]
     }
 }
 
