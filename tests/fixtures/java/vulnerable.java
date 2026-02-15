@@ -17,7 +17,7 @@ class vulnerable {
     }
 
     // Hardcoded secret
-    private static final String API_KEY = "sk-1234567890abcdef1234567890abcdef";
+    public static final String API_KEY = "sk-1234567890abcdef1234567890abcdef";
 
     // Insecure random
     public int generateToken() {
@@ -29,6 +29,7 @@ class vulnerable {
     public void readFile(String filename) throws Exception {
         File file = new File("/uploads/" + filename);
         FileInputStream fis = new FileInputStream(file);
+        fis.read();
     }
 
     // XXE vulnerable
@@ -60,6 +61,7 @@ class vulnerable {
     // ECB mode
     public void encrypt(byte[] data) throws Exception {
         javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, (java.security.Key) null);
     }
 
     // Empty catch
