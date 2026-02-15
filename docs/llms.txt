@@ -17,8 +17,8 @@ mycop uses pattern matching and AST analysis via tree-sitter to find security is
 
 ## MCP Server (Agentic Tool Integration)
 - mycop includes a built-in MCP (Model Context Protocol) server, started via `mycop mcp`
-- Enables Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and other agentic tools to call mycop's scanning, fixing, and review capabilities directly
-- 6 tools: scan, list_rules, explain_finding, fix (dry_run by default), review, check_deps
+- Enables Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and other agentic tools to call mycop's scanning and review capabilities directly
+- 5 tools: scan, list_rules, explain_finding, review, check_deps (fix is CLI-only — agents apply fixes themselves using scan fix_hints)
 - 2 resources: mycop://rules/catalog (JSON), mycop://config/schema (YAML)
 - Communicates over STDIO using JSON-RPC 2.0
 

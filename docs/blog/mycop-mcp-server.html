@@ -462,11 +462,11 @@
   }
 }</pre>
 
-    <p>That is it. The next time your AI assistant starts, it will have access to all six mycop tools.</p>
+    <p>That is it. The next time your AI assistant starts, it will have access to all five mycop tools.</p>
 
-    <h2>The Six Tools</h2>
+    <h2>The Five Tools</h2>
 
-    <p>The MCP server exposes six tools that cover mycop's full capability set:</p>
+    <p>The MCP server exposes five tools that cover mycop's scanning and analysis capabilities:</p>
 
     <table>
       <thead>
@@ -475,12 +475,13 @@
       <tbody>
         <tr><td><code>scan</code></td><td>Scan files or directories for vulnerabilities. Returns findings with severity, CWE/OWASP mappings, and fix hints. Supports severity filtering and git diff mode.</td></tr>
         <tr><td><code>list_rules</code></td><td>Browse all 100 built-in security rules. Filter by language, severity, or search term.</td></tr>
-        <tr><td><code>explain_finding</code></td><td>Get an AI-powered explanation of a specific finding, including attack scenarios, impact analysis, and remediation guidance.</td></tr>
-        <tr><td><code>fix</code></td><td>Auto-fix vulnerabilities using AI. Defaults to <code>dry_run=true</code> so you see the diff before anything is written.</td></tr>
+        <tr><td><code>explain_finding</code></td><td>Get a detailed explanation of a specific finding, including attack scenarios, impact analysis, and remediation guidance.</td></tr>
         <tr><td><code>review</code></td><td>Deep AI security review that goes beyond pattern matching to find logic flaws, auth issues, and complex vulnerability patterns.</td></tr>
         <tr><td><code>check_deps</code></td><td>Check <code>requirements.txt</code> and <code>package.json</code> for hallucinated or suspicious packages.</td></tr>
       </tbody>
     </table>
+
+    <p><strong>Why no <code>fix</code> tool?</strong> In MCP mode, the agentic tool (Claude Code, Cursor, etc.) <em>is</em> the AI. Having a fix tool that calls another AI underneath is redundant and wasteful. Instead, the agent reads scan findings &mdash; each includes a <code>fix_hint</code> &mdash; and applies fixes directly using its own code editing capabilities. The CLI <code>mycop fix</code> command remains available for standalone use.</p>
 
     <p>There are also two MCP resources: <code>mycop://rules/catalog</code> gives the full JSON catalog of all 100 rules, and <code>mycop://config/schema</code> provides the default <code>.scanrc.yml</code> configuration template.</p>
 
@@ -494,11 +495,11 @@
 
     <p><strong>You:</strong> "Fix the critical ones."</p>
 
-    <p>Claude Code calls the <code>fix</code> tool with <code>{"file": "src/auth.py", "severity": "critical"}</code>. By default, <code>dry_run</code> is true, so it gets back a diff preview and the fixed file content. The agent shows you the diff and asks for confirmation before writing.</p>
+    <p>Claude Code reads the scan findings, sees the <code>fix_hint</code> for each vulnerability (e.g., "Use parameterized queries instead of string formatting"), and edits your code directly. No extra AI call needed &mdash; the agent already understands the code and the fix.</p>
 
     <p><strong>You:</strong> "Is the login handler in server.ts secure?"</p>
 
-    <p>Claude Code calls the <code>review</code> tool with <code>{"file": "src/server.ts"}</code>. mycop sends the file to its AI backend for a deep security review, returning findings about logic flaws, auth patterns, and architectural issues that rule-based scanning alone would miss.</p>
+    <p>Claude Code calls the <code>review</code> tool with <code>{"path": "src/server.ts"}</code>. mycop sends the file to its AI backend for a deep security review, returning findings about logic flaws, auth patterns, and architectural issues that rule-based scanning alone would miss.</p>
 
     <h2>Why MCP Instead of Just Calling the CLI?</h2>
 
@@ -506,7 +507,7 @@
 
     <ol>
       <li><strong>Structured data.</strong> The agent gets JSON with typed fields (severity as an enum, CWE IDs as strings, line numbers as integers), not colored terminal text it has to regex apart. This means fewer misinterpretations and more reliable follow-up actions.</li>
-      <li><strong>Safety by default.</strong> The <code>fix</code> tool defaults to <code>dry_run=true</code>, so agents cannot accidentally overwrite files without showing you the diff first. The tool schema enforces this at the protocol level.</li>
+      <li><strong>Agent-native fixing.</strong> Instead of calling a separate AI to generate fixes, the agent reads the <code>fix_hint</code> from each scan finding and applies fixes itself. This is faster, cheaper, and produces better results because the agent has full project context.</li>
       <li><strong>Discoverability.</strong> MCP clients can list available tools and their parameter schemas. Your AI assistant knows what mycop can do, what parameters each tool accepts, and what the response shape looks like &mdash; without reading docs.</li>
     </ol>
 

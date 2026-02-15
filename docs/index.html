@@ -120,7 +120,7 @@
         "name": "How do I use mycop with Claude Code, Cursor, or Windsurf for agentic security scanning?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "mycop includes a built-in MCP (Model Context Protocol) server. Run 'mycop mcp' to start it, then configure your agentic tool to connect. For Claude Code, add {\"mcpServers\":{\"mycop\":{\"command\":\"mycop\",\"args\":[\"mcp\"]}}} to ~/.claude/settings.json. The server exposes 6 tools (scan, list_rules, explain_finding, fix, review, check_deps) that agents can call directly. It works with Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible client."
+          "text": "mycop includes a built-in MCP (Model Context Protocol) server. Run 'mycop mcp' to start it, then configure your agentic tool to connect. For Claude Code, add {\"mcpServers\":{\"mycop\":{\"command\":\"mycop\",\"args\":[\"mcp\"]}}} to ~/.claude/settings.json. The server exposes 5 tools (scan, list_rules, explain_finding, review, check_deps) that agents can call directly. The agent uses scan findings with fix_hint to apply fixes itself. It works with Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible client."
         }
       },
       {
@@ -1297,7 +1297,7 @@ mycop --version</code></div>
     }
   }
 }
-<span class="comment">// 6 tools: scan, fix, review, &amp; more</span>
+<span class="comment">// 5 tools: scan, review, explain &amp; more</span>
           </div>
         </div>
         <div class="integration-card">

@@ -148,10 +148,11 @@ mycop mcp
 |------|-------------|
 | `scan` | Scan files/directories for vulnerabilities with severity filtering |
 | `list_rules` | Browse/filter the 100 built-in security rules |
-| `explain_finding` | AI-powered explanation of a specific finding |
-| `fix` | AI auto-fix with diff preview (dry_run=true by default) |
+| `explain_finding` | Detailed explanation of a specific finding with CWE/OWASP info |
 | `review` | Deep AI security review of a file |
 | `check_deps` | Detect hallucinated packages in dependencies |
+
+> **Note:** The CLI `mycop fix` command is still available for standalone use. In MCP mode, the agent reads scan findings (with `fix_hint`) and applies fixes directly — no redundant AI-to-AI call needed.
 
 **Resources:** `mycop://rules/catalog` (full JSON catalog) and `mycop://config/schema` (config template).
 
