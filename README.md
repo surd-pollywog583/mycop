@@ -8,6 +8,10 @@ AI Code Security Scanner — detect and auto-fix vulnerabilities in AI-generated
 
 mycop scans Python, JavaScript, and TypeScript codebases for security vulnerabilities using pattern matching, AST analysis, and optional AI-powered explanations and auto-fix. It ships with 100 built-in security rules covering OWASP Top 10 and CWE Top 25 categories.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="mycop demo — scanning Python code for security vulnerabilities" width="750">
+</p>
+
 ## Installation
 
 ### Install script (macOS / Linux)
