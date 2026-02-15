@@ -10,7 +10,7 @@ pattern:
   regex:
     - "BeanUtils\\.populate\\s*\\("
     - "BeanUtils\\.copyProperties\\s*\\(.*request"
-    - "@ModelAttribute(?!\\s*\\()"
+    - "@ModelAttribute\\b"
 message: "Possible mass assignment. Request parameters bound directly to model objects."
 fix_hint: "Use DTOs with explicit field mapping. Avoid binding request data directly to domain models."
 references:
