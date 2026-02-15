@@ -320,6 +320,13 @@ mycop includes a built-in [MCP](https://modelcontextprotocol.io/) server that ex
 
 Supported clients: Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible IDE or agent.
 
+**Available on:**
+
+- [Glama](https://glama.ai/mcp/servers) — Managed MCP registry
+- [Smithery](https://smithery.ai/) — MCP server hosting and discovery
+- [PulseMCP](https://pulsemcp.com/) — MCP server directory
+- [MCP Servers](https://mcpservers.org/) — Curated community list
+
 ### GitHub Action
 
 Add mycop to your CI pipeline with the official GitHub Action:
