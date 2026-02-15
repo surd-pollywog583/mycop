@@ -1,0 +1,17 @@
+id: GO-SEC-022
+name: jwt-none-alg
+severity: high
+language: go
+cwe: CWE-345
+owasp: "A07:2021"
+description: "Detect JWT none algorithm vulnerability"
+pattern:
+  type: regex
+  regex:
+    - "jwt\\.UnsafeAllowNoneSignatureType"
+    - "SigningMethodNone"
+    - "(?i)alg.*none"
+message: "JWT 'none' algorithm may be allowed. This disables signature verification."
+fix_hint: "Always verify JWT signatures. Never allow the 'none' algorithm in production."
+references:
+  - "https://cwe.mitre.org/data/definitions/345.html"

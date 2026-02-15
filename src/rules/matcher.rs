@@ -159,6 +159,8 @@ fn match_ast_query(
         Language::Python => tree_sitter_python::LANGUAGE,
         Language::JavaScript => tree_sitter_javascript::LANGUAGE,
         Language::TypeScript => tree_sitter_typescript::LANGUAGE_TYPESCRIPT,
+        Language::Go => tree_sitter_go::LANGUAGE,
+        Language::Java => tree_sitter_java::LANGUAGE,
     };
 
     let mut parser = tree_sitter::Parser::new();

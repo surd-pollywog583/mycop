@@ -1,0 +1,17 @@
+id: GO-SEC-048
+name: integer-overflow
+severity: medium
+language: go
+cwe: CWE-190
+owasp: "A06:2021"
+description: "Detect potential integer overflow from narrowing type conversions."
+pattern:
+  type: regex
+  regex:
+    - "int32\\s*\\(\\s*\\w+\\s*\\)"
+    - "int16\\s*\\(\\s*\\w+\\s*\\)"
+    - "int8\\s*\\(\\s*\\w+\\s*\\)"
+message: "Potential integer overflow from type conversion. Narrowing conversions may truncate values."
+fix_hint: "Check value bounds before narrowing integer conversions. Use math.MaxInt32 etc. for validation."
+references:
+  - "https://cwe.mitre.org/data/definitions/190.html"

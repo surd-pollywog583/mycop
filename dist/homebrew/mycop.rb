@@ -1,7 +1,7 @@
 class Mycop < Formula
   desc "AI-powered code security scanner"
   homepage "https://github.com/AbdumajidRashidov/mycop"
-  version "0.1.0"
+  version "0.4.0"
   license "MIT"
 
   on_macos do

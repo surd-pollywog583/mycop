@@ -1,0 +1,16 @@
+id: GO-SEC-004
+name: insecure-random
+severity: medium
+language: go
+cwe: CWE-330
+owasp: "A02:2021"
+description: "Detect use of math/rand instead of crypto/rand"
+pattern:
+  type: regex
+  regex:
+    - "\"math/rand\""
+    - "rand\\.(?:Int|Intn|Float|Read|New)\\s*\\("
+message: "Insecure random number generator used. math/rand is predictable."
+fix_hint: "Use crypto/rand for security-sensitive random number generation."
+references:
+  - "https://cwe.mitre.org/data/definitions/330.html"

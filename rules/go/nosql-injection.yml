@@ -1,0 +1,17 @@
+id: GO-SEC-040
+name: nosql-injection
+severity: high
+language: go
+cwe: CWE-943
+owasp: "A03:2021"
+description: "Detect NoSQL injection vulnerabilities in MongoDB and similar databases."
+pattern:
+  type: regex
+  regex:
+    - "bson\\.(?:M|D)\\s*\\{[^}]*\\+"
+    - "FindOne\\s*\\([^)]*bson"
+    - "mongo\\.\\w+\\([^)]*\\+"
+message: "Possible NoSQL injection. User input may be used in database queries without sanitization."
+fix_hint: "Validate and sanitize all user input used in NoSQL queries. Use typed query builders."
+references:
+  - "https://cwe.mitre.org/data/definitions/943.html"

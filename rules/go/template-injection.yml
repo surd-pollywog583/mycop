@@ -1,0 +1,16 @@
+id: GO-SEC-030
+name: template-injection
+severity: high
+language: go
+cwe: CWE-1336
+owasp: "A03:2021"
+description: "Detect template injection from user input included in template source."
+pattern:
+  type: regex
+  regex:
+    - "template\\.New\\s*\\([^)]*\\)\\.Parse\\s*\\([^)]*\\+"
+    - "template\\.Must\\s*\\(.*\\.Parse\\s*\\([^)]*\\+"
+message: "Possible template injection. User input may be included in template source."
+fix_hint: "Never construct templates from user input. Use template data binding instead."
+references:
+  - "https://cwe.mitre.org/data/definitions/1336.html"

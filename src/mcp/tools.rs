@@ -15,7 +15,7 @@ use super::MycopMcpServer;
 impl MycopMcpServer {
     #[tool(
         name = "scan",
-        description = "Scan files or directories for security vulnerabilities in Python, JavaScript, and TypeScript code. Returns findings with severity, CWE/OWASP mappings, and fix hints. Uses 100 built-in rules covering OWASP Top 10 and CWE Top 25."
+        description = "Scan files or directories for security vulnerabilities in Python, JavaScript, TypeScript, Go, and Java code. Returns findings with severity, CWE/OWASP mappings, and fix hints. Uses 200 built-in rules covering OWASP Top 10 and CWE Top 25."
     )]
     pub async fn scan(&self, params: Parameters<ScanParams>) -> Result<CallToolResult, McpError> {
         let params = params.0;
@@ -31,7 +31,7 @@ impl MycopMcpServer {
 
     #[tool(
         name = "list_rules",
-        description = "List available security rules. Filter by language (python, javascript), severity, or search term. Returns rule IDs, descriptions, CWE/OWASP mappings, and fix hints."
+        description = "List available security rules. Filter by language (python, javascript, go, java), severity, or search term. Returns rule IDs, descriptions, CWE/OWASP mappings, and fix hints."
     )]
     pub async fn list_rules(
         &self,

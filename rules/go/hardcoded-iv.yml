@@ -1,0 +1,17 @@
+id: GO-SEC-015
+name: hardcoded-iv
+severity: medium
+language: go
+cwe: CWE-329
+owasp: "A02:2021"
+description: "Detect hardcoded initialization vectors"
+pattern:
+  type: regex
+  regex:
+    - "(?i)iv\\s*[:=]\\s*\\[\\]byte\\s*\\{[^}]+\\}"
+    - "(?i)(?:nonce|iv)\\s*[:=]\\s*\\[\\]byte\\s*\\(\""
+    - "(?i)(?:nonce|iv)\\s*:=\\s*make\\(\\[\\]byte"
+message: "Possible hardcoded initialization vector detected."
+fix_hint: "Generate IVs/nonces randomly using crypto/rand for each encryption operation."
+references:
+  - "https://cwe.mitre.org/data/definitions/329.html"

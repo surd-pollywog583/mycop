@@ -1,0 +1,16 @@
+id: GO-SEC-036
+name: zip-slip
+severity: high
+language: go
+cwe: CWE-22
+owasp: "A01:2021"
+description: "Detect zip slip vulnerabilities where archive file paths may escape the target directory."
+pattern:
+  type: regex
+  regex:
+    - "zip\\.OpenReader\\s*\\("
+    - "filepath\\.Join\\s*\\([^)]*f\\.Name"
+message: "Possible zip slip vulnerability. Archive file paths may escape the target directory."
+fix_hint: "Validate that extracted file paths don't contain '..' components. Check the resolved path stays within the target directory."
+references:
+  - "https://cwe.mitre.org/data/definitions/22.html"

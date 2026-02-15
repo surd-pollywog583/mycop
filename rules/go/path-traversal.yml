@@ -1,0 +1,18 @@
+id: GO-SEC-005
+name: path-traversal
+severity: high
+language: go
+cwe: CWE-22
+owasp: "A01:2021"
+description: "Detect path traversal vulnerabilities"
+pattern:
+  type: regex
+  regex:
+    - "os\\.Open\\s*\\([^)]*\\+"
+    - "ioutil\\.ReadFile\\s*\\([^)]*\\+"
+    - "http\\.ServeFile\\s*\\([^)]*\\+"
+    - "os\\.ReadFile\\s*\\([^)]*\\+"
+message: "Possible path traversal vulnerability. User input may be used to access arbitrary files."
+fix_hint: "Use filepath.Clean() and validate that the resolved path stays within the expected directory."
+references:
+  - "https://cwe.mitre.org/data/definitions/22.html"

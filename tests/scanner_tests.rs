@@ -119,9 +119,57 @@ fn test_rule_loading() {
     let registry = mycop::rules::RuleRegistry::load(&rules_dir()).unwrap();
 
     assert!(
-        registry.rule_count() >= 100,
-        "Expected at least 100 rules, got {}",
+        registry.rule_count() >= 200,
+        "Expected at least 200 rules, got {}",
         registry.rule_count()
+    );
+}
+
+#[test]
+fn test_go_vulnerable_file_has_findings() {
+    let registry = mycop::rules::RuleRegistry::load(&rules_dir()).unwrap();
+    let scanner = mycop::scanner::Scanner::new(registry);
+
+    let files = vec![fixtures_dir().join("go").join("vulnerable.go")];
+    let findings = scanner.scan_files(&files).unwrap();
+
+    assert!(
+        !findings.is_empty(),
+        "Expected findings in vulnerable.go but found none"
+    );
+
+    // Should detect SQL injection
+    let sql_findings: Vec<_> = findings
+        .iter()
+        .filter(|f| f.rule_id.contains("SEC-001") || f.rule_name.contains("sql"))
+        .collect();
+    assert!(
+        !sql_findings.is_empty(),
+        "Expected SQL injection findings in Go"
+    );
+}
+
+#[test]
+fn test_java_vulnerable_file_has_findings() {
+    let registry = mycop::rules::RuleRegistry::load(&rules_dir()).unwrap();
+    let scanner = mycop::scanner::Scanner::new(registry);
+
+    let files = vec![fixtures_dir().join("java").join("vulnerable.java")];
+    let findings = scanner.scan_files(&files).unwrap();
+
+    assert!(
+        !findings.is_empty(),
+        "Expected findings in vulnerable.java but found none"
+    );
+
+    // Should detect SQL injection
+    let sql_findings: Vec<_> = findings
+        .iter()
+        .filter(|f| f.rule_id.contains("SEC-001") || f.rule_name.contains("sql"))
+        .collect();
+    assert!(
+        !sql_findings.is_empty(),
+        "Expected SQL injection findings in Java"
     );
 }
 
@@ -131,8 +179,8 @@ fn test_file_discovery() {
     let files = mycop::scanner::file_discovery::discover_files(&[fixtures], &[]).unwrap();
 
     assert!(
-        files.len() >= 4,
-        "Expected at least 4 fixture files, got {}",
+        files.len() >= 6,
+        "Expected at least 6 fixture files, got {}",
         files.len()
     );
 
@@ -173,6 +221,14 @@ fn test_language_detection() {
     assert_eq!(
         Language::from_extension(Path::new("test.tsx")),
         Some(Language::TypeScript)
+    );
+    assert_eq!(
+        Language::from_extension(Path::new("test.go")),
+        Some(Language::Go)
+    );
+    assert_eq!(
+        Language::from_extension(Path::new("test.java")),
+        Some(Language::Java)
     );
     assert_eq!(Language::from_extension(Path::new("test.rs")), None);
     assert_eq!(Language::from_extension(Path::new("test.txt")), None);

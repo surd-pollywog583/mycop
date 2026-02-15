@@ -1,0 +1,17 @@
+id: GO-SEC-025
+name: error-info-leak
+severity: medium
+language: go
+cwe: CWE-209
+owasp: "A09:2021"
+description: "Detect error information leakage to users"
+pattern:
+  type: regex
+  regex:
+    - "fmt\\.Fprintf\\s*\\(\\s*w\\s*,.*err"
+    - "http\\.Error\\s*\\([^)]*err\\.Error\\(\\)"
+    - "json\\..*err\\.Error\\(\\)"
+message: "Internal error details may be exposed to users."
+fix_hint: "Return generic error messages to users. Log detailed errors server-side only."
+references:
+  - "https://cwe.mitre.org/data/definitions/209.html"

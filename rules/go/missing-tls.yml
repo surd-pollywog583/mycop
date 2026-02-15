@@ -1,0 +1,17 @@
+id: GO-SEC-037
+name: missing-tls
+severity: medium
+language: go
+cwe: CWE-319
+owasp: "A02:2021"
+description: "Detect HTTP servers or connections without TLS encryption."
+pattern:
+  type: regex
+  regex:
+    - "http\\.ListenAndServe\\s*\\("
+    - "\"http://[^\"]*(?:localhost|127\\.0\\.0\\.1)\""
+    - "net\\.Listen\\s*\\(\\s*\"tcp\""
+message: "Unencrypted HTTP server or connection detected."
+fix_hint: "Use http.ListenAndServeTLS() or configure TLS for all production servers."
+references:
+  - "https://cwe.mitre.org/data/definitions/319.html"

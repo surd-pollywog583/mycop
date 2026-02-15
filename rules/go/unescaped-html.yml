@@ -1,0 +1,17 @@
+id: GO-SEC-050
+name: unescaped-html
+severity: high
+language: go
+cwe: CWE-79
+owasp: "A03:2021"
+description: "Detect unescaped HTML written directly to HTTP response, which may lead to XSS."
+pattern:
+  type: regex
+  regex:
+    - "fmt\\.Fprintf\\s*\\(\\s*w\\s*,\\s*\"<"
+    - "w\\.Write\\s*\\(\\s*\\[\\]byte\\s*\\(\\s*\"<"
+    - "io\\.WriteString\\s*\\(\\s*w\\s*,\\s*\"<"
+message: "Unescaped HTML written directly to response. This may lead to XSS."
+fix_hint: "Use html/template for HTML output. Use html.EscapeString() for manual escaping."
+references:
+  - "https://cwe.mitre.org/data/definitions/79.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-027
+name: template-injection
+severity: high
+language: java
+cwe: CWE-1336
+owasp: "A03:2021"
+description: "Detects server-side template injection through dynamic template construction."
+pattern:
+  type: regex
+  regex:
+    - "(?:Velocity|Freemarker|Thymeleaf).*\\+"
+    - "Template.*merge\\s*\\("
+    - "templateEngine\\.process\\s*\\([^)]*\\+"
+message: "Possible server-side template injection."
+fix_hint: "Never construct templates from user input. Use template data binding."
+references:
+  - "https://cwe.mitre.org/data/definitions/1336.html"

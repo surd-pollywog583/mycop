@@ -543,7 +543,7 @@ def load_data(data):
 
     <h2>Catching These Automatically</h2>
 
-    <p>After seeing these patterns enough times, I built <a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> &mdash; an open-source security scanner specifically designed for the kinds of vulnerabilities AI assistants introduce. It ships 100 rules covering OWASP Top 10 and CWE Top 25, targeting Python and JavaScript/TypeScript.</p>
+    <p>After seeing these patterns enough times, I built <a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> &mdash; an open-source security scanner specifically designed for the kinds of vulnerabilities AI assistants introduce. It ships 200 rules covering OWASP Top 10 and CWE Top 25, targeting Python, JavaScript/TypeScript, Go, and Java.</p>
 
     <p>Here is what it looks like when you run it on a file with the vulnerabilities above:</p>
 
@@ -629,7 +629,7 @@ docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan .<
 
     <p><strong>Dual matching with regex and tree-sitter AST.</strong> Each rule can define regex patterns for broad detection and tree-sitter AST queries for structural matching. The matcher runs both, deduplicates by line number, and returns the union. Regex catches the obvious patterns fast; AST queries understand code structure.</p>
 
-    <p><strong>Rules are YAML, compiled into the binary.</strong> All 100 rules live as <code>.yml</code> files in the repo, but they are embedded at compile time via Rust's <code>include_str!</code> macro. This means the binary is self-contained &mdash; no external rule files to ship or keep in sync.</p>
+    <p><strong>Rules are YAML, compiled into the binary.</strong> All 200 rules live as <code>.yml</code> files in the repo, but they are embedded at compile time via Rust's <code>include_str!</code> macro. This means the binary is self-contained &mdash; no external rule files to ship or keep in sync.</p>
 
     <p><strong>AI fix prompts are structured.</strong> When <code>mycop fix</code> runs, it groups all findings per file and sends a single prompt with the full file content and a numbered list of vulnerabilities with fix hints. The AI returns the fixed file wrapped in <code>&lt;FIXED_FILE&gt;</code> tags for reliable extraction.</p>
 
@@ -643,14 +643,14 @@ docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan .<
       <li><strong>No taint tracking.</strong> mycop does not trace data flow from source to sink. If user input passes through three function calls before reaching <code>eval()</code>, the regex-based rules will not catch it.</li>
       <li><strong>No interprocedural analysis.</strong> Each file is scanned independently. If a dangerous pattern is split across modules, it will be missed.</li>
       <li><strong>False positives.</strong> Pattern matching is inherently noisy. The inline ignore comment <code># mycop-ignore:PY-SEC-005</code> exists for a reason.</li>
-      <li><strong>Python and JavaScript only.</strong> Go, Rust, Java, and other languages are not covered yet.</li>
+      <li><strong>Python, JavaScript, Go, and Java only.</strong> Rust, C#, and other languages are not covered yet.</li>
     </ul>
 
     <p>These are real tradeoffs. mycop is designed to be a fast, zero-config first line of defense &mdash; the kind of thing you drop into CI in two minutes and immediately start catching the low-hanging fruit that AI assistants introduce.</p>
 
     <h2>What Is Next</h2>
 
-    <p>The roadmap includes tree-sitter AST queries for more rules (reducing false positives), Go and Java support, and better taint analysis for single-file data flows. Contributions are welcome &mdash; especially new rules. Adding a rule is as simple as writing a YAML file.</p>
+    <p>The roadmap includes tree-sitter AST queries for more rules (reducing false positives) and better taint analysis for single-file data flows. Contributions are welcome &mdash; especially new rules. Adding a rule is as simple as writing a YAML file.</p>
 
     <div class="cta-box">
       <h3>Try mycop on your codebase</h3>

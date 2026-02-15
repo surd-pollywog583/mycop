@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Top 10 Security Vulnerabilities GitHub Copilot Keeps Writing &mdash; mycop Blog</title>
   <meta name="description"
-    content="The 10 most common security vulnerabilities GitHub Copilot introduces in Python and JavaScript code. For each: what the flaw is, vulnerable code examples, how mycop detects it, and how to fix it. With CWE references.">
+    content="The 10 most common security vulnerabilities GitHub Copilot introduces in Python, JavaScript, Go, and Java code. For each: what the flaw is, vulnerable code examples, how mycop detects it, and how to fix it. With CWE references.">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="icon" type="image/png" href="../favicon.png">
   <link rel="canonical" href="https://abdumajidrashidov.github.io/mycop/blog/top-10-copilot-vulnerabilities.html">
@@ -42,7 +42,7 @@
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": "Top 10 Security Vulnerabilities GitHub Copilot Keeps Writing",
-    "description": "The 10 most common security vulnerabilities GitHub Copilot introduces in Python and JavaScript code. For each: what the flaw is, vulnerable code examples, how mycop detects it, and how to fix it.",
+    "description": "The 10 most common security vulnerabilities GitHub Copilot introduces in Python, JavaScript, Go, and Java code. For each: what the flaw is, vulnerable code examples, how mycop detects it, and how to fix it.",
     "author": {
       "@type": "Person",
       "name": "Abdumajid Rashidov",
@@ -701,7 +701,7 @@ def run_user_code(code_string):
 
     <div class="detection-box">
       <p><strong>mycop detection:</strong> <span class="rule-id">PY-SEC-005</span> / <span class="rule-id">JS-SEC-002</span> / <span class="rule-id">JS-SEC-049</span> <span class="sev-critical">CRITICAL</span></p>
-      <p>mycop flags all usage of <code>eval()</code> and <code>exec()</code> in both Python and JavaScript, with context-aware detection for user-controlled input.</p>
+      <p>mycop flags all usage of <code>eval()</code> and <code>exec()</code> in Python, JavaScript, Go, and Java, with context-aware detection for user-controlled input.</p>
     </div>
 
     <span class="pre-label">Secure alternative</span>
@@ -802,7 +802,7 @@ const cipher = crypto.createCipheriv('des-ecb', key, null);</pre>
 
     <div class="detection-box">
       <p><strong>mycop detection:</strong> <span class="rule-id">PY-SEC-017</span>&ndash;<span class="rule-id">PY-SEC-021</span> / <span class="rule-id">JS-SEC-017</span>&ndash;<span class="rule-id">JS-SEC-022</span> <span class="sev-high">HIGH</span></p>
-      <p>mycop detects MD5, SHA1, DES, RC4, ECB mode, and other weak cryptographic constructs across both Python and JavaScript.</p>
+      <p>mycop detects MD5, SHA1, DES, RC4, ECB mode, and other weak cryptographic constructs across Python, JavaScript, Go, and Java.</p>
     </div>
 
     <span class="pre-label">Secure alternative (Python)</span>
@@ -945,7 +945,7 @@ def generate_reset_token():
 
     <h2>Catch All 10 Automatically with mycop</h2>
 
-    <p><a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> is an open-source security scanner built specifically for the vulnerabilities that AI coding assistants introduce. It ships with 100 built-in rules covering OWASP Top 10 and CWE Top 25, supports Python, JavaScript, and TypeScript, and requires zero configuration.</p>
+    <p><a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> is an open-source security scanner built specifically for the vulnerabilities that AI coding assistants introduce. It ships with 200 built-in rules covering OWASP Top 10 and CWE Top 25, supports Python, JavaScript, TypeScript, Go, and Java, and requires zero configuration.</p>
 
 <pre># Install
 curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh

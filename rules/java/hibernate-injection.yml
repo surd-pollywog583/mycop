@@ -1,0 +1,17 @@
+id: JAVA-SEC-041
+name: hibernate-injection
+severity: critical
+language: java
+cwe: CWE-89
+owasp: "A03:2021"
+description: "Detects HQL/SQL injection in Hibernate queries through string concatenation."
+pattern:
+  type: regex
+  regex:
+    - "createQuery\\s*\\(\\s*\"[^\"]*\\+"
+    - "createSQLQuery\\s*\\(\\s*\"[^\"]*\\+"
+    - "createNativeQuery\\s*\\(\\s*\"[^\"]*\\+"
+message: "Possible HQL/SQL injection in Hibernate query."
+fix_hint: "Use parameterized HQL queries with setParameter(). Use Criteria API or named queries."
+references:
+  - "https://cwe.mitre.org/data/definitions/89.html"

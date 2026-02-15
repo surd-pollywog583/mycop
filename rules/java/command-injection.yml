@@ -1,0 +1,17 @@
+id: JAVA-SEC-002
+name: command-injection
+severity: critical
+language: java
+cwe: CWE-78
+owasp: "A03:2021"
+description: "Detects OS command injection vulnerabilities via Runtime.exec() or ProcessBuilder with user-controlled input."
+pattern:
+  type: regex
+  regex:
+    - "Runtime\\.getRuntime\\(\\)\\.exec\\s*\\("
+    - "ProcessBuilder\\s*\\(\\s*(?:\"(?:sh|bash|cmd)\"|.*\\+)"
+    - "new\\s+ProcessBuilder\\s*\\("
+message: "Possible OS command injection via Runtime.exec or ProcessBuilder."
+fix_hint: "Avoid Runtime.exec(). Use ProcessBuilder with explicit argument lists. Never pass user input to shell commands."
+references:
+  - "https://cwe.mitre.org/data/definitions/78.html"

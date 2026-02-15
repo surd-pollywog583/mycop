@@ -1,0 +1,16 @@
+id: JAVA-SEC-033
+name: insecure-temp-file
+severity: medium
+language: java
+cwe: CWE-377
+owasp: "A01:2021"
+description: "Detects insecure temporary file creation with predictable names or wrong permissions."
+pattern:
+  type: regex
+  regex:
+    - "File\\.createTempFile\\s*\\("
+    - "new\\s+File\\s*\\([^)]*(?:tmp|temp|\\/tmp)"
+message: "Insecure temporary file creation. Temp files may be predictable or have wrong permissions."
+fix_hint: "Use Files.createTempFile() with restrictive permissions. Delete temp files after use."
+references:
+  - "https://cwe.mitre.org/data/definitions/377.html"

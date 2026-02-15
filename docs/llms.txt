@@ -1,6 +1,6 @@
 # mycop
 
-> mycop is an open-source AI code security scanner (SAST) built in Rust. It detects and auto-fixes vulnerabilities in AI-generated Python, JavaScript, and TypeScript code using 100 built-in security rules covering OWASP Top 10 and CWE Top 25 categories.
+> mycop is an open-source AI code security scanner (SAST) built in Rust. It detects and auto-fixes vulnerabilities in AI-generated Python, JavaScript, TypeScript, Go, and Java code using 200 built-in security rules covering OWASP Top 10 and CWE Top 25 categories.
 
 mycop uses pattern matching and AST analysis via tree-sitter to find security issues like SQL injection, XSS, command injection, hardcoded secrets, insecure cryptography, and more. It supports AI-powered auto-fix with Claude, GPT-4, Ollama, and other providers. Output formats include colored terminal, JSON, and SARIF for CI/IDE integration. It integrates with GitHub Actions, pre-commit hooks, and VS Code. No AI API key is required for scanning — AI is optional and used only for auto-fix and explanation features.
 

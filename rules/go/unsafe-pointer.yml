@@ -1,0 +1,17 @@
+id: GO-SEC-018
+name: unsafe-pointer
+severity: high
+language: go
+cwe: CWE-119
+owasp: "A06:2021"
+description: "Detect use of unsafe.Pointer"
+pattern:
+  type: regex
+  regex:
+    - "unsafe\\.Pointer\\s*\\("
+    - "\"unsafe\""
+    - "uintptr\\s*\\("
+message: "Use of unsafe.Pointer detected. This bypasses Go's type safety and memory safety guarantees."
+fix_hint: "Avoid unsafe.Pointer unless absolutely necessary. Use safe alternatives provided by the standard library."
+references:
+  - "https://cwe.mitre.org/data/definitions/119.html"

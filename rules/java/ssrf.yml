@@ -1,0 +1,18 @@
+id: JAVA-SEC-009
+name: ssrf
+severity: high
+language: java
+cwe: CWE-918
+owasp: "A10:2021"
+description: "Detects server-side request forgery (SSRF) vulnerabilities where URLs are constructed from user-controlled input."
+pattern:
+  type: regex
+  regex:
+    - "new\\s+URL\\s*\\([^)]*\\+"
+    - "HttpURLConnection.*openConnection"
+    - "new\\s+HttpGet\\s*\\([^)]*\\+"
+    - "RestTemplate\\s*\\(\\)\\.(?:get|post|exchange)\\s*\\([^)]*\\+"
+message: "Possible SSRF vulnerability. URL constructed from user input."
+fix_hint: "Validate URLs against an allowlist. Block requests to internal/private IP ranges."
+references:
+  - "https://cwe.mitre.org/data/definitions/918.html"

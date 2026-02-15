@@ -1,0 +1,18 @@
+id: JAVA-SEC-044
+name: trust-all-certs
+severity: high
+language: java
+cwe: CWE-295
+owasp: "A07:2021"
+description: "Detects disabled TLS certificate validation that trusts all certificates."
+pattern:
+  type: regex
+  regex:
+    - "TrustManager.*X509TrustManager"
+    - "checkServerTrusted.*return"
+    - "ALLOW_ALL_HOSTNAME_VERIFIER"
+    - "HostnameVerifier.*return\\s+true"
+message: "TLS certificate validation disabled. Trusts all certificates."
+fix_hint: "Use the default TrustManager. Do not override certificate or hostname verification."
+references:
+  - "https://cwe.mitre.org/data/definitions/295.html"

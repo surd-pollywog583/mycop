@@ -1,0 +1,17 @@
+id: JAVA-SEC-032
+name: zip-slip
+severity: high
+language: java
+cwe: CWE-22
+owasp: "A01:2021"
+description: "Detects zip slip vulnerability through archive extraction without path validation."
+pattern:
+  type: regex
+  regex:
+    - "ZipInputStream\\s*\\("
+    - "new\\s+ZipFile\\s*\\("
+    - "zipEntry\\.getName\\s*\\("
+message: "Possible zip slip vulnerability. Archive extraction without path validation."
+fix_hint: "Validate extracted file paths don't escape the target directory. Check for '..' in entry names."
+references:
+  - "https://cwe.mitre.org/data/definitions/22.html"

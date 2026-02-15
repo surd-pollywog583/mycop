@@ -1,0 +1,17 @@
+id: JAVA-SEC-026
+name: eval-expression
+severity: critical
+language: java
+cwe: CWE-95
+owasp: "A03:2021"
+description: "Detects expression language injection through script engine evaluation with dynamic input."
+pattern:
+  type: regex
+  regex:
+    - "ScriptEngine.*eval\\s*\\("
+    - "\\.eval\\s*\\([^)]*\\+"
+    - "new\\s+ScriptEngineManager"
+message: "Expression/script evaluation detected. User input in eval() can lead to code execution."
+fix_hint: "Avoid evaluating dynamic expressions from user input. Use a sandboxed expression evaluator."
+references:
+  - "https://cwe.mitre.org/data/definitions/95.html"

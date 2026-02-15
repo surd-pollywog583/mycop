@@ -384,6 +384,183 @@ static EMBEDDED_RULES: &[(&str, &str)] = &[
         "javascript",
         include_str!("../../rules/javascript/postmessage-no-origin.yml"),
     ),
+    // Go rules
+    ("go", include_str!("../../rules/go/sql-injection.yml")),
+    ("go", include_str!("../../rules/go/command-injection.yml")),
+    ("go", include_str!("../../rules/go/hardcoded-secrets.yml")),
+    ("go", include_str!("../../rules/go/insecure-random.yml")),
+    ("go", include_str!("../../rules/go/path-traversal.yml")),
+    ("go", include_str!("../../rules/go/ssrf.yml")),
+    ("go", include_str!("../../rules/go/xss-template.yml")),
+    ("go", include_str!("../../rules/go/unsafe-reflect.yml")),
+    (
+        "go",
+        include_str!("../../rules/go/hardcoded-credentials.yml"),
+    ),
+    ("go", include_str!("../../rules/go/tls-insecure-skip.yml")),
+    ("go", include_str!("../../rules/go/weak-hash-md5.yml")),
+    ("go", include_str!("../../rules/go/weak-hash-sha1.yml")),
+    ("go", include_str!("../../rules/go/weak-cipher.yml")),
+    ("go", include_str!("../../rules/go/ecb-mode.yml")),
+    ("go", include_str!("../../rules/go/hardcoded-iv.yml")),
+    ("go", include_str!("../../rules/go/unhandled-error.yml")),
+    ("go", include_str!("../../rules/go/defer-in-loop.yml")),
+    ("go", include_str!("../../rules/go/unsafe-pointer.yml")),
+    ("go", include_str!("../../rules/go/cgo-injection.yml")),
+    ("go", include_str!("../../rules/go/open-redirect.yml")),
+    ("go", include_str!("../../rules/go/cors-wildcard.yml")),
+    ("go", include_str!("../../rules/go/jwt-none-alg.yml")),
+    ("go", include_str!("../../rules/go/missing-csrf.yml")),
+    ("go", include_str!("../../rules/go/debug-mode.yml")),
+    ("go", include_str!("../../rules/go/error-info-leak.yml")),
+    ("go", include_str!("../../rules/go/sensitive-logging.yml")),
+    ("go", include_str!("../../rules/go/file-permissions.yml")),
+    ("go", include_str!("../../rules/go/race-condition.yml")),
+    ("go", include_str!("../../rules/go/goroutine-leak.yml")),
+    ("go", include_str!("../../rules/go/template-injection.yml")),
+    ("go", include_str!("../../rules/go/xxe-parsing.yml")),
+    (
+        "go",
+        include_str!("../../rules/go/insecure-deserialization.yml"),
+    ),
+    (
+        "go",
+        include_str!("../../rules/go/yaml-unmarshal-unsafe.yml"),
+    ),
+    (
+        "go",
+        include_str!("../../rules/go/hardcoded-connection-string.yml"),
+    ),
+    (
+        "go",
+        include_str!("../../rules/go/unvalidated-redirect.yml"),
+    ),
+    ("go", include_str!("../../rules/go/zip-slip.yml")),
+    ("go", include_str!("../../rules/go/missing-tls.yml")),
+    (
+        "go",
+        include_str!("../../rules/go/http-serve-no-timeout.yml"),
+    ),
+    ("go", include_str!("../../rules/go/sql-string-concat.yml")),
+    ("go", include_str!("../../rules/go/nosql-injection.yml")),
+    ("go", include_str!("../../rules/go/ldap-injection.yml")),
+    ("go", include_str!("../../rules/go/regex-dos.yml")),
+    ("go", include_str!("../../rules/go/mass-assignment.yml")),
+    ("go", include_str!("../../rules/go/timing-attack.yml")),
+    (
+        "go",
+        include_str!("../../rules/go/gin-no-trusted-proxies.yml"),
+    ),
+    ("go", include_str!("../../rules/go/grpc-no-tls.yml")),
+    ("go", include_str!("../../rules/go/filepath-clean.yml")),
+    ("go", include_str!("../../rules/go/integer-overflow.yml")),
+    ("go", include_str!("../../rules/go/dns-rebinding.yml")),
+    ("go", include_str!("../../rules/go/unescaped-html.yml")),
+    // Java rules
+    ("java", include_str!("../../rules/java/sql-injection.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/command-injection.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/hardcoded-secrets.yml"),
+    ),
+    ("java", include_str!("../../rules/java/insecure-random.yml")),
+    ("java", include_str!("../../rules/java/path-traversal.yml")),
+    ("java", include_str!("../../rules/java/xxe-parsing.yml")),
+    ("java", include_str!("../../rules/java/xss-servlet.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/insecure-deserialization.yml"),
+    ),
+    ("java", include_str!("../../rules/java/ssrf.yml")),
+    ("java", include_str!("../../rules/java/ldap-injection.yml")),
+    ("java", include_str!("../../rules/java/weak-hash-md5.yml")),
+    ("java", include_str!("../../rules/java/weak-hash-sha1.yml")),
+    ("java", include_str!("../../rules/java/weak-cipher-des.yml")),
+    ("java", include_str!("../../rules/java/ecb-mode.yml")),
+    ("java", include_str!("../../rules/java/hardcoded-iv.yml")),
+    ("java", include_str!("../../rules/java/insecure-tls.yml")),
+    ("java", include_str!("../../rules/java/jwt-none-alg.yml")),
+    ("java", include_str!("../../rules/java/open-redirect.yml")),
+    ("java", include_str!("../../rules/java/cors-wildcard.yml")),
+    ("java", include_str!("../../rules/java/csrf-disabled.yml")),
+    ("java", include_str!("../../rules/java/debug-mode.yml")),
+    ("java", include_str!("../../rules/java/error-info-leak.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/sensitive-logging.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/hardcoded-credentials.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/hardcoded-connection-string.yml"),
+    ),
+    ("java", include_str!("../../rules/java/eval-expression.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/template-injection.yml"),
+    ),
+    ("java", include_str!("../../rules/java/xpath-injection.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/header-injection.yml"),
+    ),
+    ("java", include_str!("../../rules/java/mass-assignment.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/file-upload-unrestricted.yml"),
+    ),
+    ("java", include_str!("../../rules/java/zip-slip.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/insecure-temp-file.yml"),
+    ),
+    ("java", include_str!("../../rules/java/regex-dos.yml")),
+    ("java", include_str!("../../rules/java/timing-attack.yml")),
+    ("java", include_str!("../../rules/java/empty-catch.yml")),
+    ("java", include_str!("../../rules/java/nosql-injection.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/spring-actuator-exposed.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/spring-sql-injection.yml"),
+    ),
+    ("java", include_str!("../../rules/java/spring-xss.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/hibernate-injection.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/unsafe-reflection.yml"),
+    ),
+    ("java", include_str!("../../rules/java/runtime-exec.yml")),
+    ("java", include_str!("../../rules/java/trust-all-certs.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/weak-password-hash.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/session-fixation.yml"),
+    ),
+    (
+        "java",
+        include_str!("../../rules/java/unencrypted-socket.yml"),
+    ),
+    ("java", include_str!("../../rules/java/log-injection.yml")),
+    ("java", include_str!("../../rules/java/idor.yml")),
+    (
+        "java",
+        include_str!("../../rules/java/spring-security-disabled.yml"),
+    ),
 ];
 
 pub struct RuleRegistry {
@@ -532,8 +709,8 @@ mod tests {
     fn test_load_embedded_rules() {
         let registry = RuleRegistry::load_embedded().unwrap();
         assert!(
-            registry.rule_count() >= 100,
-            "Expected at least 100 embedded rules, got {}",
+            registry.rule_count() >= 200,
+            "Expected at least 200 embedded rules, got {}",
             registry.rule_count()
         );
     }
@@ -566,6 +743,28 @@ mod tests {
         let ts_rules = registry.rules_for_language(&Language::TypeScript);
         let js_rules = registry.rules_for_language(&Language::JavaScript);
         assert_eq!(ts_rules.len(), js_rules.len());
+    }
+
+    #[test]
+    fn test_rules_for_language_go() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let go_rules = registry.rules_for_language(&Language::Go);
+        assert!(
+            go_rules.len() >= 50,
+            "Expected at least 50 Go rules, got {}",
+            go_rules.len()
+        );
+    }
+
+    #[test]
+    fn test_rules_for_language_java() {
+        let registry = RuleRegistry::load_embedded().unwrap();
+        let java_rules = registry.rules_for_language(&Language::Java);
+        assert!(
+            java_rules.len() >= 50,
+            "Expected at least 50 Java rules, got {}",
+            java_rules.len()
+        );
     }
 
     #[test]

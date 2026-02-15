@@ -1,0 +1,16 @@
+id: GO-SEC-029
+name: goroutine-leak
+severity: medium
+language: go
+cwe: CWE-404
+owasp: "A09:2021"
+description: "Detect potential goroutine leaks from goroutines without proper termination signals."
+pattern:
+  type: regex
+  regex:
+    - "go\\s+func\\s*\\(\\s*\\)\\s*\\{"
+    - "time\\.Sleep\\s*\\(\\s*time\\.Duration"
+message: "Potential goroutine leak. Goroutines without proper termination signals may leak."
+fix_hint: "Use context.Context for cancellation. Ensure goroutines have a way to exit (done channels, context)."
+references:
+  - "https://cwe.mitre.org/data/definitions/404.html"

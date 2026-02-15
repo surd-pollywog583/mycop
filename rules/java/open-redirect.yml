@@ -1,0 +1,17 @@
+id: JAVA-SEC-018
+name: open-redirect
+severity: medium
+language: java
+cwe: CWE-601
+owasp: "A01:2021"
+description: "Detects open redirect vulnerabilities where user input controls the redirect destination."
+pattern:
+  type: regex
+  regex:
+    - "response\\.sendRedirect\\s*\\(\\s*request\\.getParameter"
+    - "sendRedirect\\s*\\([^)]*\\+"
+    - "response\\.setHeader\\s*\\(\\s*\"Location\".*getParameter"
+message: "Possible open redirect. User input controls redirect destination."
+fix_hint: "Validate redirect URLs against an allowlist of trusted destinations."
+references:
+  - "https://cwe.mitre.org/data/definitions/601.html"

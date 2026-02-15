@@ -1,0 +1,17 @@
+id: JAVA-SEC-001
+name: sql-injection
+severity: critical
+language: java
+cwe: CWE-89
+owasp: "A03:2021"
+description: "Detects SQL injection vulnerabilities caused by string concatenation in SQL queries instead of using parameterized statements."
+pattern:
+  type: regex
+  regex:
+    - "Statement\\s*\\w*\\s*=.*createStatement"
+    - "\\.execute(?:Query|Update)\\s*\\(\\s*\"[^\"]*\\+"
+    - "\"(?:SELECT|INSERT|UPDATE|DELETE)\\s[^\"]*\"\\s*\\+"
+message: "Possible SQL injection. SQL query built with string concatenation."
+fix_hint: "Use PreparedStatement with parameterized queries instead of string concatenation."
+references:
+  - "https://cwe.mitre.org/data/definitions/89.html"

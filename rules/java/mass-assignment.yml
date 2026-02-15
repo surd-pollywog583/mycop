@@ -1,0 +1,17 @@
+id: JAVA-SEC-030
+name: mass-assignment
+severity: medium
+language: java
+cwe: CWE-915
+owasp: "A04:2021"
+description: "Detects mass assignment vulnerabilities where request parameters are bound directly to model objects."
+pattern:
+  type: regex
+  regex:
+    - "BeanUtils\\.populate\\s*\\("
+    - "BeanUtils\\.copyProperties\\s*\\(.*request"
+    - "@ModelAttribute(?!\\s*\\()"
+message: "Possible mass assignment. Request parameters bound directly to model objects."
+fix_hint: "Use DTOs with explicit field mapping. Avoid binding request data directly to domain models."
+references:
+  - "https://cwe.mitre.org/data/definitions/915.html"

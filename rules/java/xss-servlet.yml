@@ -1,0 +1,17 @@
+id: JAVA-SEC-007
+name: xss-servlet
+severity: high
+language: java
+cwe: CWE-79
+owasp: "A03:2021"
+description: "Detects cross-site scripting (XSS) vulnerabilities in servlet responses where user input is written directly to the response."
+pattern:
+  type: regex
+  regex:
+    - "getWriter\\(\\)\\.(?:print|println|write)\\s*\\([^)]*getParameter"
+    - "response\\.getWriter\\(\\)\\.print\\s*\\("
+    - "out\\.println\\s*\\([^)]*request\\.getParameter"
+message: "Possible XSS in servlet response. User input written directly to response."
+fix_hint: "HTML-encode all user input before writing to response. Use OWASP Java Encoder."
+references:
+  - "https://cwe.mitre.org/data/definitions/79.html"

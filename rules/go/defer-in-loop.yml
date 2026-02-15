@@ -1,0 +1,15 @@
+id: GO-SEC-017
+name: defer-in-loop
+severity: low
+language: go
+cwe: CWE-404
+owasp: "A09:2021"
+description: "Detect defer statements inside loops (resource leak risk)"
+pattern:
+  type: regex
+  regex:
+    - "defer\\s+\\w+\\.(?:Close|Unlock|Release)\\s*\\(\\)"
+message: "defer statement may be inside a loop. Deferred calls won't execute until the function returns."
+fix_hint: "Move the defer to a separate function or manually close resources within the loop."
+references:
+  - "https://cwe.mitre.org/data/definitions/404.html"

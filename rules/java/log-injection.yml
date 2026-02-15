@@ -1,0 +1,16 @@
+id: JAVA-SEC-048
+name: log-injection
+severity: medium
+language: java
+cwe: CWE-117
+owasp: "A09:2021"
+description: "Detects log injection through unsanitized user input in log statements."
+pattern:
+  type: regex
+  regex:
+    - "log(?:ger)?\\.(?:info|debug|warn|error)\\s*\\([^)]*getParameter"
+    - "log(?:ger)?\\.(?:info|debug|warn|error)\\s*\\([^)]*request\\.get"
+message: "Possible log injection. User input logged without sanitization."
+fix_hint: "Sanitize user input before logging. Remove newline and control characters."
+references:
+  - "https://cwe.mitre.org/data/definitions/117.html"

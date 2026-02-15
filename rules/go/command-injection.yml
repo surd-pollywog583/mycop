@@ -1,0 +1,17 @@
+id: GO-SEC-002
+name: command-injection
+severity: critical
+language: go
+cwe: CWE-78
+owasp: "A03:2021"
+description: "Detect command injection via exec.Command with user input"
+pattern:
+  type: regex
+  regex:
+    - "exec\\.Command\\s*\\(\\s*\"(?:sh|bash|cmd)\""
+    - "exec\\.Command\\s*\\([^)]*\\+"
+    - "exec\\.CommandContext\\s*\\([^)]*\"(?:sh|bash|cmd)\""
+message: "Possible OS command injection detected."
+fix_hint: "Avoid passing user input to shell commands. Use exec.Command with explicit arguments instead of shell invocation."
+references:
+  - "https://cwe.mitre.org/data/definitions/78.html"

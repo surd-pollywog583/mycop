@@ -1,0 +1,16 @@
+id: GO-SEC-045
+name: gin-no-trusted-proxies
+severity: medium
+language: go
+cwe: CWE-346
+owasp: "A05:2021"
+description: "Detect Gin router usage without trusted proxy configuration."
+pattern:
+  type: regex
+  regex:
+    - "gin\\.Default\\s*\\("
+    - "gin\\.New\\s*\\("
+message: "Gin router detected without trusted proxy configuration."
+fix_hint: "Set trusted proxies with r.SetTrustedProxies() to prevent IP spoofing via X-Forwarded-For."
+references:
+  - "https://cwe.mitre.org/data/definitions/346.html"

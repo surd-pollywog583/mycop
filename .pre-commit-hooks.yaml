@@ -2,5 +2,5 @@
   name: mycop security scan
   entry: mycop scan --format terminal --fail-on high
   language: rust
-  types_or: [python, javascript, ts]
+  types_or: [python, javascript, ts, go, java]
   pass_filenames: true

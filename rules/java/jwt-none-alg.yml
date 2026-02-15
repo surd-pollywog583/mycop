@@ -1,0 +1,17 @@
+id: JAVA-SEC-017
+name: jwt-none-alg
+severity: high
+language: java
+cwe: CWE-345
+owasp: "A07:2021"
+description: "Detects usage of the JWT 'none' algorithm which disables token signature verification entirely."
+pattern:
+  type: regex
+  regex:
+    - "SignatureAlgorithm\\.NONE"
+    - "(?i)\"alg\"\\s*:\\s*\"none\""
+    - "\\.unsecuredJwt\\s*\\("
+message: "JWT 'none' algorithm detected. This disables token signature verification."
+fix_hint: "Always use a strong signing algorithm (RS256, ES256, HS256) for JWTs."
+references:
+  - "https://cwe.mitre.org/data/definitions/345.html"

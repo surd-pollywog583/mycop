@@ -1,0 +1,16 @@
+id: GO-SEC-011
+name: weak-hash-md5
+severity: medium
+language: go
+cwe: CWE-328
+owasp: "A02:2021"
+description: "Detect use of MD5"
+pattern:
+  type: regex
+  regex:
+    - "md5\\.(?:New|Sum)\\s*\\("
+    - "\"crypto/md5\""
+message: "Weak hash function MD5 detected. MD5 is cryptographically broken."
+fix_hint: "Use SHA-256 or SHA-3 instead of MD5 for cryptographic purposes."
+references:
+  - "https://cwe.mitre.org/data/definitions/328.html"

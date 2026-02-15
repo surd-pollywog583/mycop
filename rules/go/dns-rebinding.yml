@@ -1,0 +1,17 @@
+id: GO-SEC-049
+name: dns-rebinding
+severity: medium
+language: go
+cwe: CWE-350
+owasp: "A10:2021"
+description: "Detect DNS resolution of user-supplied hostnames that may be vulnerable to DNS rebinding."
+pattern:
+  type: regex
+  regex:
+    - "net\\.LookupHost\\s*\\("
+    - "net\\.ResolveIPAddr\\s*\\("
+    - "net\\.LookupIP\\s*\\("
+message: "DNS resolution of user-supplied hostname detected. May be vulnerable to DNS rebinding."
+fix_hint: "Validate resolved IP addresses against an allowlist. Block private/internal IP ranges."
+references:
+  - "https://cwe.mitre.org/data/definitions/350.html"

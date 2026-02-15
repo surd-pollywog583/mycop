@@ -1,0 +1,17 @@
+id: JAVA-SEC-046
+name: session-fixation
+severity: medium
+language: java
+cwe: CWE-384
+owasp: "A07:2021"
+description: "Detects possible session fixation vulnerabilities in authentication flows."
+pattern:
+  type: regex
+  regex:
+    - "session\\.setAttribute.*(?:login|auth)"
+    - "request\\.getSession\\s*\\(\\s*false\\s*\\)"
+    - "sessionFixation\\(\\)\\.none\\(\\)"
+message: "Possible session fixation vulnerability."
+fix_hint: "Invalidate the old session and create a new one after authentication."
+references:
+  - "https://cwe.mitre.org/data/definitions/384.html"

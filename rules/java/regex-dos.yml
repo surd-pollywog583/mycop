@@ -1,0 +1,16 @@
+id: JAVA-SEC-034
+name: regex-dos
+severity: medium
+language: java
+cwe: CWE-1333
+owasp: "A06:2021"
+description: "Detects potentially vulnerable regular expressions that may cause ReDoS attacks."
+pattern:
+  type: regex
+  regex:
+    - "Pattern\\.compile\\s*\\(\\s*\"[^\"]*(?:\\.\\*){2,}"
+    - "Pattern\\.compile\\s*\\(\\s*\"[^\"]*\\([^)]*\\+\\)[^\"]*\\*"
+message: "Potentially vulnerable regular expression. May cause ReDoS."
+fix_hint: "Simplify regex patterns. Avoid nested quantifiers. Set timeout for pattern matching."
+references:
+  - "https://cwe.mitre.org/data/definitions/1333.html"

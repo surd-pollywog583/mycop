@@ -1,0 +1,16 @@
+id: JAVA-SEC-023
+name: sensitive-logging
+severity: medium
+language: java
+cwe: CWE-532
+owasp: "A09:2021"
+description: "Detects logging statements that may inadvertently record sensitive data such as passwords, tokens, or secrets."
+pattern:
+  type: regex
+  regex:
+    - "(?i)log(?:ger)?\\.(?:info|debug|warn|error)\\s*\\([^)]*(?:password|secret|token|key|credential)"
+    - "System\\.out\\.print(?:ln)?\\s*\\([^)]*(?i)(?:password|secret|token)"
+message: "Sensitive data may be logged."
+fix_hint: "Never log passwords, tokens, or other secrets. Mask sensitive values in logs."
+references:
+  - "https://cwe.mitre.org/data/definitions/532.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-037
+name: nosql-injection
+severity: high
+language: java
+cwe: CWE-943
+owasp: "A03:2021"
+description: "Detects NoSQL injection in MongoDB queries through string concatenation."
+pattern:
+  type: regex
+  regex:
+    - "BasicDBObject.*\\+"
+    - "Filters\\.\\w+\\s*\\([^)]*\\+"
+    - "MongoCollection.*find\\s*\\([^)]*\\+"
+message: "Possible NoSQL injection in MongoDB query."
+fix_hint: "Use MongoDB typed query builders. Validate and sanitize all user input."
+references:
+  - "https://cwe.mitre.org/data/definitions/943.html"

@@ -1,0 +1,16 @@
+id: GO-SEC-016
+name: unhandled-error
+severity: medium
+language: go
+cwe: CWE-391
+owasp: "A09:2021"
+description: "Detect unhandled errors (common Go anti-pattern)"
+pattern:
+  type: regex
+  regex:
+    - "[a-zA-Z_]+\\s*,\\s*_\\s*:?=\\s*[a-zA-Z_]+\\.[A-Z]"
+    - "_\\s*=\\s*(?:os|io|net|http)\\.\\w+\\("
+message: "Error return value is ignored. Unhandled errors can lead to unexpected behavior."
+fix_hint: "Always check error return values in Go. Handle or propagate errors appropriately."
+references:
+  - "https://cwe.mitre.org/data/definitions/391.html"

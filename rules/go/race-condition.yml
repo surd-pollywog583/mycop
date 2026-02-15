@@ -1,0 +1,15 @@
+id: GO-SEC-028
+name: race-condition
+severity: high
+language: go
+cwe: CWE-362
+owasp: "A04:2021"
+description: "Detect potential data races from goroutines accessing shared state."
+pattern:
+  type: regex
+  regex:
+    - "go\\s+func\\s*\\("
+message: "Goroutine detected. Shared state access may cause data races."
+fix_hint: "Use sync.Mutex, sync.RWMutex, or channels to protect shared state accessed by goroutines. Run tests with -race flag."
+references:
+  - "https://cwe.mitre.org/data/definitions/362.html"

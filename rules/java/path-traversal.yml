@@ -1,0 +1,17 @@
+id: JAVA-SEC-005
+name: path-traversal
+severity: high
+language: java
+cwe: CWE-22
+owasp: "A01:2021"
+description: "Detects possible path traversal vulnerabilities where user input is used to construct file paths."
+pattern:
+  type: regex
+  regex:
+    - "new\\s+File\\s*\\([^)]*\\+"
+    - "new\\s+FileInputStream\\s*\\([^)]*\\+"
+    - "Paths\\.get\\s*\\([^)]*\\+"
+message: "Possible path traversal. User input may be used to construct file paths."
+fix_hint: "Canonicalize paths and verify they stay within the expected base directory."
+references:
+  - "https://cwe.mitre.org/data/definitions/22.html"

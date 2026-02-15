@@ -1,0 +1,16 @@
+id: GO-SEC-026
+name: sensitive-logging
+severity: medium
+language: go
+cwe: CWE-532
+owasp: "A09:2021"
+description: "Detect logging of sensitive data such as passwords, tokens, or API keys."
+pattern:
+  type: regex
+  regex:
+    - "log\\.(?:Print|Printf|Println)\\s*\\([^)]*(?i)(?:password|secret|token|key|credential)"
+    - "(?i)log\\.\\w+\\(.*(?:password|token|secret|apikey)"
+message: "Sensitive data may be logged. This can expose credentials in log files."
+fix_hint: "Never log sensitive data like passwords, tokens, or API keys. Mask or redact sensitive values."
+references:
+  - "https://cwe.mitre.org/data/definitions/532.html"

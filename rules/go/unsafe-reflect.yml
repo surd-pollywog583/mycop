@@ -1,0 +1,16 @@
+id: GO-SEC-008
+name: unsafe-reflect
+severity: high
+language: go
+cwe: CWE-470
+owasp: "A03:2021"
+description: "Detect unsafe use of reflect"
+pattern:
+  type: regex
+  regex:
+    - "reflect\\.(?:ValueOf|New)\\([^)]*\\)\\.(?:Elem|Field)\\(\\)\\.Set"
+    - "reflect\\.NewAt\\s*\\("
+message: "Unsafe use of reflection detected. May allow type confusion or memory corruption."
+fix_hint: "Avoid using reflection to set arbitrary values. Use type-safe alternatives."
+references:
+  - "https://cwe.mitre.org/data/definitions/470.html"

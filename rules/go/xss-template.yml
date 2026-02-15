@@ -1,0 +1,17 @@
+id: GO-SEC-007
+name: xss-template
+severity: high
+language: go
+cwe: CWE-79
+owasp: "A03:2021"
+description: "Detect XSS via unsafe template rendering"
+pattern:
+  type: regex
+  regex:
+    - "template\\.HTML\\s*\\("
+    - "template\\.JS\\s*\\("
+    - "template\\.URL\\s*\\("
+message: "Possible XSS vulnerability. Unescaped content in HTML template."
+fix_hint: "Use html/template instead of text/template. Avoid template.HTML() with user input."
+references:
+  - "https://cwe.mitre.org/data/definitions/79.html"

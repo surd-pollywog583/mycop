@@ -1,0 +1,17 @@
+id: JAVA-SEC-040
+name: spring-xss
+severity: high
+language: java
+cwe: CWE-79
+owasp: "A03:2021"
+description: "Detects possible XSS vulnerabilities in Spring MVC responses."
+pattern:
+  type: regex
+  regex:
+    - "@ResponseBody.*\\+.*getParameter"
+    - "model\\.addAttribute\\s*\\([^)]*getParameter"
+    - "th:utext"
+message: "Possible XSS in Spring MVC response."
+fix_hint: "Use th:text instead of th:utext in Thymeleaf. HTML-encode all user input in responses."
+references:
+  - "https://cwe.mitre.org/data/definitions/79.html"

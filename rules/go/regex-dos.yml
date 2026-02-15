@@ -1,0 +1,16 @@
+id: GO-SEC-042
+name: regex-dos
+severity: medium
+language: go
+cwe: CWE-1333
+owasp: "A06:2021"
+description: "Detect potentially vulnerable regular expressions that may cause ReDoS."
+pattern:
+  type: regex
+  regex:
+    - "regexp\\.(?:Compile|MustCompile)\\s*\\(\\s*\"[^\"]*(?:\\.\\*){2,}"
+    - "regexp\\.(?:Compile|MustCompile)\\s*\\(\\s*\"[^\"]*\\([^)]*\\+\\)[^\"]*\\*"
+message: "Potentially vulnerable regular expression. Complex patterns may cause ReDoS."
+fix_hint: "Simplify regular expressions. Avoid nested quantifiers. Consider using regexp2 with timeout."
+references:
+  - "https://cwe.mitre.org/data/definitions/1333.html"

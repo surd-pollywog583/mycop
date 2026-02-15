@@ -1,0 +1,17 @@
+id: JAVA-SEC-019
+name: cors-wildcard
+severity: medium
+language: java
+cwe: CWE-942
+owasp: "A05:2021"
+description: "Detects overly permissive CORS configurations that allow any origin to access the application."
+pattern:
+  type: regex
+  regex:
+    - "(?i)Access-Control-Allow-Origin.*\\*"
+    - "allowedOrigins\\s*\\(\\s*\"\\*\"\\s*\\)"
+    - "@CrossOrigin(?:\\s*\\(\\s*\\))?\\s*$"
+message: "CORS wildcard origin detected."
+fix_hint: "Configure CORS to only allow specific trusted origins."
+references:
+  - "https://cwe.mitre.org/data/definitions/942.html"

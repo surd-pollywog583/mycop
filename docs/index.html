@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mycop — AI Code Security Scanner</title>
   <meta name="description"
-    content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules, 5 AI providers, SARIF output. Open source.">
+    content="Detect and auto-fix vulnerabilities in AI-generated code. 200 built-in security rules, 5 AI providers, SARIF output. Open source.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="canonical" href="https://abdumajidrashidov.github.io/mycop/">
@@ -14,20 +14,20 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="mycop — AI Code Security Scanner">
-  <meta property="og:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules covering OWASP Top 10 & CWE Top 25. Supports Python, JavaScript, and TypeScript.">
+  <meta property="og:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 200 built-in security rules covering OWASP Top 10 & CWE Top 25. Supports Python, JavaScript, TypeScript, Go, and Java.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://abdumajidrashidov.github.io/mycop/">
   <meta property="og:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="mycop — AI Code Security Scanner for Python, JavaScript, and TypeScript">
+  <meta property="og:image:alt" content="mycop — AI Code Security Scanner for Python, JavaScript, TypeScript, Go, and Java">
   <meta property="og:site_name" content="mycop">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="mycop — AI Code Security Scanner">
-  <meta name="twitter:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 100 built-in rules, SARIF output, zero config.">
+  <meta name="twitter:description" content="Detect and auto-fix vulnerabilities in AI-generated code. 200 built-in rules, SARIF output, zero config.">
   <meta name="twitter:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
 
   <!-- Structured Data: SoftwareApplication -->
@@ -36,11 +36,11 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "mycop",
-    "description": "AI Code Security Scanner — detect and auto-fix vulnerabilities in AI-generated code. 100 built-in security rules covering OWASP Top 10 and CWE Top 25.",
+    "description": "AI Code Security Scanner — detect and auto-fix vulnerabilities in AI-generated code. 200 built-in security rules covering OWASP Top 10 and CWE Top 25.",
     "applicationCategory": "DeveloperApplication",
     "applicationSubCategory": "Security Scanner",
     "operatingSystem": "macOS, Linux, Windows",
-    "softwareVersion": "0.3.1",
+    "softwareVersion": "0.4.0",
     "programmingLanguage": "Rust",
     "downloadUrl": "https://crates.io/crates/mycop",
     "installUrl": "https://github.com/AbdumajidRashidov/mycop#installation",
@@ -53,9 +53,9 @@
       "priceCurrency": "USD"
     },
     "featureList": [
-      "100 built-in security rules covering OWASP Top 10 and CWE Top 25",
+      "200 built-in security rules covering OWASP Top 10 and CWE Top 25",
       "AI-powered auto-fix with Claude, GPT-4, and Ollama support",
-      "Python, JavaScript, and TypeScript scanning",
+      "Python, JavaScript, TypeScript, Go, and Java scanning",
       "SARIF, JSON, and terminal output formats",
       "GitHub Actions integration",
       "Pre-commit hook support",
@@ -88,7 +88,7 @@
         "name": "Is AI-generated code safe? What security risks does Copilot and ChatGPT code have?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "AI-generated code from tools like GitHub Copilot, ChatGPT, and Cursor frequently introduces security vulnerabilities including SQL injection, hardcoded secrets, command injection, and insecure cryptography. Studies show up to 40% of AI-generated code contains security flaws. mycop is built specifically to catch these issues with 100 rules covering OWASP Top 10 and CWE Top 25 categories."
+          "text": "AI-generated code from tools like GitHub Copilot, ChatGPT, and Cursor frequently introduces security vulnerabilities including SQL injection, hardcoded secrets, command injection, and insecure cryptography. Studies show up to 40% of AI-generated code contains security flaws. mycop is built specifically to catch these issues with 200 rules covering OWASP Top 10 and CWE Top 25 categories."
         }
       },
       {
@@ -96,7 +96,7 @@
         "name": "How do I scan Python or JavaScript code for security vulnerabilities for free?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "mycop is a free, open-source security scanner that detects vulnerabilities in Python, JavaScript, and TypeScript. Install it with a single command (curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh), then run 'mycop scan .' in your project directory. It finds SQL injection, XSS, hardcoded secrets, and 20+ more vulnerability categories with zero configuration required."
+          "text": "mycop is a free, open-source security scanner that detects vulnerabilities in Python, JavaScript, TypeScript, Go, and Java. Install it with a single command (curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh), then run 'mycop scan .' in your project directory. It finds SQL injection, XSS, hardcoded secrets, and 20+ more vulnerability categories with zero configuration required."
         }
       },
       {
@@ -104,7 +104,7 @@
         "name": "How does mycop compare to Semgrep, Bandit, and ESLint for security scanning?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Unlike Semgrep (which requires custom rules) or language-specific tools like Bandit (Python only) and ESLint (JavaScript only), mycop scans Python, JavaScript, and TypeScript with a single tool and ships with 100 pre-built security rules. It also uniquely offers AI-powered auto-fix — it can automatically rewrite vulnerable code using Claude, GPT-4, or Ollama, then verify the fix by re-scanning."
+          "text": "Unlike Semgrep (which requires custom rules) or language-specific tools like Bandit (Python only) and ESLint (JavaScript only), mycop scans Python, JavaScript, TypeScript, Go, and Java with a single tool and ships with 200 pre-built security rules. It also uniquely offers AI-powered auto-fix — it can automatically rewrite vulnerable code using Claude, GPT-4, or Ollama, then verify the fix by re-scanning."
         }
       },
       {
@@ -141,7 +141,7 @@
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": "How to scan code for security vulnerabilities with mycop",
-    "description": "Install mycop and scan your Python, JavaScript, or TypeScript codebase for security vulnerabilities in under a minute.",
+    "description": "Install mycop and scan your Python, JavaScript, TypeScript, Go, or Java codebase for security vulnerabilities in under a minute.",
     "step": [
       {
         "@type": "HowToStep",
@@ -153,7 +153,7 @@
         "@type": "HowToStep",
         "position": 2,
         "name": "Scan your code",
-        "text": "Run: mycop scan . — This scans all Python, JavaScript, and TypeScript files in the current directory."
+        "text": "Run: mycop scan . — This scans all Python, JavaScript, TypeScript, Go, and Java files in the current directory."
       },
       {
         "@type": "HowToStep",
@@ -1233,8 +1233,8 @@
         <a href="https://github.com/AbdumajidRashidov/mycop/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
       </div>
       <h1>Catch vulnerabilities in<br><span>AI-generated code</span></h1>
-      <p>mycop scans Python, JavaScript, and TypeScript for security issues that AI coding assistants commonly
-        introduce. 100 built-in rules, AI-powered auto-fix, zero config.</p>
+      <p>mycop scans Python, JavaScript, TypeScript, Go, and Java for security issues that AI coding assistants commonly
+        introduce. 200 built-in rules, AI-powered auto-fix, zero config.</p>
       <div class="hero-actions">
         <div class="install-cmd">
           <span class="dim">$</span>
@@ -1311,7 +1311,7 @@
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
-          <h3>100 Built-in Rules</h3>
+          <h3>200 Built-in Rules</h3>
           <p>Covers OWASP Top 10 and CWE Top 25 including SQL injection, XSS, command injection, cryptography flaws, auth
             issues, and more. All mapped to CWE identifiers.</p>
         </div>
@@ -1419,6 +1419,22 @@
           </svg>
           <span>TypeScript</span>
         </div>
+        <div class="lang-card">
+          <svg viewBox="0 0 128 128">
+            <rect fill="#00ADD8" width="128" height="128" rx="6" />
+            <text x="64" y="84" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif"
+              font-weight="bold" font-size="52">Go</text>
+          </svg>
+          <span>Go</span>
+        </div>
+        <div class="lang-card">
+          <svg viewBox="0 0 128 128">
+            <rect fill="#ED8B00" width="128" height="128" rx="6" />
+            <text x="64" y="84" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif"
+              font-weight="bold" font-size="40">Java</text>
+          </svg>
+          <span>Java</span>
+        </div>
       </div>
     </div>
   </section>
@@ -1524,8 +1540,8 @@ mycop --version</code></div>
   <section class="rules" id="rules">
     <div class="container">
       <div class="section-label">Security Rules</div>
-      <h2 class="section-title">100 rules covering OWASP Top 10 &amp; CWE Top 25</h2>
-      <p class="section-subtitle">50 Python + 50 JavaScript rules, each mapped to CWE identifiers for standards compliance.</p>
+      <h2 class="section-title">200 rules covering OWASP Top 10 &amp; CWE Top 25</h2>
+      <p class="section-subtitle">50 Python + 50 JavaScript + 50 Go + 50 Java rules, each mapped to CWE identifiers for standards compliance.</p>
       <table class="rules-table">
         <thead>
           <tr>
@@ -1705,7 +1721,7 @@ mycop --version</code></div>
               <span>Integration</span>
             </div>
             <h3>mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant</h3>
-            <p>mycop 0.3.1 ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan and review code for vulnerabilities without leaving the conversation.</p>
+            <p>mycop ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan and review code for vulnerabilities without leaving the conversation.</p>
           </div>
           <div class="blog-card-footer">
             <span>February 15, 2026</span>
@@ -1747,7 +1763,7 @@ mycop --version</code></div>
           <div class="pricing-desc">Everything you need for individual security scanning.</div>
           <ul class="pricing-features">
             <li>Full CLI scanner</li>
-            <li>100 built-in security rules</li>
+            <li>200 built-in security rules</li>
             <li>All scan modes (full, diff, file)</li>
             <li>Terminal, JSON, and SARIF output</li>
             <li>MCP server for agentic tools</li>
@@ -1835,15 +1851,15 @@ mycop --version</code></div>
       <div class="faq-list">
         <details>
           <summary>Is AI-generated code safe? What security risks does Copilot and ChatGPT code have?</summary>
-          <div class="faq-answer">AI-generated code from tools like GitHub Copilot, ChatGPT, and Cursor frequently introduces security vulnerabilities &mdash; including SQL injection, hardcoded secrets, command injection, and insecure cryptography. Studies show up to 40% of AI-generated code contains security flaws. mycop is built specifically to catch these issues with 100 rules covering OWASP Top 10 and CWE Top 25 categories.</div>
+          <div class="faq-answer">AI-generated code from tools like GitHub Copilot, ChatGPT, and Cursor frequently introduces security vulnerabilities &mdash; including SQL injection, hardcoded secrets, command injection, and insecure cryptography. Studies show up to 40% of AI-generated code contains security flaws. mycop is built specifically to catch these issues with 200 rules covering OWASP Top 10 and CWE Top 25 categories.</div>
         </details>
         <details>
           <summary>How do I scan Python or JavaScript code for security vulnerabilities for free?</summary>
-          <div class="faq-answer">mycop is a free, open-source security scanner that detects vulnerabilities in Python, JavaScript, and TypeScript. Install it with a single command (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh</code>), then run <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">mycop scan .</code> in your project directory. It finds SQL injection, XSS, hardcoded secrets, and 20+ more vulnerability categories with zero configuration required.</div>
+          <div class="faq-answer">mycop is a free, open-source security scanner that detects vulnerabilities in Python, JavaScript, TypeScript, Go, and Java. Install it with a single command (<code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh</code>), then run <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">mycop scan .</code> in your project directory. It finds SQL injection, XSS, hardcoded secrets, and 20+ more vulnerability categories with zero configuration required.</div>
         </details>
         <details>
           <summary>How does mycop compare to Semgrep, Bandit, and ESLint for security scanning?</summary>
-          <div class="faq-answer">Unlike Semgrep (which requires custom rules) or language-specific tools like Bandit (Python only) and ESLint (JavaScript only), mycop scans Python, JavaScript, and TypeScript with a single tool and ships with 100 pre-built security rules. It also uniquely offers AI-powered auto-fix &mdash; it can automatically rewrite vulnerable code using Claude, GPT-4, or Ollama, then verify the fix by re-scanning.</div>
+          <div class="faq-answer">Unlike Semgrep (which requires custom rules) or language-specific tools like Bandit (Python only) and ESLint (JavaScript only), mycop scans Python, JavaScript, TypeScript, Go, and Java with a single tool and ships with 200 pre-built security rules. It also uniquely offers AI-powered auto-fix &mdash; it can automatically rewrite vulnerable code using Claude, GPT-4, or Ollama, then verify the fix by re-scanning.</div>
         </details>
         <details>
           <summary>Can I automatically fix security vulnerabilities in my code with AI?</summary>

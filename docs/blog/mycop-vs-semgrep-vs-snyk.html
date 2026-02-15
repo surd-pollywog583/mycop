@@ -654,7 +654,7 @@
         </tr>
         <tr>
           <td>Built-in rules</td>
-          <td>100 (50 Python, 50 JS)</td>
+          <td>200 (50 Python, 50 JS, 50 Go, 50 Java)</td>
           <td>2,500+ community rules</td>
           <td>Proprietary rule set</td>
         </tr>
@@ -672,7 +672,7 @@
         </tr>
         <tr>
           <td>Languages</td>
-          <td>Python, JavaScript, TypeScript</td>
+          <td>Python, JS, TS, Go, Java</td>
           <td>30+ languages</td>
           <td>20+ languages</td>
         </tr>
@@ -757,14 +757,14 @@
 
     <h3>mycop</h3>
 
-    <p><a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> is an open-source, MIT-licensed security scanner written in Rust. It is purpose-built for the vulnerabilities that AI coding assistants introduce. It ships 100 built-in rules covering OWASP Top 10 and CWE Top 25, supports Python, JavaScript, and TypeScript, and requires zero configuration.</p>
+    <p><a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> is an open-source, MIT-licensed security scanner written in Rust. It is purpose-built for the vulnerabilities that AI coding assistants introduce. It ships 200 built-in rules covering OWASP Top 10 and CWE Top 25, supports Python, JavaScript, TypeScript, Go, and Java, and requires zero configuration.</p>
 
     <div class="pros-cons">
       <div class="pros">
         <h5>Strengths</h5>
         <ul>
           <li>Purpose-built for AI-generated code patterns</li>
-          <li>100 rules ship with the binary, zero config needed</li>
+          <li>200 rules ship with the binary, zero config needed</li>
           <li>AI auto-fix with 5 provider options (free Ollama option)</li>
           <li>Built-in MCP server for Claude Code, Cursor, Windsurf</li>
           <li>Single binary, ~8 MB, installs in 10 seconds</li>
@@ -776,9 +776,9 @@
       <div class="cons">
         <h5>Weaknesses</h5>
         <ul>
-          <li>Only 3 languages (Python, JS, TS)</li>
+          <li>5 languages (Python, JS, TS, Go, Java)</li>
           <li>No taint tracking or interprocedural analysis</li>
-          <li>Smaller rule set (100 vs 2,500+)</li>
+          <li>Smaller rule set (200 vs 2,500+)</li>
           <li>No dependency vulnerability database</li>
           <li>Younger project with a smaller community</li>
           <li>No IDE extensions yet (planned)</li>
@@ -787,7 +787,7 @@
       </div>
     </div>
 
-    <p><strong>Best for:</strong> Developers and teams using AI coding assistants (Copilot, ChatGPT, Cursor) who want fast, zero-config security scanning with AI-powered auto-fix. Ideal for Python and JavaScript projects that need to be production-ready quickly.</p>
+    <p><strong>Best for:</strong> Developers and teams using AI coding assistants (Copilot, ChatGPT, Cursor) who want fast, zero-config security scanning with AI-powered auto-fix. Ideal for Python, JavaScript, Go, and Java projects that need to be production-ready quickly.</p>
 
     <span class="pre-label">Getting started with mycop</span>
 <pre># Install (10 seconds)
@@ -834,7 +834,7 @@ mycop mcp</pre>
       </div>
     </div>
 
-    <p><strong>Best for:</strong> Teams with polyglot codebases (Go, Java, C#, Ruby, etc.) who need broad language coverage and are willing to invest in custom rule development. Enterprise teams that want taint tracking and supply chain security.</p>
+    <p><strong>Best for:</strong> Teams with polyglot codebases (C#, Ruby, PHP, Kotlin, etc.) who need broad language coverage and are willing to invest in custom rule development. Enterprise teams that want taint tracking and supply chain security.</p>
 
     <span class="pre-label">Getting started with Semgrep</span>
 <pre># Install
@@ -902,7 +902,7 @@ snyk test .</pre>
 
     <h3>AI-Generated Code Detection</h3>
 
-    <p>This is where mycop has a clear advantage. Its 100 rules are specifically designed for the vulnerability patterns that AI assistants produce: SQL injection via f-strings, <code>eval()</code> on user input, hardcoded secrets, <code>os.system()</code> with string concatenation, <code>dangerouslySetInnerHTML</code> without sanitization, MD5 for password hashing, and similar patterns.</p>
+    <p>This is where mycop has a clear advantage. Its 200 rules are specifically designed for the vulnerability patterns that AI assistants produce: SQL injection via f-strings, <code>eval()</code> on user input, hardcoded secrets, <code>os.system()</code> with string concatenation, <code>dangerouslySetInnerHTML</code> without sanitization, MD5 for password hashing, and similar patterns.</p>
 
     <p>Semgrep and Snyk have broader rule sets, but their rules are designed for general-purpose code security. They will catch many of the same issues, but they are not optimized for the specific patterns AI generates and may have higher false positive rates on AI-written code.</p>
 
@@ -928,11 +928,11 @@ snyk test .</pre>
 
     <h3>Language Support</h3>
 
-    <p>This is where mycop is weakest. It supports Python, JavaScript, and TypeScript &mdash; three languages, period. If your codebase includes Go, Java, C#, Ruby, PHP, or other languages, mycop cannot scan them.</p>
+    <p>This is where mycop is more limited. It supports Python, JavaScript, TypeScript, Go, and Java &mdash; five languages. If your codebase includes C#, Ruby, PHP, or other languages, mycop cannot scan them.</p>
 
     <p><strong>Semgrep wins here</strong> with 30+ languages, making it the best choice for polyglot codebases. Snyk supports 20+ languages with its SAST engine. Both are significantly more versatile than mycop for multi-language organizations.</p>
 
-    <p>That said, Python and JavaScript/TypeScript account for the vast majority of AI-assisted code generation. If those are your primary languages, mycop's focused coverage is sufficient.</p>
+    <p>That said, Python, JavaScript/TypeScript, Go, and Java account for the vast majority of AI-assisted code generation. If those are your primary languages, mycop's coverage is sufficient.</p>
 
     <h3>Dependency Scanning</h3>
 
@@ -993,7 +993,7 @@ snyk test .</pre>
         <h4>mycop</h4>
         <ul>
           <li>You use AI coding assistants daily</li>
-          <li>Your codebase is Python, JS, or TS</li>
+          <li>Your codebase is Python, JS, TS, Go, or Java</li>
           <li>You want zero-config, instant scanning</li>
           <li>You need AI auto-fix with provider choice</li>
           <li>You use Claude Code, Cursor, or Windsurf (MCP)</li>
@@ -1005,7 +1005,7 @@ snyk test .</pre>
         <div class="verdict-subtitle">Choose Semgrep when</div>
         <h4>Semgrep</h4>
         <ul>
-          <li>You have a polyglot codebase (Go, Java, etc.)</li>
+          <li>You have a polyglot codebase (C#, Ruby, PHP, etc.)</li>
           <li>You need custom rule development</li>
           <li>You need taint tracking across functions</li>
           <li>You want the largest community rule registry</li>
@@ -1032,7 +1032,7 @@ snyk test .</pre>
     <p>These tools are not mutually exclusive. Many teams use a combination:</p>
 
     <ul>
-      <li><strong>mycop + Snyk:</strong> mycop for AI-generated code vulnerabilities and SAST, Snyk for dependency scanning and container security. This covers the most ground for Python/JS teams at minimal cost (mycop is free, Snyk has a free tier for SCA).</li>
+      <li><strong>mycop + Snyk:</strong> mycop for AI-generated code vulnerabilities and SAST, Snyk for dependency scanning and container security. This covers the most ground for Python/JS/Go/Java teams at minimal cost (mycop is free, Snyk has a free tier for SCA).</li>
       <li><strong>mycop + Semgrep:</strong> mycop for AI-focused scanning with auto-fix and MCP, Semgrep for broad language coverage and custom rules. The two tools use different analysis approaches and complement each other well.</li>
       <li><strong>All three:</strong> For enterprise teams with comprehensive security requirements, running all three tools in CI provides defense in depth. Each catches things the others miss.</li>
     </ul>
@@ -1043,7 +1043,7 @@ snyk test .</pre>
 
     <p>I want to be transparent about the areas where mycop does not compete with Semgrep and Snyk.</p>
 
-    <p><strong>Language coverage.</strong> If your codebase includes Go, Java, C#, Ruby, or other languages beyond Python/JS/TS, mycop cannot help you. Semgrep is the clear winner for multi-language codebases.</p>
+    <p><strong>Language coverage.</strong> If your codebase includes C#, Ruby, PHP, or other languages beyond Python/JS/TS/Go/Java, mycop cannot help you. Semgrep is the clear winner for multi-language codebases.</p>
 
     <p><strong>Taint analysis.</strong> mycop's pattern matching catches direct vulnerabilities but misses complex data flows. Semgrep Pro's taint tracking and Snyk Code's semantic analysis are genuinely more capable at finding indirect vulnerabilities.</p>
 
@@ -1053,7 +1053,7 @@ snyk test .</pre>
 
     <p><strong>Community and ecosystem.</strong> Semgrep has thousands of community-contributed rules and extensive documentation. Snyk has IDE plugins for every major editor. mycop is a newer project with a smaller ecosystem.</p>
 
-    <p>These are real limitations, not future features. mycop is designed to be a fast, focused, zero-config scanner for AI-generated code in Python and JavaScript &mdash; not a comprehensive security platform.</p>
+    <p>These are real limitations, not future features. mycop is designed to be a fast, focused, zero-config scanner for AI-generated code in Python, JavaScript, Go, and Java &mdash; not a comprehensive security platform.</p>
 
     <hr>
 
@@ -1061,7 +1061,7 @@ snyk test .</pre>
 
     <p>The right tool depends on what you are trying to solve.</p>
 
-    <p>If your primary concern is <strong>the new wave of vulnerabilities introduced by AI coding assistants</strong> in Python and JavaScript codebases, mycop is built for that exact problem. It installs in 10 seconds, requires no configuration, scans offline, auto-fixes with AI, and integrates with agentic tools via MCP. And it is completely free.</p>
+    <p>If your primary concern is <strong>the new wave of vulnerabilities introduced by AI coding assistants</strong> in Python, JavaScript, Go, and Java codebases, mycop is built for that exact problem. It installs in 10 seconds, requires no configuration, scans offline, auto-fixes with AI, and integrates with agentic tools via MCP. And it is completely free.</p>
 
     <p>If you need <strong>broad language coverage and custom rules</strong>, Semgrep is the most versatile option.</p>
 

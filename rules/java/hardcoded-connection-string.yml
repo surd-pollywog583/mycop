@@ -1,0 +1,17 @@
+id: JAVA-SEC-025
+name: hardcoded-connection-string
+severity: high
+language: java
+cwe: CWE-798
+owasp: "A07:2021"
+description: "Detects hardcoded database connection strings that may contain embedded credentials."
+pattern:
+  type: regex
+  regex:
+    - "DriverManager\\.getConnection\\s*\\(\\s*\"[^\"]*\""
+    - "(?i)jdbc:(?:mysql|postgresql|oracle|sqlserver)://[^\"]*\""
+    - "(?i)(?:jdbc|datasource).*password\\s*="
+message: "Hardcoded database connection string with credentials."
+fix_hint: "Use environment variables or external configuration for database connection strings."
+references:
+  - "https://cwe.mitre.org/data/definitions/798.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-008
+name: insecure-deserialization
+severity: critical
+language: java
+cwe: CWE-502
+owasp: "A08:2021"
+description: "Detects insecure deserialization of untrusted data which can lead to remote code execution."
+pattern:
+  type: regex
+  regex:
+    - "ObjectInputStream\\s*\\("
+    - "\\.readObject\\s*\\("
+    - "readUnshared\\s*\\("
+message: "Insecure deserialization detected. Deserializing untrusted data can lead to remote code execution."
+fix_hint: "Avoid Java native serialization. Use JSON/XML with schema validation. If required, use ObjectInputFilter."
+references:
+  - "https://cwe.mitre.org/data/definitions/502.html"

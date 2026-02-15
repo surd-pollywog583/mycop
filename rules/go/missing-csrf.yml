@@ -1,0 +1,16 @@
+id: GO-SEC-023
+name: missing-csrf
+severity: medium
+language: go
+cwe: CWE-352
+owasp: "A01:2021"
+description: "Detect missing CSRF protection on state-changing routes"
+pattern:
+  type: regex
+  regex:
+    - "HandleFunc\\s*\\([^)]*\"POST\""
+    - "\\.POST\\s*\\(\\s*\"/"
+message: "State-changing endpoint may lack CSRF protection."
+fix_hint: "Use CSRF middleware (e.g., gorilla/csrf or nosurf) for all state-changing endpoints."
+references:
+  - "https://cwe.mitre.org/data/definitions/352.html"

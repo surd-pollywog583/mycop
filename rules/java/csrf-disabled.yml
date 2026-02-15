@@ -1,0 +1,17 @@
+id: JAVA-SEC-020
+name: csrf-disabled
+severity: medium
+language: java
+cwe: CWE-352
+owasp: "A01:2021"
+description: "Detects disabled CSRF protection in Spring Security or similar frameworks."
+pattern:
+  type: regex
+  regex:
+    - "\\.csrf\\s*\\(\\s*\\)\\s*\\.disable\\s*\\("
+    - "csrf\\.disable\\s*\\("
+    - "CsrfConfigurer::disable"
+message: "CSRF protection is disabled."
+fix_hint: "Enable CSRF protection for all state-changing endpoints."
+references:
+  - "https://cwe.mitre.org/data/definitions/352.html"

@@ -1,0 +1,16 @@
+id: GO-SEC-010
+name: tls-insecure-skip
+severity: high
+language: go
+cwe: CWE-295
+owasp: "A07:2021"
+description: "Detect disabled TLS verification"
+pattern:
+  type: regex
+  regex:
+    - "InsecureSkipVerify\\s*:\\s*true"
+    - "TLSClientConfig\\s*:\\s*&tls\\.Config\\s*\\{[^}]*InsecureSkipVerify"
+message: "TLS certificate verification is disabled. This allows man-in-the-middle attacks."
+fix_hint: "Do not set InsecureSkipVerify to true in production. Use proper certificate validation."
+references:
+  - "https://cwe.mitre.org/data/definitions/295.html"

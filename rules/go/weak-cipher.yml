@@ -1,0 +1,18 @@
+id: GO-SEC-013
+name: weak-cipher
+severity: medium
+language: go
+cwe: CWE-327
+owasp: "A02:2021"
+description: "Detect use of weak ciphers (DES, RC4)"
+pattern:
+  type: regex
+  regex:
+    - "des\\.NewCipher\\s*\\("
+    - "rc4\\.NewCipher\\s*\\("
+    - "\"crypto/des\""
+    - "\"crypto/rc4\""
+message: "Weak cipher algorithm detected. DES and RC4 are considered insecure."
+fix_hint: "Use AES-GCM or ChaCha20-Poly1305 instead of DES or RC4."
+references:
+  - "https://cwe.mitre.org/data/definitions/327.html"

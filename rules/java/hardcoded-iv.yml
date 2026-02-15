@@ -1,0 +1,16 @@
+id: JAVA-SEC-015
+name: hardcoded-iv
+severity: medium
+language: java
+cwe: CWE-329
+owasp: "A02:2021"
+description: "Detects hardcoded initialization vectors (IVs) which undermine encryption security."
+pattern:
+  type: regex
+  regex:
+    - "new\\s+IvParameterSpec\\s*\\(\\s*(?:new\\s+byte\\[\\]\\s*\\{|\"[^\"]+\")"
+    - "IvParameterSpec\\s*\\(\\s*\"[^\"]*\"\\.getBytes"
+message: "Hardcoded initialization vector detected."
+fix_hint: "Generate IVs randomly using SecureRandom for each encryption operation."
+references:
+  - "https://cwe.mitre.org/data/definitions/329.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-038
+name: spring-actuator-exposed
+severity: high
+language: java
+cwe: CWE-215
+owasp: "A05:2021"
+description: "Detects publicly exposed Spring Boot Actuator endpoints."
+pattern:
+  type: regex
+  regex:
+    - "management\\.endpoints\\.web\\.exposure\\.include\\s*=\\s*\\*"
+    - "management\\.endpoint\\.\\w+\\.enabled\\s*=\\s*true"
+    - "@Endpoint\\s*\\("
+message: "Spring Boot Actuator endpoints may be publicly exposed."
+fix_hint: "Restrict actuator endpoints to internal networks. Require authentication for all actuator endpoints."
+references:
+  - "https://cwe.mitre.org/data/definitions/215.html"

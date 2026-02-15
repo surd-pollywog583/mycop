@@ -1,0 +1,17 @@
+id: GO-SEC-021
+name: cors-wildcard
+severity: medium
+language: go
+cwe: CWE-942
+owasp: "A05:2021"
+description: "Detect CORS wildcard configuration"
+pattern:
+  type: regex
+  regex:
+    - "(?i)Access-Control-Allow-Origin.*\\*"
+    - "AllowAllOrigins\\s*:\\s*true"
+    - "cors\\.Default\\s*\\("
+message: "CORS wildcard origin detected. This allows any website to make cross-origin requests."
+fix_hint: "Configure CORS to only allow specific trusted origins instead of wildcards."
+references:
+  - "https://cwe.mitre.org/data/definitions/942.html"

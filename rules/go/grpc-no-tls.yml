@@ -1,0 +1,17 @@
+id: GO-SEC-046
+name: grpc-no-tls
+severity: medium
+language: go
+cwe: CWE-319
+owasp: "A02:2021"
+description: "Detect gRPC connections without TLS encryption."
+pattern:
+  type: regex
+  regex:
+    - "grpc\\.Dial\\s*\\([^)]*grpc\\.WithInsecure"
+    - "grpc\\.WithTransportCredentials\\s*\\(\\s*insecure\\.NewCredentials\\(\\)\\s*\\)"
+    - "grpc\\.NewServer\\s*\\("
+message: "gRPC connection without TLS detected."
+fix_hint: "Use TLS credentials for gRPC connections. Use credentials.NewTLS() or credentials.NewServerTLSFromFile()."
+references:
+  - "https://cwe.mitre.org/data/definitions/319.html"

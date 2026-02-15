@@ -1,0 +1,16 @@
+id: JAVA-SEC-012
+name: weak-hash-sha1
+severity: medium
+language: java
+cwe: CWE-328
+owasp: "A02:2021"
+description: "Detects usage of the weak SHA-1 hash algorithm which is vulnerable to collision attacks."
+pattern:
+  type: regex
+  regex:
+    - "MessageDigest\\.getInstance\\s*\\(\\s*\"SHA-?1\"\\s*\\)"
+    - "DigestUtils\\.sha1"
+message: "Weak hash algorithm SHA-1 detected."
+fix_hint: "Use SHA-256 or SHA-3 instead of SHA-1."
+references:
+  - "https://cwe.mitre.org/data/definitions/328.html"

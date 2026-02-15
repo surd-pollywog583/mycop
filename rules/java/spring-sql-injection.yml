@@ -1,0 +1,17 @@
+id: JAVA-SEC-039
+name: spring-sql-injection
+severity: critical
+language: java
+cwe: CWE-89
+owasp: "A03:2021"
+description: "Detects SQL injection in Spring JdbcTemplate or @Query annotations."
+pattern:
+  type: regex
+  regex:
+    - "JdbcTemplate.*query\\s*\\(\\s*\"[^\"]*\\+"
+    - "namedParameterJdbcTemplate.*\\+"
+    - "@Query\\s*\\(\\s*\"[^\"]*\\+"
+message: "SQL injection in Spring JdbcTemplate or @Query."
+fix_hint: "Use JdbcTemplate with parameterized queries. Use Spring Data JPA derived query methods."
+references:
+  - "https://cwe.mitre.org/data/definitions/89.html"

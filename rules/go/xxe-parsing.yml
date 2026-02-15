@@ -1,0 +1,15 @@
+id: GO-SEC-031
+name: xxe-parsing
+severity: high
+language: go
+cwe: CWE-611
+owasp: "A05:2021"
+description: "Detect XML parsing that may be vulnerable to XXE attacks."
+pattern:
+  type: regex
+  regex:
+    - "xml\\.(?:NewDecoder|Unmarshal)\\s*\\("
+message: "XML parsing detected. Go's encoding/xml is generally safe from XXE, but review external entity handling."
+fix_hint: "Ensure XML input is validated. Go's encoding/xml does not process external entities by default, but verify."
+references:
+  - "https://cwe.mitre.org/data/definitions/611.html"

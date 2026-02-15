@@ -1,0 +1,17 @@
+id: GO-SEC-032
+name: insecure-deserialization
+severity: high
+language: go
+cwe: CWE-502
+owasp: "A08:2021"
+description: "Detect insecure deserialization of untrusted data."
+pattern:
+  type: regex
+  regex:
+    - "gob\\.NewDecoder\\s*\\("
+    - "json\\.NewDecoder\\s*\\([^)]*r\\.Body"
+    - "json\\.Unmarshal\\s*\\([^)]*\\w+Input"
+message: "Deserialization of untrusted data detected. This may lead to unexpected behavior."
+fix_hint: "Validate and sanitize deserialized data. Use strict type checking after deserialization."
+references:
+  - "https://cwe.mitre.org/data/definitions/502.html"

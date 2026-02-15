@@ -1,0 +1,17 @@
+id: JAVA-SEC-029
+name: header-injection
+severity: medium
+language: java
+cwe: CWE-113
+owasp: "A03:2021"
+description: "Detects HTTP header injection through unsanitized user input in HTTP headers."
+pattern:
+  type: regex
+  regex:
+    - "(?:setHeader|addHeader)\\s*\\([^)]*getParameter"
+    - "response\\.setHeader\\s*\\([^)]*\\+"
+    - "response\\.addCookie.*getParameter"
+message: "HTTP header injection. User input used in HTTP headers."
+fix_hint: "Validate and sanitize all user input used in HTTP headers. Remove CR/LF characters."
+references:
+  - "https://cwe.mitre.org/data/definitions/113.html"

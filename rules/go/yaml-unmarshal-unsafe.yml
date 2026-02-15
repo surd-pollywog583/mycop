@@ -1,0 +1,17 @@
+id: GO-SEC-033
+name: yaml-unmarshal-unsafe
+severity: high
+language: go
+cwe: CWE-502
+owasp: "A08:2021"
+description: "Detect unsafe YAML unmarshaling that can lead to code execution."
+pattern:
+  type: regex
+  regex:
+    - "yaml\\.Unmarshal\\s*\\("
+    - "\"gopkg\\.in/yaml\\.v2\""
+    - "\"gopkg\\.in/yaml\\.v3\""
+message: "YAML unmarshaling detected. Unsafe YAML parsing can lead to code execution."
+fix_hint: "Use yaml.v3 with strict mode. Validate YAML input before unmarshaling."
+references:
+  - "https://cwe.mitre.org/data/definitions/502.html"

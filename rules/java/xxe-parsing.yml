@@ -1,0 +1,18 @@
+id: JAVA-SEC-006
+name: xxe-parsing
+severity: high
+language: java
+cwe: CWE-611
+owasp: "A05:2021"
+description: "Detects XML parsing configurations that may be vulnerable to XML External Entity (XXE) attacks."
+pattern:
+  type: regex
+  regex:
+    - "DocumentBuilderFactory\\.newInstance\\s*\\("
+    - "SAXParserFactory\\.newInstance\\s*\\("
+    - "XMLInputFactory\\.newInstance\\s*\\("
+    - "TransformerFactory\\.newInstance\\s*\\("
+message: "XML parsing without disabling external entities. Vulnerable to XXE attacks."
+fix_hint: "Disable external entities: factory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true)"
+references:
+  - "https://cwe.mitre.org/data/definitions/611.html"

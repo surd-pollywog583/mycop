@@ -1,0 +1,17 @@
+id: JAVA-SEC-016
+name: insecure-tls
+severity: high
+language: java
+cwe: CWE-295
+owasp: "A07:2021"
+description: "Detects insecure TLS/SSL configurations including outdated protocol versions and disabled certificate verification."
+pattern:
+  type: regex
+  regex:
+    - "SSLContext\\.getInstance\\s*\\(\\s*\"(?:SSL|TLSv1(?:\\.0|\\.1)?)\"\\s*\\)"
+    - "setHostnameVerifier\\s*\\(\\s*(?:ALLOW_ALL|NoopHostnameVerifier)"
+    - "TrustAllCerts"
+message: "Insecure TLS/SSL configuration detected."
+fix_hint: "Use TLSv1.2 or TLSv1.3. Do not disable certificate or hostname verification."
+references:
+  - "https://cwe.mitre.org/data/definitions/295.html"

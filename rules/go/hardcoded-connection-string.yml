@@ -1,0 +1,16 @@
+id: GO-SEC-034
+name: hardcoded-connection-string
+severity: high
+language: go
+cwe: CWE-798
+owasp: "A07:2021"
+description: "Detect hardcoded database connection strings with embedded credentials."
+pattern:
+  type: regex
+  regex:
+    - "sql\\.Open\\s*\\(\\s*\"[^\"]*\"\\s*,\\s*\"[^\"]*@"
+    - "(?i)(?:postgres|mysql|mongodb)://\\w+:\\w+@"
+message: "Hardcoded database connection string with credentials detected."
+fix_hint: "Use environment variables for database connection strings. Never hardcode credentials."
+references:
+  - "https://cwe.mitre.org/data/definitions/798.html"

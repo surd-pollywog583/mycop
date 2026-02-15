@@ -1,0 +1,17 @@
+id: JAVA-SEC-036
+name: empty-catch
+severity: medium
+language: java
+cwe: CWE-390
+owasp: "A09:2021"
+description: "Detects empty catch blocks where exceptions are silently swallowed."
+pattern:
+  type: regex
+  regex:
+    - "catch\\s*\\([^)]*\\)\\s*\\{\\s*\\}"
+    - "catch\\s*\\([^)]*\\)\\s*\\{\\s*//"
+    - "catch\\s*\\([^)]*\\)\\s*\\{\\s*/\\*"
+message: "Empty catch block. Exceptions are silently swallowed."
+fix_hint: "Handle or log exceptions properly. At minimum, log the error."
+references:
+  - "https://cwe.mitre.org/data/definitions/390.html"

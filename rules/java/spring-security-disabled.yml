@@ -1,0 +1,17 @@
+id: JAVA-SEC-050
+name: spring-security-disabled
+severity: high
+language: java
+cwe: CWE-862
+owasp: "A01:2021"
+description: "Detects Spring Security configuration that permits all requests without authorization."
+pattern:
+  type: regex
+  regex:
+    - "\\.authorizeRequests\\(\\)\\.anyRequest\\(\\)\\.permitAll"
+    - "\\.authorizeHttpRequests\\(\\)\\.anyRequest\\(\\)\\.permitAll"
+    - "@Override.*configure.*http\\..*permitAll"
+message: "Spring Security permits all requests. No authorization is enforced."
+fix_hint: "Configure proper authorization rules. Restrict endpoints based on roles and authentication."
+references:
+  - "https://cwe.mitre.org/data/definitions/862.html"

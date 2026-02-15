@@ -1,0 +1,17 @@
+id: JAVA-SEC-013
+name: weak-cipher-des
+severity: medium
+language: java
+cwe: CWE-327
+owasp: "A02:2021"
+description: "Detects usage of weak or deprecated cipher algorithms such as DES, 3DES, and RC4."
+pattern:
+  type: regex
+  regex:
+    - "Cipher\\.getInstance\\s*\\(\\s*\"DES"
+    - "Cipher\\.getInstance\\s*\\(\\s*\"DESede"
+    - "Cipher\\.getInstance\\s*\\(\\s*\"RC4"
+message: "Weak cipher algorithm detected. DES and RC4 are insecure."
+fix_hint: "Use AES/GCM/NoPadding instead of DES or RC4."
+references:
+  - "https://cwe.mitre.org/data/definitions/327.html"

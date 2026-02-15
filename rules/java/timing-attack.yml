@@ -1,0 +1,16 @@
+id: JAVA-SEC-035
+name: timing-attack
+severity: medium
+language: java
+cwe: CWE-208
+owasp: "A02:2021"
+description: "Detects non-constant-time string comparison for secrets, vulnerable to timing attacks."
+pattern:
+  type: regex
+  regex:
+    - "\\.equals\\s*\\(\\s*(?:password|secret|token|hash|key)"
+    - "(?:password|secret|token|hash|key)\\.equals\\s*\\("
+message: "Non-constant-time string comparison for secrets. Vulnerable to timing attacks."
+fix_hint: "Use MessageDigest.isEqual() or a constant-time comparison for comparing secrets."
+references:
+  - "https://cwe.mitre.org/data/definitions/208.html"

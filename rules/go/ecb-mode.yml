@@ -1,0 +1,16 @@
+id: GO-SEC-014
+name: ecb-mode
+severity: medium
+language: go
+cwe: CWE-327
+owasp: "A02:2021"
+description: "Detect ECB mode encryption"
+pattern:
+  type: regex
+  regex:
+    - "cipher\\.NewCBCEncrypter\\s*\\("
+    - "\\.Encrypt\\s*\\(\\s*dst\\s*,\\s*src\\s*\\)"
+message: "Possible ECB mode encryption detected. ECB does not provide semantic security."
+fix_hint: "Use GCM mode (cipher.NewGCM) instead of ECB or manual CBC."
+references:
+  - "https://cwe.mitre.org/data/definitions/327.html"

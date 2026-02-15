@@ -1,0 +1,17 @@
+id: JAVA-SEC-004
+name: insecure-random
+severity: medium
+language: java
+cwe: CWE-330
+owasp: "A02:2021"
+description: "Detects usage of insecure pseudo-random number generators that are predictable and unsuitable for security contexts."
+pattern:
+  type: regex
+  regex:
+    - "new\\s+Random\\s*\\("
+    - "Math\\.random\\s*\\("
+    - "java\\.util\\.Random"
+message: "Insecure random number generator. java.util.Random is predictable."
+fix_hint: "Use java.security.SecureRandom for security-sensitive random number generation."
+references:
+  - "https://cwe.mitre.org/data/definitions/330.html"

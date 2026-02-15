@@ -1,0 +1,17 @@
+id: GO-SEC-047
+name: filepath-clean
+severity: medium
+language: go
+cwe: CWE-22
+owasp: "A01:2021"
+description: "Detect file path from user input that may not be sanitized."
+pattern:
+  type: regex
+  regex:
+    - "os\\.Open\\s*\\(\\s*(?:r\\.|req\\.|c\\.)"
+    - "ioutil\\.ReadFile\\s*\\(\\s*(?:r\\.|req\\.)"
+    - "os\\.ReadFile\\s*\\(\\s*(?:r\\.|c\\.)"
+message: "File path from user input may not be sanitized."
+fix_hint: "Use filepath.Clean() and filepath.Abs() to normalize paths. Verify paths stay within allowed directories."
+references:
+  - "https://cwe.mitre.org/data/definitions/22.html"

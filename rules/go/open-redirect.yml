@@ -1,0 +1,16 @@
+id: GO-SEC-020
+name: open-redirect
+severity: medium
+language: go
+cwe: CWE-601
+owasp: "A01:2021"
+description: "Detect open redirect vulnerabilities"
+pattern:
+  type: regex
+  regex:
+    - "http\\.Redirect\\s*\\([^)]*r\\.(?:URL|Form|Query)"
+    - "http\\.Redirect\\s*\\([^)]*\\+"
+message: "Possible open redirect vulnerability. User input may control the redirect target."
+fix_hint: "Validate redirect URLs against an allowlist. Only redirect to relative paths or known domains."
+references:
+  - "https://cwe.mitre.org/data/definitions/601.html"

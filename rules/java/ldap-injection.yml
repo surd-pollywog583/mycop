@@ -1,0 +1,16 @@
+id: JAVA-SEC-010
+name: ldap-injection
+severity: high
+language: java
+cwe: CWE-90
+owasp: "A03:2021"
+description: "Detects LDAP injection vulnerabilities where user input is concatenated into LDAP queries."
+pattern:
+  type: regex
+  regex:
+    - "\\.search\\s*\\([^)]*\"[^\"]*\\+"
+    - "\"\\\\(cn=.*\\\\)\".*\\+"
+message: "Possible LDAP injection. User input in LDAP query."
+fix_hint: "Use parameterized LDAP queries or escape special LDAP characters."
+references:
+  - "https://cwe.mitre.org/data/definitions/90.html"

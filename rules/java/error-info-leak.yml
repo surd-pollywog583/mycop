@@ -1,0 +1,17 @@
+id: JAVA-SEC-022
+name: error-info-leak
+severity: medium
+language: java
+cwe: CWE-209
+owasp: "A09:2021"
+description: "Detects exposure of internal error information such as stack traces to end users."
+pattern:
+  type: regex
+  regex:
+    - "e\\.printStackTrace\\s*\\("
+    - "\\.getMessage\\s*\\(\\).*response"
+    - "getWriter\\(\\)\\.print.*(?:Exception|Error|StackTrace)"
+message: "Internal error information may be exposed to users."
+fix_hint: "Return generic error messages. Log detailed errors server-side only."
+references:
+  - "https://cwe.mitre.org/data/definitions/209.html"

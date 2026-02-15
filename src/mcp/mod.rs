@@ -33,7 +33,7 @@ impl ServerHandler for MycopMcpServer {
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
             instructions: Some(
-                "mycop is an AI code security scanner with 100 built-in rules \
+                "mycop is an AI code security scanner with 200 built-in rules \
                  covering OWASP Top 10 and CWE Top 25. Use 'scan' to check files \
                  for vulnerabilities, 'list_rules' to browse security rules, \
                  'explain_finding' for detailed vulnerability info, 'review' for \

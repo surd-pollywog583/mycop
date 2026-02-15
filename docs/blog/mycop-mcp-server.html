@@ -474,7 +474,7 @@
       </thead>
       <tbody>
         <tr><td><code>scan</code></td><td>Scan files or directories for vulnerabilities. Returns findings with severity, CWE/OWASP mappings, and fix hints. Supports severity filtering and git diff mode.</td></tr>
-        <tr><td><code>list_rules</code></td><td>Browse all 100 built-in security rules. Filter by language, severity, or search term.</td></tr>
+        <tr><td><code>list_rules</code></td><td>Browse all 200 built-in security rules. Filter by language, severity, or search term.</td></tr>
         <tr><td><code>explain_finding</code></td><td>Get a detailed explanation of a specific finding, including attack scenarios, impact analysis, and remediation guidance.</td></tr>
         <tr><td><code>review</code></td><td>Deep AI security review that goes beyond pattern matching to find logic flaws, auth issues, and complex vulnerability patterns.</td></tr>
         <tr><td><code>check_deps</code></td><td>Check <code>requirements.txt</code> and <code>package.json</code> for hallucinated or suspicious packages.</td></tr>
@@ -483,7 +483,7 @@
 
     <p><strong>Why no <code>fix</code> tool?</strong> In MCP mode, the agentic tool (Claude Code, Cursor, etc.) <em>is</em> the AI. Having a fix tool that calls another AI underneath is redundant and wasteful. Instead, the agent reads scan findings &mdash; each includes a <code>fix_hint</code> &mdash; and applies fixes directly using its own code editing capabilities. The CLI <code>mycop fix</code> command remains available for standalone use.</p>
 
-    <p>There are also two MCP resources: <code>mycop://rules/catalog</code> gives the full JSON catalog of all 100 rules, and <code>mycop://config/schema</code> provides the default <code>.scanrc.yml</code> configuration template.</p>
+    <p>There are also two MCP resources: <code>mycop://rules/catalog</code> gives the full JSON catalog of all 200 rules, and <code>mycop://config/schema</code> provides the default <code>.scanrc.yml</code> configuration template.</p>
 
     <h2>What This Looks Like in Practice</h2>
 

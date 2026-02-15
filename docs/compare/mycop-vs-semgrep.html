@@ -14,7 +14,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="mycop vs Semgrep — AI Code Security Scanner Comparison">
-  <meta property="og:description" content="Side-by-side comparison of mycop and Semgrep. AI auto-fix, 100 built-in rules, MCP server integration, pricing, and more.">
+  <meta property="og:description" content="Side-by-side comparison of mycop and Semgrep. AI auto-fix, 200 built-in rules, MCP server integration, pricing, and more.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://abdumajidrashidov.github.io/mycop/compare/mycop-vs-semgrep.html">
   <meta property="og:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
@@ -578,12 +578,12 @@
 
     <div class="tldr">
       <strong>TL;DR</strong>
-      <p>mycop is a focused, AI-powered SAST scanner built for catching vulnerabilities in AI-generated Python, JavaScript, and TypeScript code. It ships 100 rules, AI auto-fix, and an MCP server &mdash; all free and open source. Semgrep is a mature, general-purpose static analysis platform supporting 30+ languages with a custom rule ecosystem. Choose mycop for fast, zero-config scanning of AI-generated code with automatic remediation. Choose Semgrep when you need broad language coverage, custom rule authoring, or enterprise-grade policy enforcement.</p>
+      <p>mycop is a focused, AI-powered SAST scanner built for catching vulnerabilities in AI-generated Python, JavaScript, TypeScript, Go, and Java code. It ships 200 rules, AI auto-fix, and an MCP server &mdash; all free and open source. Semgrep is a mature, general-purpose static analysis platform supporting 30+ languages with a custom rule ecosystem. Choose mycop for fast, zero-config scanning of AI-generated code with automatic remediation. Choose Semgrep when you need broad language coverage, custom rule authoring, or enterprise-grade policy enforcement.</p>
     </div>
 
     <h2>Overview</h2>
 
-    <p><strong>mycop</strong> is an open-source, AI-powered code security scanner (SAST) written in Rust. It targets Python, JavaScript, and TypeScript with 100 built-in security rules covering OWASP Top 10 and CWE Top 25. Its key differentiator is AI-powered auto-fix: it can automatically rewrite vulnerable code using Claude, GPT-4, Ollama, or other providers, then verify the fix by re-scanning. It also includes a built-in MCP (Model Context Protocol) server for integration with agentic coding tools like Claude Code, Cursor, and Windsurf.</p>
+    <p><strong>mycop</strong> is an open-source, AI-powered code security scanner (SAST) written in Rust. It targets Python, JavaScript, TypeScript, Go, and Java with 200 built-in security rules covering OWASP Top 10 and CWE Top 25. Its key differentiator is AI-powered auto-fix: it can automatically rewrite vulnerable code using Claude, GPT-4, Ollama, or other providers, then verify the fix by re-scanning. It also includes a built-in MCP (Model Context Protocol) server for integration with agentic coding tools like Claude Code, Cursor, and Windsurf.</p>
 
     <p><strong>Semgrep</strong> is a well-established open-source static analysis tool created by Semgrep, Inc. (formerly r2c). It supports 30+ programming languages and provides a powerful, pattern-based rule language that lets teams write custom rules using syntax that resembles the target language. Semgrep offers both open-source (Semgrep OSS) and commercial (Semgrep Cloud Platform) tiers with features like supply chain analysis, secrets detection, and centralized policy management.</p>
 
@@ -605,12 +605,12 @@
         </tr>
         <tr>
           <td>Language support</td>
-          <td>Python, JavaScript, TypeScript</td>
+          <td>Python, JavaScript, TypeScript, Go, and Java</td>
           <td class="highlight">30+ languages (Python, JS, TS, Go, Java, Ruby, C#, Kotlin, Rust, etc.)</td>
         </tr>
         <tr>
           <td>Built-in rules</td>
-          <td class="highlight">100 (50 Python + 50 JS/TS), ready to use</td>
+          <td class="highlight">200 (50 Python + 50 JS/TS + 50 Go + 50 Java), ready to use</td>
           <td>2,000+ in Semgrep Registry (community + Pro rules)</td>
         </tr>
         <tr>
@@ -713,7 +713,7 @@
         <h3>Strengths</h3>
         <ul>
           <li>AI-powered auto-fix with 5 provider options &mdash; automatically rewrites vulnerable code and verifies the fix</li>
-          <li>Zero-config: 100 rules ship inside the binary, no rule setup required</li>
+          <li>Zero-config: 200 rules ship inside the binary, no rule setup required</li>
           <li>Built-in MCP server for agentic tool integration (Claude Code, Cursor, Windsurf)</li>
           <li>Single self-contained binary with no runtime dependencies</li>
           <li>Fast parallel scanning with Rayon across CPU cores</li>
@@ -725,8 +725,8 @@
       <div class="pros-cons-card cons-card">
         <h3>Limitations</h3>
         <ul>
-          <li>Only supports Python, JavaScript, and TypeScript (no Go, Java, Ruby, etc.)</li>
-          <li>100 rules vs Semgrep's 2,000+ rule ecosystem</li>
+          <li>Only supports Python, JavaScript, TypeScript, Go, and Java (no Ruby, C#, etc.)</li>
+          <li>200 rules vs Semgrep's 2,000+ rule ecosystem</li>
           <li>No taint tracking &mdash; pattern-based matching only, may miss multi-step data flows</li>
           <li>No supply chain analysis (SCA) or container scanning</li>
           <li>No centralized dashboard or policy management for teams</li>
@@ -781,7 +781,7 @@
 
     <p>Semgrep's rule language is genuinely powerful. You write patterns that look like the code you want to match, using metavariables like <code>$X</code> to capture expressions. This makes it intuitive to write rules for patterns you have seen in your own codebase. The Semgrep Registry provides thousands of community-contributed rules.</p>
 
-    <p>mycop takes the opposite approach: rules are embedded at compile time and optimized for the specific vulnerability patterns that AI assistants commonly introduce. You get 100 production-ready rules immediately, covering SQL injection, command injection, XSS, hardcoded secrets, insecure crypto, and more &mdash; all mapped to CWE identifiers. The tradeoff is less flexibility: you cannot easily write custom rules, and the rule set is fixed to what ships with the binary.</p>
+    <p>mycop takes the opposite approach: rules are embedded at compile time and optimized for the specific vulnerability patterns that AI assistants commonly introduce. You get 200 production-ready rules immediately, covering SQL injection, command injection, XSS, hardcoded secrets, insecure crypto, and more &mdash; all mapped to CWE identifiers. The tradeoff is less flexibility: you cannot easily write custom rules, and the rule set is fixed to what ships with the binary.</p>
 
     <h3>MCP Server and Agentic Integration</h3>
 
@@ -800,7 +800,7 @@
     <div class="when-box">
       <h3>Choose mycop when:</h3>
       <ul>
-        <li>Your team primarily uses Python, JavaScript, or TypeScript</li>
+        <li>Your team primarily uses Python, JavaScript, TypeScript, Go, or Java</li>
         <li>You want AI-powered auto-fix to automatically remediate vulnerabilities</li>
         <li>You use agentic coding tools (Claude Code, Cursor, Windsurf) and want integrated security scanning via MCP</li>
         <li>You need zero-config scanning &mdash; install and run immediately, no rule setup</li>
@@ -813,7 +813,7 @@
     <div class="when-box">
       <h3>Choose Semgrep when:</h3>
       <ul>
-        <li>Your codebase spans multiple languages beyond Python and JavaScript (Go, Java, Ruby, C#, etc.)</li>
+        <li>Your codebase spans multiple languages beyond Python, JavaScript, Go, and Java (Ruby, C#, PHP, etc.)</li>
         <li>You need to write custom security rules tailored to your specific codebase patterns</li>
         <li>You require cross-function taint tracking for complex data flow analysis</li>
         <li>You need supply chain analysis (SCA) for dependency vulnerabilities</li>
@@ -850,7 +850,7 @@ mycop fix . --dry-run
 
     <div class="cta-box">
       <h3>Try mycop on your codebase</h3>
-      <p>Install in seconds, scan immediately. 100 built-in rules, AI auto-fix, zero config. Free and open source.</p>
+      <p>Install in seconds, scan immediately. 200 built-in rules, AI auto-fix, zero config. Free and open source.</p>
       <code style="display:block;background:var(--terminal-bg);color:var(--green);padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.9rem;font-family:'JetBrains Mono',monospace">cargo install mycop && mycop scan .</code>
       <div class="cta-actions">
         <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn btn-primary">

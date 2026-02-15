@@ -1,0 +1,17 @@
+id: GO-SEC-041
+name: ldap-injection
+severity: high
+language: go
+cwe: CWE-90
+owasp: "A03:2021"
+description: "Detect LDAP injection from user input interpolated into LDAP queries."
+pattern:
+  type: regex
+  regex:
+    - "ldap\\.NewSearchRequest\\s*\\([^)]*\\+"
+    - "fmt\\.Sprintf\\s*\\(\\s*\"[^\"]*(?:cn|uid|ou)="
+    - "ldap\\.EscapeFilter"
+message: "Possible LDAP injection. User input may be interpolated into LDAP queries."
+fix_hint: "Use ldap.EscapeFilter() to sanitize user input before using it in LDAP queries."
+references:
+  - "https://cwe.mitre.org/data/definitions/90.html"

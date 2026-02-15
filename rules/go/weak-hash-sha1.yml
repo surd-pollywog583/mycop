@@ -1,0 +1,16 @@
+id: GO-SEC-012
+name: weak-hash-sha1
+severity: medium
+language: go
+cwe: CWE-328
+owasp: "A02:2021"
+description: "Detect use of SHA1"
+pattern:
+  type: regex
+  regex:
+    - "sha1\\.(?:New|Sum)\\s*\\("
+    - "\"crypto/sha1\""
+message: "Weak hash function SHA1 detected. SHA1 is cryptographically broken."
+fix_hint: "Use SHA-256 or SHA-3 instead of SHA1 for cryptographic purposes."
+references:
+  - "https://cwe.mitre.org/data/definitions/328.html"

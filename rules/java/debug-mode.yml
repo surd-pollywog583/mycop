@@ -1,0 +1,17 @@
+id: JAVA-SEC-021
+name: debug-mode
+severity: medium
+language: java
+cwe: CWE-215
+owasp: "A05:2021"
+description: "Detects debug mode or verbose logging configurations that may expose sensitive information in production."
+pattern:
+  type: regex
+  regex:
+    - "(?i)debug\\s*=\\s*true"
+    - "setShowSql\\s*\\(\\s*true\\s*\\)"
+    - "spring\\.jpa\\.show-sql\\s*=\\s*true"
+message: "Debug mode or verbose logging enabled. May expose sensitive information."
+fix_hint: "Disable debug mode and verbose SQL logging in production."
+references:
+  - "https://cwe.mitre.org/data/definitions/215.html"

@@ -1,0 +1,17 @@
+id: GO-SEC-027
+name: file-permissions
+severity: medium
+language: go
+cwe: CWE-732
+owasp: "A01:2021"
+description: "Detect overly permissive file permissions such as 0777 or 0666."
+pattern:
+  type: regex
+  regex:
+    - "os\\.(?:WriteFile|Create|OpenFile)\\s*\\([^)]*0777"
+    - "os\\.(?:WriteFile|Create|OpenFile)\\s*\\([^)]*0666"
+    - "os\\.Chmod\\s*\\([^)]*0777"
+message: "Overly permissive file permissions detected."
+fix_hint: "Use restrictive file permissions (e.g., 0600 or 0644). Avoid 0777 or 0666."
+references:
+  - "https://cwe.mitre.org/data/definitions/732.html"

@@ -9,7 +9,7 @@ AI Code Security Scanner — detect and auto-fix vulnerabilities in AI-generated
 [![GitHub stars](https://img.shields.io/github/stars/AbdumajidRashidov/mycop.svg?style=social)](https://github.com/AbdumajidRashidov/mycop)
 [![Made with Rust](https://img.shields.io/badge/Made%20with-Rust-orange.svg)](https://www.rust-lang.org/)
 
-mycop scans Python, JavaScript, and TypeScript codebases for security vulnerabilities using pattern matching, AST analysis, and optional AI-powered explanations and auto-fix. It ships with 100 built-in security rules covering OWASP Top 10 and CWE Top 25 categories.
+mycop scans Python, JavaScript, TypeScript, Go, and Java codebases for security vulnerabilities using pattern matching, AST analysis, and optional AI-powered explanations and auto-fix. It ships with 200 built-in security rules covering OWASP Top 10 and CWE Top 25 categories.
 
 <p align="center">
   <img src="docs/demo.gif" alt="mycop demo — scanning Python code for security vulnerabilities" width="750">
@@ -21,10 +21,10 @@ mycop scans Python, JavaScript, and TypeScript codebases for security vulnerabil
 
 mycop was built specifically to solve this problem:
 
-- **First SAST tool designed for AI-generated code** -- 100 rules targeting the exact vulnerability patterns that LLMs produce most often, covering OWASP Top 10 and CWE Top 25.
+- **First SAST tool designed for AI-generated code** -- 200 rules targeting the exact vulnerability patterns that LLMs produce most often, covering OWASP Top 10 and CWE Top 25.
 - **AI-powered auto-fix, not just detection** -- mycop does not just find vulnerabilities, it fixes them. The `mycop fix` command rewrites insecure code using AI while preserving functionality.
-- **Multi-language with a single tool** -- scan Python, JavaScript, and TypeScript codebases without juggling Bandit, ESLint, and separate configs.
-- **Zero configuration** -- all 100 security rules are compiled into the binary. No rule downloads, no config files, no internet connection required. Just `mycop scan .` and go.
+- **Multi-language with a single tool** -- scan Python, JavaScript, TypeScript, Go, and Java codebases without juggling Bandit, ESLint, and separate configs.
+- **Zero configuration** -- all 200 security rules are compiled into the binary. No rule downloads, no config files, no internet connection required. Just `mycop scan .` and go.
 - **MCP server for agentic workflows** -- plug mycop directly into Claude Code, Cursor, Windsurf, and other AI coding assistants via the Model Context Protocol.
 - **Free and open source** -- MIT licensed, forever.
 
@@ -163,7 +163,7 @@ mycop mcp
 | Tool | Description |
 |------|-------------|
 | `scan` | Scan files/directories for vulnerabilities with severity filtering |
-| `list_rules` | Browse/filter the 100 built-in security rules |
+| `list_rules` | Browse/filter the 200 built-in security rules |
 | `explain_finding` | Detailed explanation of a specific finding with CWE/OWASP info |
 | `review` | Deep AI security review of a file |
 | `check_deps` | Detect hallucinated packages in dependencies |
@@ -227,7 +227,7 @@ eval(user_input)
 eval(user_input)  # mycop-ignore:PY-SEC-005,PY-SEC-001
 ```
 
-Works with `#` (Python) and `//` (JavaScript/TypeScript) comment styles. Place the comment on the same line or the line above.
+Works with `#` (Python), `//` (JavaScript/TypeScript/Go/Java) comment styles. Place the comment on the same line or the line above.
 
 ## AI Providers
 
@@ -274,7 +274,7 @@ CLI flags always take priority over config file values.
 
 ## Security Rules
 
-100 built-in rules (50 Python + 50 JavaScript) covering OWASP Top 10, CWE Top 25, and more:
+200 built-in rules (50 Python + 50 JavaScript + 50 Go + 50 Java) covering OWASP Top 10, CWE Top 25, and more:
 
 | Category | Python | JavaScript |
 |----------|--------|------------|
@@ -320,7 +320,7 @@ CLI flags always take priority over config file values.
 | TOCTOU (CWE-367) | PY-SEC-048 | JS-SEC-048 |
 | Bare/Empty Catch (CWE-390) | PY-SEC-040 | JS-SEC-040 |
 
-Run `mycop rules list` to see all 100 rules with their severity levels.
+Run `mycop rules list` to see all 200 rules with their severity levels.
 
 ## Comparison
 
@@ -329,9 +329,9 @@ How does mycop compare to other security tools?
 | Feature | mycop | Semgrep | Snyk Code | Bandit | ESLint Security |
 |---------|:-----:|:-------:|:---------:|:------:|:---------------:|
 | AI code focus | Yes | No | No | No | No |
-| Built-in rules (no download) | 100 | Requires registry | Cloud-based | ~100 (Python only) | ~30 (JS only) |
+| Built-in rules (no download) | 200 | Requires registry | Cloud-based | ~100 (Python only) | ~30 (JS only) |
 | AI auto-fix | Yes | No | Paid | No | No |
-| Multi-language | Python, JS, TS | 30+ | 10+ | Python only | JS/TS only |
+| Multi-language | Py, JS, TS, Go, Java | 30+ | 10+ | Python only | JS/TS only |
 | MCP server | Yes | No | No | No | No |
 | Zero config | Yes | Needs rules config | Needs project setup | Minimal | Needs .eslintrc |
 | SARIF output | Yes | Yes | Yes | Yes | Via plugin |

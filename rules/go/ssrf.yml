@@ -1,0 +1,17 @@
+id: GO-SEC-006
+name: ssrf
+severity: high
+language: go
+cwe: CWE-918
+owasp: "A10:2021"
+description: "Detect SSRF vulnerabilities"
+pattern:
+  type: regex
+  regex:
+    - "http\\.Get\\s*\\([^)]*\\+"
+    - "http\\.Post\\s*\\([^)]*\\+"
+    - "http\\.NewRequest\\s*\\([^)]*\\+"
+message: "Possible SSRF vulnerability. User input may control the target URL."
+fix_hint: "Validate and allowlist URLs before making HTTP requests. Block internal/private IP ranges."
+references:
+  - "https://cwe.mitre.org/data/definitions/918.html"

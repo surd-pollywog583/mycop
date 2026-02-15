@@ -1,0 +1,16 @@
+id: JAVA-SEC-014
+name: ecb-mode
+severity: medium
+language: java
+cwe: CWE-327
+owasp: "A02:2021"
+description: "Detects usage of ECB mode encryption which does not provide semantic security and leaks patterns in plaintext."
+pattern:
+  type: regex
+  regex:
+    - "Cipher\\.getInstance\\s*\\(\\s*\"AES/ECB"
+    - "Cipher\\.getInstance\\s*\\(\\s*\"AES\"\\s*\\)"
+message: "ECB mode encryption detected. ECB does not provide semantic security."
+fix_hint: "Use AES/GCM/NoPadding or AES/CBC/PKCS5Padding with random IV instead of ECB."
+references:
+  - "https://cwe.mitre.org/data/definitions/327.html"

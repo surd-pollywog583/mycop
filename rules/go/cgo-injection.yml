@@ -1,0 +1,16 @@
+id: GO-SEC-019
+name: cgo-injection
+severity: critical
+language: go
+cwe: CWE-78
+owasp: "A03:2021"
+description: "Detect unsafe CGo usage"
+pattern:
+  type: regex
+  regex:
+    - "C\\.CString\\s*\\("
+    - "import\\s+\"C\""
+message: "CGo usage detected. C code called from Go may introduce memory safety issues and injection vulnerabilities."
+fix_hint: "Validate and sanitize all inputs passed to C functions. Consider pure Go alternatives."
+references:
+  - "https://cwe.mitre.org/data/definitions/78.html"

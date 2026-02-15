@@ -1,0 +1,16 @@
+id: GO-SEC-044
+name: timing-attack
+severity: medium
+language: go
+cwe: CWE-208
+owasp: "A02:2021"
+description: "Detect timing-vulnerable string comparison of secrets."
+pattern:
+  type: regex
+  regex:
+    - "(?:password|token|secret|key)\\s*==\\s*"
+    - "==\\s*(?:password|token|secret|key)"
+message: "Possible timing attack vulnerability. String comparison of secrets is not constant-time."
+fix_hint: "Use crypto/subtle.ConstantTimeCompare() for comparing secrets, tokens, or hashes."
+references:
+  - "https://cwe.mitre.org/data/definitions/208.html"

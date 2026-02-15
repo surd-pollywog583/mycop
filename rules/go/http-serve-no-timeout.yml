@@ -1,0 +1,15 @@
+id: GO-SEC-038
+name: http-serve-no-timeout
+severity: medium
+language: go
+cwe: CWE-400
+owasp: "A05:2021"
+description: "Detect HTTP servers without configured timeouts, vulnerable to DoS attacks."
+pattern:
+  type: regex
+  regex:
+    - "http\\.ListenAndServe\\s*\\("
+message: "HTTP server without configured timeouts. This is vulnerable to slowloris and other DoS attacks."
+fix_hint: "Use http.Server with ReadTimeout, WriteTimeout, and IdleTimeout configured."
+references:
+  - "https://cwe.mitre.org/data/definitions/400.html"

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-02-16
+
+### Added
+- **Go language support** — 50 new security rules (GO-SEC-001 through GO-SEC-050) covering SQL injection, command injection, hardcoded secrets, unsafe pointer usage, race conditions, goroutine leaks, and Go-specific patterns (CGo injection, defer-in-loop, InsecureSkipVerify, gin/gRPC misconfigurations)
+- **Java language support** — 50 new security rules (JAVA-SEC-001 through JAVA-SEC-050) covering SQL injection, command injection, XXE, insecure deserialization, and framework-specific vulnerabilities (Spring Security, Spring Actuator, Hibernate injection, unsafe reflection)
+- Tree-sitter AST parsing support for Go and Java files
+- Test fixtures for Go (`tests/fixtures/go/vulnerable.go`) and Java (`tests/fixtures/java/vulnerable.java`)
+
+### Changed
+- Total built-in rules increased from 100 to **200** (50 Python + 50 JavaScript + 50 Go + 50 Java)
+- Supported languages increased from 3 to **5** (Python, JavaScript, TypeScript, Go, Java)
+
+### Dependencies
+- Added `tree-sitter-go` v0.25 for Go AST parsing
+- Added `tree-sitter-java` v0.23 for Java AST parsing
+
 ## [0.3.1] - 2026-02-15
 
 ### Changed

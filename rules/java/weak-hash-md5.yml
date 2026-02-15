@@ -1,0 +1,17 @@
+id: JAVA-SEC-011
+name: weak-hash-md5
+severity: medium
+language: java
+cwe: CWE-328
+owasp: "A02:2021"
+description: "Detects usage of the weak MD5 hash algorithm which is vulnerable to collision attacks."
+pattern:
+  type: regex
+  regex:
+    - "MessageDigest\\.getInstance\\s*\\(\\s*\"MD5\"\\s*\\)"
+    - "DigestUtils\\.md5"
+    - "Md5Crypt"
+message: "Weak hash algorithm MD5 detected."
+fix_hint: "Use SHA-256 or SHA-3 instead of MD5."
+references:
+  - "https://cwe.mitre.org/data/definitions/328.html"

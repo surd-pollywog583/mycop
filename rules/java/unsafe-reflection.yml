@@ -1,0 +1,17 @@
+id: JAVA-SEC-042
+name: unsafe-reflection
+severity: high
+language: java
+cwe: CWE-470
+owasp: "A03:2021"
+description: "Detects unsafe use of reflection with dynamic class or method names."
+pattern:
+  type: regex
+  regex:
+    - "Class\\.forName\\s*\\([^)]*\\+"
+    - "\\.getClass\\(\\)\\.getMethod\\s*\\([^)]*\\+"
+    - "\\.newInstance\\s*\\("
+message: "Unsafe use of reflection with dynamic class/method names."
+fix_hint: "Validate class and method names against an allowlist before using reflection."
+references:
+  - "https://cwe.mitre.org/data/definitions/470.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-043
+name: runtime-exec
+severity: critical
+language: java
+cwe: CWE-78
+owasp: "A03:2021"
+description: "Detects OS command execution with dynamic input, risking command injection."
+pattern:
+  type: regex
+  regex:
+    - "Runtime\\.getRuntime\\(\\)\\.exec\\s*\\([^)]*\\+"
+    - "getRuntime\\(\\)\\.exec\\s*\\(\\s*(?:cmd|command|input|param|arg)"
+    - "ProcessBuilder.*command\\s*\\([^)]*\\+"
+message: "OS command execution with dynamic input. High risk of command injection."
+fix_hint: "Avoid Runtime.exec() with user input. Use ProcessBuilder with explicit argument lists."
+references:
+  - "https://cwe.mitre.org/data/definitions/78.html"

@@ -1,0 +1,17 @@
+id: JAVA-SEC-049
+name: idor
+severity: medium
+language: java
+cwe: CWE-639
+owasp: "A01:2021"
+description: "Detects possible insecure direct object reference (IDOR) vulnerabilities."
+pattern:
+  type: regex
+  regex:
+    - "getParameter\\s*\\(\\s*\"id\"\\s*\\)"
+    - "@PathVariable.*(?:id|userId|orderId)"
+    - "findById\\s*\\(\\s*(?:request|param|id)"
+message: "Possible insecure direct object reference (IDOR)."
+fix_hint: "Implement authorization checks before accessing resources by ID. Verify the requesting user owns the resource."
+references:
+  - "https://cwe.mitre.org/data/definitions/639.html"

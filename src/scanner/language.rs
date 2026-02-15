@@ -5,6 +5,8 @@ pub enum Language {
     Python,
     JavaScript,
     TypeScript,
+    Go,
+    Java,
 }
 
 impl Language {
@@ -14,6 +16,8 @@ impl Language {
             "py" | "pyw" => Some(Language::Python),
             "js" | "jsx" | "mjs" | "cjs" => Some(Language::JavaScript),
             "ts" | "tsx" | "mts" | "cts" => Some(Language::TypeScript),
+            "go" => Some(Language::Go),
+            "java" => Some(Language::Java),
             _ => None,
         }
     }
@@ -23,6 +27,8 @@ impl Language {
             Language::Python => "python",
             Language::JavaScript => "javascript",
             Language::TypeScript => "typescript",
+            Language::Go => "go",
+            Language::Java => "java",
         }
     }
 
@@ -30,6 +36,8 @@ impl Language {
         match self {
             Language::Python => "python",
             Language::JavaScript | Language::TypeScript => "javascript",
+            Language::Go => "go",
+            Language::Java => "java",
         }
     }
 }
@@ -83,9 +91,25 @@ mod tests {
     }
 
     #[test]
+    fn test_go_extensions() {
+        assert_eq!(
+            Language::from_extension(Path::new("main.go")),
+            Some(Language::Go)
+        );
+    }
+
+    #[test]
+    fn test_java_extensions() {
+        assert_eq!(
+            Language::from_extension(Path::new("App.java")),
+            Some(Language::Java)
+        );
+    }
+
+    #[test]
     fn test_unsupported_extensions() {
         assert_eq!(Language::from_extension(Path::new("file.rs")), None);
-        assert_eq!(Language::from_extension(Path::new("file.go")), None);
+        assert_eq!(Language::from_extension(Path::new("file.rb")), None);
         assert_eq!(Language::from_extension(Path::new("file")), None);
     }
 
@@ -94,5 +118,7 @@ mod tests {
         assert_eq!(Language::Python.rule_dir(), "python");
         assert_eq!(Language::JavaScript.rule_dir(), "javascript");
         assert_eq!(Language::TypeScript.rule_dir(), "javascript");
+        assert_eq!(Language::Go.rule_dir(), "go");
+        assert_eq!(Language::Java.rule_dir(), "java");
     }
 }

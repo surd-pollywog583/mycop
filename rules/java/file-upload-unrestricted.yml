@@ -1,0 +1,17 @@
+id: JAVA-SEC-031
+name: file-upload-unrestricted
+severity: high
+language: java
+cwe: CWE-434
+owasp: "A04:2021"
+description: "Detects unrestricted file upload without content type or extension validation."
+pattern:
+  type: regex
+  regex:
+    - "MultipartFile.*transferTo\\s*\\("
+    - "getOriginalFilename\\s*\\("
+    - "Part.*write\\s*\\("
+message: "File upload without content type or extension validation."
+fix_hint: "Validate file type, extension, and size. Store uploads outside the web root. Generate random filenames."
+references:
+  - "https://cwe.mitre.org/data/definitions/434.html"

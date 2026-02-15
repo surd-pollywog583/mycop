@@ -28,7 +28,9 @@
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact"
+    "onLanguage:javascriptreact",
+    "onLanguage:go",
+    "onLanguage:java"
   ],
   "main": "./out/extension.js",
   "contributes": {

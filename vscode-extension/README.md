@@ -1,7 +1,7 @@
 # mycop VS Code Extension
 
 AI-powered code security scanner for VS Code. Detects vulnerabilities in
-Python, JavaScript, and TypeScript code.
+Python, JavaScript, TypeScript, Go, and Java code.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/instal
 ## Features
 
 - Scans files on save and shows security findings as diagnostics
-- Supports Python, JavaScript, and TypeScript
+- Supports Python, JavaScript, TypeScript, Go, and Java
 - Configurable severity threshold
 - Manual scan via Command Palette: "mycop: Scan Current File" / "mycop: Scan Workspace"
 
@@ -35,7 +35,7 @@ curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/instal
 
 ## Usage
 
-1. Open a Python, JavaScript, or TypeScript file
+1. Open a Python, JavaScript, TypeScript, Go, or Java file
 2. Save the file (or run "mycop: Scan Current File" from the Command Palette)
 3. Security findings appear as diagnostics in the Problems panel
 4. Hover over highlighted code for details

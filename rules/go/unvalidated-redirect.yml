@@ -1,0 +1,16 @@
+id: GO-SEC-035
+name: unvalidated-redirect
+severity: medium
+language: go
+cwe: CWE-601
+owasp: "A01:2021"
+description: "Detect unvalidated redirects that may be controlled by user input."
+pattern:
+  type: regex
+  regex:
+    - "http\\.Redirect\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*\\w+"
+    - "w\\.Header\\(\\)\\.Set\\s*\\(\\s*\"Location\".*\\+"
+message: "Unvalidated redirect detected. User-controlled input may control the redirect destination."
+fix_hint: "Validate redirect targets against an allowlist of trusted URLs."
+references:
+  - "https://cwe.mitre.org/data/definitions/601.html"

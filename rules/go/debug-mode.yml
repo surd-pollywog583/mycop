@@ -1,0 +1,17 @@
+id: GO-SEC-024
+name: debug-mode
+severity: medium
+language: go
+cwe: CWE-215
+owasp: "A05:2021"
+description: "Detect debug mode enabled in production"
+pattern:
+  type: regex
+  regex:
+    - "gin\\.SetMode\\s*\\(\\s*gin\\.DebugMode\\s*\\)"
+    - "(?i)debug\\s*[:=]\\s*true"
+    - "pprof\\.Handler\\s*\\("
+message: "Debug mode or profiling endpoint detected. These should be disabled in production."
+fix_hint: "Disable debug mode and remove profiling endpoints before deploying to production."
+references:
+  - "https://cwe.mitre.org/data/definitions/215.html"

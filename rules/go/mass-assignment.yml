@@ -1,0 +1,16 @@
+id: GO-SEC-043
+name: mass-assignment
+severity: medium
+language: go
+cwe: CWE-915
+owasp: "A04:2021"
+description: "Detect mass assignment vulnerabilities where request body is decoded directly into a struct."
+pattern:
+  type: regex
+  regex:
+    - "json\\.NewDecoder\\s*\\([^)]*\\.Body\\)\\.Decode\\s*\\(&"
+    - "c\\.(?:Bind|ShouldBind)\\s*\\(&"
+message: "Possible mass assignment. Request body is decoded directly into a struct."
+fix_hint: "Use separate input DTOs instead of binding directly to domain/database models."
+references:
+  - "https://cwe.mitre.org/data/definitions/915.html"

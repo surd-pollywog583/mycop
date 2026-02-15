@@ -1,0 +1,17 @@
+id: JAVA-SEC-028
+name: xpath-injection
+severity: high
+language: java
+cwe: CWE-643
+owasp: "A03:2021"
+description: "Detects XPath injection through dynamic XPath query construction with user input."
+pattern:
+  type: regex
+  regex:
+    - "xpath\\.(?:evaluate|compile)\\s*\\([^)]*\\+"
+    - "XPathExpression.*compile\\s*\\([^)]*\\+"
+    - "XPathFactory\\.newInstance\\s*\\("
+message: "Possible XPath injection. User input in XPath query."
+fix_hint: "Use parameterized XPath queries or validate/sanitize user input."
+references:
+  - "https://cwe.mitre.org/data/definitions/643.html"

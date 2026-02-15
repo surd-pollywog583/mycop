@@ -1,0 +1,17 @@
+id: JAVA-SEC-047
+name: unencrypted-socket
+severity: medium
+language: java
+cwe: CWE-319
+owasp: "A02:2021"
+description: "Detects unencrypted socket communication without TLS."
+pattern:
+  type: regex
+  regex:
+    - "new\\s+Socket\\s*\\("
+    - "ServerSocket\\s*\\("
+    - "new\\s+DatagramSocket\\s*\\("
+message: "Unencrypted socket communication detected."
+fix_hint: "Use SSLSocket or SSLServerSocket for encrypted communication."
+references:
+  - "https://cwe.mitre.org/data/definitions/319.html"

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What is mycop
 
-mycop is an AI-powered code security scanner (SAST) written in Rust. It detects vulnerabilities in AI-generated code targeting Python, JavaScript, and TypeScript, with 100 built-in YAML security rules covering OWASP Top 10 and CWE Top 25.
+mycop is an AI-powered code security scanner (SAST) written in Rust. It detects vulnerabilities in AI-generated code targeting Python, JavaScript, TypeScript, Go, and Java, with 200 built-in YAML security rules covering OWASP Top 10 and CWE Top 25.
 
 ## Build & Development Commands
 
@@ -31,10 +31,10 @@ CLI parsing (clap) → Config loading (.scanrc.yml) → File discovery (walkdir 
 - **main.rs** — Command routing and orchestration for all subcommands
 - **scanner/** — Core scanning engine
   - `engine.rs` — Parallel file scanning with Rayon (`scan_files` returns `Vec<Finding>`)
-  - `language.rs` — Language detection from file extensions (Python, JS, TS)
+  - `language.rs` — Language detection from file extensions (Python, JS, TS, Go, Java)
   - `file_discovery.rs` — File globbing, gitignore-aware traversal, `--diff` mode via git
 - **rules/** — Security rule system
-  - `registry.rs` — Loads 100 YAML rules embedded at compile time via `include_str!` from `rules/python/` and `rules/javascript/`
+  - `registry.rs` — Loads 200 YAML rules embedded at compile time via `include_str!` from `rules/python/`, `rules/javascript/`, `rules/go/`, and `rules/java/`
   - `matcher.rs` — Pattern matching using tree-sitter AST queries + regex. Produces `Finding` structs
   - `parser.rs` — YAML rule deserialization
 - **ai/** — Pluggable AI backends behind the `AiBackend` trait
@@ -54,7 +54,7 @@ CLI parsing (clap) → Config loading (.scanrc.yml) → File discovery (walkdir 
 
 ### Rules (`rules/`)
 
-100 YAML files (50 Python in `rules/python/`, 50 JavaScript in `rules/javascript/`). Each rule has: id, name, severity, CWE/OWASP mappings, pattern (regex and/or AST query), message, fix_hint. Rules are embedded into the binary at compile time.
+200 YAML files (50 Python in `rules/python/`, 50 JavaScript in `rules/javascript/`, 50 Go in `rules/go/`, 50 Java in `rules/java/`). Each rule has: id, name, severity, CWE/OWASP mappings, pattern (regex and/or AST query), message, fix_hint. Rules are embedded into the binary at compile time.
 
 Inline suppression: `# mycop-ignore` or `# mycop-ignore:RULE-ID`
 
