@@ -175,7 +175,10 @@ fn scan_impl(params: ScanParams) -> anyhow::Result<ScanResult> {
     let registry = RuleRegistry::load_default()?;
     let rules_loaded = registry.rule_count();
 
-    let paths: Vec<PathBuf> = params.paths.iter().map(PathBuf::from).collect();
+    let resolved = params
+        .resolved_paths()
+        .map_err(|e| anyhow::anyhow!(e))?;
+    let paths: Vec<PathBuf> = resolved.iter().map(PathBuf::from).collect();
 
     let files = if params.diff.unwrap_or(false) {
         file_discovery::discover_diff_files(&std::env::current_dir()?)?
@@ -245,9 +248,10 @@ fn list_rules_impl(params: ListRulesParams) -> anyhow::Result<ListRulesResult> {
 }
 
 fn explain_finding_impl(params: ExplainFindingParams) -> anyhow::Result<String> {
-    let file_path = PathBuf::from(&params.file);
+    let file = params.resolved_file().map_err(|e| anyhow::anyhow!(e))?;
+    let file_path = PathBuf::from(&file);
     if !file_path.exists() {
-        anyhow::bail!("File not found: {}", params.file);
+        anyhow::bail!("File not found: {}", file);
     }
 
     let registry = RuleRegistry::load_default()?;
@@ -263,7 +267,7 @@ fn explain_finding_impl(params: ExplainFindingParams) -> anyhow::Result<String> 
                 "No finding with rule_id '{}' at line {} in {}",
                 params.rule_id,
                 params.line,
-                params.file
+                file
             )
         })?;
 
@@ -280,9 +284,10 @@ fn explain_finding_impl(params: ExplainFindingParams) -> anyhow::Result<String> 
 }
 
 fn fix_impl(params: FixParams) -> anyhow::Result<FixResult> {
-    let file_path = PathBuf::from(&params.file);
+    let file = params.resolved_file().map_err(|e| anyhow::anyhow!(e))?;
+    let file_path = PathBuf::from(&file);
     if !file_path.exists() {
-        anyhow::bail!("File not found: {}", params.file);
+        anyhow::bail!("File not found: {}", file);
     }
 
     let registry = RuleRegistry::load_default()?;
@@ -297,7 +302,7 @@ fn fix_impl(params: FixParams) -> anyhow::Result<FixResult> {
 
     if findings.is_empty() {
         return Ok(FixResult {
-            file: params.file,
+            file,
             vulnerabilities_found: 0,
             fixed: false,
             diff: None,
@@ -315,12 +320,12 @@ fn fix_impl(params: FixParams) -> anyhow::Result<FixResult> {
     let backend = ai::create_backend(&provider);
 
     let finding_refs: Vec<&crate::rules::matcher::Finding> = findings.iter().collect();
-    let response = backend.fix_file(&params.file, &lang, &original, &finding_refs)?;
+    let response = backend.fix_file(&file, &lang, &original, &finding_refs)?;
 
     let fixed = fixer::extract_fixed_file(&response)
         .ok_or_else(|| anyhow::anyhow!("Could not extract fixed file from AI response"))?;
 
-    let diff_text = fixer::diff_to_string(&params.file, &original, &fixed);
+    let diff_text = fixer::diff_to_string(&file, &original, &fixed);
 
     let mut remaining = 0;
     if !params.dry_run {
@@ -332,7 +337,7 @@ fn fix_impl(params: FixParams) -> anyhow::Result<FixResult> {
     }
 
     Ok(FixResult {
-        file: params.file,
+        file,
         vulnerabilities_found: findings.len(),
         fixed: !params.dry_run,
         diff: if diff_text.is_empty() {
@@ -346,13 +351,14 @@ fn fix_impl(params: FixParams) -> anyhow::Result<FixResult> {
 }
 
 fn review_impl(params: ReviewParams) -> anyhow::Result<String> {
-    let file_path = PathBuf::from(&params.file);
+    let file = params.resolved_file().map_err(|e| anyhow::anyhow!(e))?;
+    let file_path = PathBuf::from(&file);
     if !file_path.exists() {
-        anyhow::bail!("File not found: {}", params.file);
+        anyhow::bail!("File not found: {}", file);
     }
 
     let language = Language::from_extension(&file_path)
-        .ok_or_else(|| anyhow::anyhow!("Unsupported file type: {}", params.file))?;
+        .ok_or_else(|| anyhow::anyhow!("Unsupported file type: {}", file))?;
 
     let content = std::fs::read_to_string(&file_path)?;
 

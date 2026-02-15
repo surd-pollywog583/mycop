@@ -5,8 +5,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, JsonSchema)]
 pub struct ScanParams {
-    /// Files or directories to scan (absolute paths)
-    pub paths: Vec<String>,
+    /// A single file or directory path to scan (use this OR paths, not both)
+    #[serde(default)]
+    pub path: Option<String>,
+    /// Multiple files or directories to scan (use this OR path, not both)
+    #[serde(default)]
+    pub paths: Option<Vec<String>>,
     /// Minimum severity to report: "critical", "high", "medium", "low", "info"
     #[serde(default)]
     pub severity: Option<String>,
@@ -16,6 +20,17 @@ pub struct ScanParams {
     /// Maximum number of findings to return (default: 50)
     #[serde(default)]
     pub max_results: Option<usize>,
+}
+
+impl ScanParams {
+    /// Resolve path/paths into a single Vec<String>, requiring at least one.
+    pub fn resolved_paths(&self) -> Result<Vec<String>, String> {
+        match (&self.path, &self.paths) {
+            (Some(p), _) => Ok(vec![p.clone()]),
+            (None, Some(ps)) if !ps.is_empty() => Ok(ps.clone()),
+            _ => Err("Either 'path' (string) or 'paths' (array of strings) must be provided".into()),
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -84,7 +99,11 @@ pub struct RuleOutput {
 #[derive(Debug, Deserialize, JsonSchema)]
 pub struct ExplainFindingParams {
     /// The file path containing the vulnerability
-    pub file: String,
+    #[serde(default)]
+    pub file: Option<String>,
+    /// The file path containing the vulnerability (alias for 'file')
+    #[serde(default)]
+    pub path: Option<String>,
     /// The line number of the finding
     pub line: usize,
     /// The rule ID (e.g., "PY-SEC-001")
@@ -94,12 +113,25 @@ pub struct ExplainFindingParams {
     pub ai_provider: Option<String>,
 }
 
+impl ExplainFindingParams {
+    pub fn resolved_file(&self) -> Result<String, String> {
+        self.file
+            .clone()
+            .or_else(|| self.path.clone())
+            .ok_or_else(|| "Either 'file' or 'path' must be provided".into())
+    }
+}
+
 // ---- Fix Tool ----
 
 #[derive(Debug, Deserialize, JsonSchema)]
 pub struct FixParams {
     /// File path to fix
-    pub file: String,
+    #[serde(default)]
+    pub file: Option<String>,
+    /// File path to fix (alias for 'file')
+    #[serde(default)]
+    pub path: Option<String>,
     /// Minimum severity to fix: "critical", "high", "medium", "low"
     #[serde(default)]
     pub severity: Option<String>,
@@ -109,6 +141,15 @@ pub struct FixParams {
     /// Override AI provider
     #[serde(default)]
     pub ai_provider: Option<String>,
+}
+
+impl FixParams {
+    pub fn resolved_file(&self) -> Result<String, String> {
+        self.file
+            .clone()
+            .or_else(|| self.path.clone())
+            .ok_or_else(|| "Either 'file' or 'path' must be provided".into())
+    }
 }
 
 fn default_true() -> bool {
@@ -130,10 +171,23 @@ pub struct FixResult {
 #[derive(Debug, Deserialize, JsonSchema)]
 pub struct ReviewParams {
     /// File path to review
-    pub file: String,
+    #[serde(default)]
+    pub file: Option<String>,
+    /// File path to review (alias for 'file')
+    #[serde(default)]
+    pub path: Option<String>,
     /// Override AI provider
     #[serde(default)]
     pub ai_provider: Option<String>,
+}
+
+impl ReviewParams {
+    pub fn resolved_file(&self) -> Result<String, String> {
+        self.file
+            .clone()
+            .or_else(|| self.path.clone())
+            .ok_or_else(|| "Either 'file' or 'path' must be provided".into())
+    }
 }
 
 // ---- Check Deps Tool ----
