@@ -2,6 +2,7 @@ mod ai;
 mod cli;
 mod config;
 mod fixer;
+mod mcp;
 mod reporter;
 mod rules;
 mod scanner;
@@ -92,6 +93,9 @@ fn run(cli: Cli) -> Result<ExitCode> {
                 cmd_deps_check(path)?;
             }
         },
+        Commands::Mcp => {
+            cmd_mcp()?;
+        }
     }
 
     Ok(ExitCode::SUCCESS)
@@ -706,6 +710,12 @@ fn cmd_deps_check(path: PathBuf) -> Result<()> {
         }
     }
 
+    Ok(())
+}
+
+fn cmd_mcp() -> Result<()> {
+    let rt = tokio::runtime::Runtime::new()?;
+    rt.block_on(mcp::MycopMcpServer::run())?;
     Ok(())
 }
 

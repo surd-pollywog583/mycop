@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-02-15
+
+### Added
+- **MCP Server** — `mycop mcp` starts a Model Context Protocol server over STDIO, enabling agentic coding tools to call mycop's security scanning directly
+  - Works with Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible client
+  - 6 MCP tools: `scan`, `list_rules`, `explain_finding`, `fix`, `review`, `check_deps`
+  - 2 MCP resources: `mycop://rules/catalog` (full JSON rule catalog), `mycop://config/schema` (config template)
+  - AI-powered tools (`explain_finding`, `fix`, `review`) auto-detect available AI providers
+  - `fix` tool defaults to `dry_run=true` for safety — agents see the diff before writing files
+  - Structured JSON responses with CWE/OWASP mappings for all findings
+
+### Dependencies
+- Added `rmcp` (Rust MCP SDK) for MCP server implementation
+- Added `tokio` for async runtime (MCP transport)
+- Added `schemars` for JSON Schema generation (MCP tool parameters)
+
 ## [0.2.1] - 2026-02-15
 
 ### Fixed

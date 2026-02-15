@@ -1,6 +1,6 @@
 [package]
 name = "mycop"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2021"
 description = "AI Code Security Scanner — detect vulnerabilities in AI-generated code"
 license = "MIT"
@@ -64,6 +64,11 @@ chrono = "0.4"
 
 # UUID for SARIF
 uuid = { version = "1", features = ["v4"] }
+
+# MCP server
+rmcp = { version = "0.1", features = ["server", "transport-io", "macros"] }
+tokio = { version = "1", features = ["full"] }
+schemars = "0.8"
 
 [dev-dependencies]
 tempfile = "3"

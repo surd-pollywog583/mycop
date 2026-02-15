@@ -40,7 +40,7 @@
     "applicationCategory": "DeveloperApplication",
     "applicationSubCategory": "Security Scanner",
     "operatingSystem": "macOS, Linux, Windows",
-    "softwareVersion": "0.2.1",
+    "softwareVersion": "0.3.0",
     "programmingLanguage": "Rust",
     "downloadUrl": "https://crates.io/crates/mycop",
     "installUrl": "https://github.com/AbdumajidRashidov/mycop#installation",
@@ -61,7 +61,8 @@
       "Pre-commit hook support",
       "AST-level analysis with tree-sitter",
       "Configurable severity thresholds",
-      "Git diff scanning mode"
+      "Git diff scanning mode",
+      "MCP server for agentic tool integration (Claude Code, Cursor, Windsurf, Codex CLI)"
     ],
     "author": {
       "@type": "Person",
@@ -112,6 +113,14 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Yes. mycop's 'mycop fix' command uses AI to automatically rewrite vulnerable code. It groups all findings per file, sends them to your chosen AI provider (Claude, GPT-4, OpenAI, or Ollama), generates a diff for you to review, and re-scans to verify the fix. Use '--dry-run' to preview changes before applying them. No AI key is needed for scanning — only for auto-fix."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I use mycop with Claude Code, Cursor, or Windsurf for agentic security scanning?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "mycop includes a built-in MCP (Model Context Protocol) server. Run 'mycop mcp' to start it, then configure your agentic tool to connect. For Claude Code, add {\"mcpServers\":{\"mycop\":{\"command\":\"mycop\",\"args\":[\"mcp\"]}}} to ~/.claude/settings.json. The server exposes 6 tools (scan, list_rules, explain_finding, fix, review, check_deps) that agents can call directly. It works with Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible client."
         }
       },
       {
@@ -668,7 +677,7 @@
 
     .integrations-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
 
@@ -1275,6 +1284,24 @@ mycop --version</code></div>
         </div>
         <div class="integration-card">
           <div class="integration-header">
+            <h3>MCP Server <span
+                style="font-size:0.7rem;font-weight:500;color:#fff;background:var(--accent);padding:2px 8px;border-radius:4px;margin-left:6px">New</span></h3>
+            <p>Agentic security scanning in Claude Code, Cursor, Windsurf</p>
+          </div>
+          <div class="integration-code"><span class="comment">// Claude Code (~/.claude/settings.json)</span>
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"mycop"</span>: {
+      <span class="key">"command"</span>: <span class="str">"mycop"</span>,
+      <span class="key">"args"</span>: [<span class="str">"mcp"</span>]
+    }
+  }
+}
+<span class="comment">// 6 tools: scan, fix, review, &amp; more</span>
+          </div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
             <h3>VS Code Extension <span
                 style="font-size:0.7rem;font-weight:500;color:var(--accent);background:#eef4ff;padding:2px 8px;border-radius:4px;margin-left:6px">Coming
                 Soon</span></h3>
@@ -1427,6 +1454,21 @@ mycop --version</code></div>
       <h2 class="section-title">Latest from the blog</h2>
       <p class="section-subtitle">Deep dives into AI code security, vulnerability patterns, and how to defend against them.</p>
       <div class="blog-grid">
+        <a href="blog/mycop-mcp-server.html" class="blog-card">
+          <div class="blog-card-body">
+            <div class="blog-card-tags">
+              <span>MCP</span>
+              <span>Agentic</span>
+              <span>Integration</span>
+            </div>
+            <h3>mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant</h3>
+            <p>mycop 0.3.0 ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan, fix, and review code for vulnerabilities without leaving the conversation.</p>
+          </div>
+          <div class="blog-card-footer">
+            <span>February 15, 2026</span>
+            <span class="read-more">Read article &rarr;</span>
+          </div>
+        </a>
         <a href="blog/security-bugs-ai-coding-assistants.html" class="blog-card">
           <div class="blog-card-body">
             <div class="blog-card-tags">
@@ -1469,6 +1511,10 @@ mycop --version</code></div>
         <details>
           <summary>Can I automatically fix security vulnerabilities in my code with AI?</summary>
           <div class="faq-answer">Yes. The <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">mycop fix</code> command uses AI to automatically rewrite vulnerable code. It groups all findings per file, sends them to your chosen AI provider (Claude, GPT-4, OpenAI, or Ollama), generates a diff for you to review, and re-scans to verify the fix. Use <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">--dry-run</code> to preview changes before applying. No AI key is needed for scanning &mdash; only for auto-fix.</div>
+        </details>
+        <details>
+          <summary>How do I use mycop with Claude Code, Cursor, or Windsurf?</summary>
+          <div class="faq-answer">mycop includes a built-in MCP (Model Context Protocol) server that lets agentic coding tools call its scanning, fixing, and review capabilities directly. Run <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">mycop mcp</code> to start the server, then configure your tool to connect. For Claude Code, add <code class="mono" style="font-size:0.82rem;background:#eef4ff;padding:2px 6px;border-radius:4px">{"mcpServers":{"mycop":{"command":"mycop","args":["mcp"]}}}</code> to your settings. It works with Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible client.</div>
         </details>
         <details>
           <summary>How do I add security scanning to my CI/CD pipeline or GitHub Actions?</summary>

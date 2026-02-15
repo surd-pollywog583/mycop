@@ -134,6 +134,69 @@ mycop deps check .
 mycop deps check requirements.txt
 ```
 
+### `mycop mcp`
+
+Start an MCP (Model Context Protocol) server over STDIO for agentic tool integration. This lets AI coding assistants call mycop's scanning, fixing, and review capabilities directly.
+
+```bash
+mycop mcp
+```
+
+**Tools exposed:**
+
+| Tool | Description |
+|------|-------------|
+| `scan` | Scan files/directories for vulnerabilities with severity filtering |
+| `list_rules` | Browse/filter the 100 built-in security rules |
+| `explain_finding` | AI-powered explanation of a specific finding |
+| `fix` | AI auto-fix with diff preview (dry_run=true by default) |
+| `review` | Deep AI security review of a file |
+| `check_deps` | Detect hallucinated packages in dependencies |
+
+**Resources:** `mycop://rules/catalog` (full JSON catalog) and `mycop://config/schema` (config template).
+
+**Configure in Claude Code** (`~/.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+**Configure in Cursor** (`.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+**Configure in Windsurf** (`.windsurf/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+Works with any MCP-compatible client including Codex CLI, Gemini CLI, and other agentic IDEs.
+
 ## Inline Ignore
 
 Suppress specific findings with inline comments:
@@ -249,6 +312,12 @@ Run `mycop rules list` to see all 100 rules with their severity levels.
 - **SARIF** — Static Analysis Results Interchange Format for IDE/CI integration
 
 ## Integrations
+
+### MCP Server (Agentic Tools)
+
+mycop includes a built-in [MCP](https://modelcontextprotocol.io/) server that exposes all capabilities to agentic coding tools. Run `mycop mcp` and configure your tool — see the [`mycop mcp` section](#mycop-mcp) above for setup instructions.
+
+Supported clients: Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and any MCP-compatible IDE or agent.
 
 ### GitHub Action
 

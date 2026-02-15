@@ -42,6 +42,48 @@ pub fn extract_fixed_file(response: &str) -> Option<String> {
     None
 }
 
+/// Generate a unified diff as a plain-text string (no colors)
+pub fn diff_to_string(file_path: &str, old: &str, new: &str) -> String {
+    let old_lines: Vec<&str> = old.lines().collect();
+    let new_lines: Vec<&str> = new.lines().collect();
+
+    let changes = compute_diff(&old_lines, &new_lines);
+
+    if changes.is_empty() {
+        return String::new();
+    }
+
+    let mut out = String::new();
+    out.push_str(&format!("--- {}\n", file_path));
+    out.push_str(&format!("+++ {}\n", file_path));
+
+    for chunk in group_changes(&changes) {
+        out.push_str(&format!(
+            "@@ -{},{} +{},{} @@\n",
+            chunk.old_start + 1,
+            chunk.old_count,
+            chunk.new_start + 1,
+            chunk.new_count
+        ));
+
+        for change in &chunk.lines {
+            match change {
+                DiffLine::Context(line) => {
+                    out.push_str(&format!(" {}\n", line));
+                }
+                DiffLine::Remove(line) => {
+                    out.push_str(&format!("-{}\n", line));
+                }
+                DiffLine::Add(line) => {
+                    out.push_str(&format!("+{}\n", line));
+                }
+            }
+        }
+    }
+
+    out
+}
+
 /// Generate and print a colored unified diff between old and new content
 pub fn print_diff(file_path: &str, old: &str, new: &str) {
     let old_lines: Vec<&str> = old.lines().collect();

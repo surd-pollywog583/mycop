@@ -103,6 +103,9 @@ pub enum Commands {
         #[command(subcommand)]
         action: DepsAction,
     },
+
+    /// Start MCP server for agentic tool integration (Claude Code, Cursor, Windsurf, etc.)
+    Mcp,
 }
 
 #[derive(Subcommand, Debug)]

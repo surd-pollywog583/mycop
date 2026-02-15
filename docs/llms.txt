@@ -15,6 +15,13 @@ mycop uses pattern matching and AST analysis via tree-sitter to find security is
 - [Homebrew Formula](https://github.com/AbdumajidRashidov/homebrew-tap/blob/main/Formula/mycop.rb): Homebrew tap installation
 - [Docker Image](https://ghcr.io/abdumajidrashidov/mycop): Container-based usage
 
+## MCP Server (Agentic Tool Integration)
+- mycop includes a built-in MCP (Model Context Protocol) server, started via `mycop mcp`
+- Enables Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and other agentic tools to call mycop's scanning, fixing, and review capabilities directly
+- 6 tools: scan, list_rules, explain_finding, fix (dry_run by default), review, check_deps
+- 2 resources: mycop://rules/catalog (JSON), mycop://config/schema (YAML)
+- Communicates over STDIO using JSON-RPC 2.0
+
 ## Optional
 - [Issues](https://github.com/AbdumajidRashidov/mycop/issues): Bug reports and feature requests
 - [License](https://github.com/AbdumajidRashidov/mycop/blob/main/LICENSE): MIT License

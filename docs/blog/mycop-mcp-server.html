@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior:smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant &mdash; mycop Blog</title>
+  <meta name="description"
+    content="mycop 0.3.0 ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan, fix, and review code for vulnerabilities without leaving the conversation.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="canonical" href="https://abdumajidrashidov.github.io/mycop/blog/mycop-mcp-server.html">
+  <meta name="theme-color" content="#0066ff">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant">
+  <meta property="og:description" content="mycop 0.3.0 ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan, fix, and review code for vulnerabilities directly.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://abdumajidrashidov.github.io/mycop/blog/mycop-mcp-server.html">
+  <meta property="og:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+  <meta property="og:site_name" content="mycop">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant">
+  <meta name="twitter:description" content="mycop 0.3.0 ships a built-in MCP server. Claude Code, Cursor, Windsurf can now scan and fix vulnerabilities directly.">
+  <meta name="twitter:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+
+  <!-- Structured Data: Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant",
+    "description": "mycop 0.3.0 ships with a built-in MCP server. Claude Code, Cursor, Windsurf, and other agentic tools can now scan, fix, and review code for vulnerabilities without leaving the conversation.",
+    "author": {
+      "@type": "Person",
+      "name": "Abdumajid Rashidov",
+      "url": "https://github.com/AbdumajidRashidov"
+    },
+    "datePublished": "2026-02-15",
+    "publisher": {
+      "@type": "Organization",
+      "name": "mycop",
+      "url": "https://abdumajidrashidov.github.io/mycop/"
+    },
+    "mainEntityOfPage": "https://abdumajidrashidov.github.io/mycop/blog/mycop-mcp-server.html",
+    "keywords": ["MCP", "Model Context Protocol", "Claude Code", "Cursor", "Windsurf", "security", "SAST", "agentic"]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --text: #1a1a2e;
+      --text-secondary: #6c757d;
+      --accent: #0066ff;
+      --accent-hover: #0052cc;
+      --border: #e9ecef;
+      --terminal-bg: #1e1e2e;
+      --terminal-text: #cdd6f4;
+      --red: #f38ba8;
+      --yellow: #f9e2af;
+      --green: #a6e3a1;
+      --blue: #89b4fa;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    code,
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Article */
+    .article {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .article-meta {
+      margin-bottom: 32px;
+    }
+
+    .article-meta .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #eef4ff;
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .article-meta .date {
+      display: block;
+      margin-top: 12px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .article h1 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .article h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 48px;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .article h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 36px;
+      margin-bottom: 12px;
+    }
+
+    .article p {
+      margin-bottom: 16px;
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .article strong {
+      font-weight: 600;
+    }
+
+    .article em {
+      font-style: italic;
+    }
+
+    .article ol,
+    .article ul {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    .article li {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .article hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    .article blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* Code blocks */
+    .article pre {
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .article code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+    }
+
+    .article p code,
+    .article li code {
+      background: #eef4ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+
+    /* Table */
+    .article table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .article th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--bg-alt);
+      border-bottom: 2px solid var(--border);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .article td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article td code {
+      font-size: 0.82em;
+    }
+
+    /* CTA box */
+    .cta-box {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .cta-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .cta-box .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .cta-box .btn:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    footer .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .article {
+        padding: 40px 20px 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../" class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        mycop
+      </a>
+      <div class="nav-links">
+        <a href="../">Home</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="article">
+
+    <div class="article-meta">
+      <span class="tag">MCP</span>
+      <span class="tag">Agentic</span>
+      <span class="tag">Integration</span>
+      <span class="date">February 15, 2026</span>
+    </div>
+
+    <h1>mycop Now Speaks MCP: Security Scanning Inside Your AI Coding Assistant</h1>
+
+    <p>Starting with mycop 0.3.0, you can run <code>mycop mcp</code> to start a Model Context Protocol server. Claude Code, Cursor, Windsurf, Codex CLI, Gemini CLI, and any other MCP-compatible tool can then call mycop's scanning, fixing, and review capabilities directly &mdash; without you leaving the conversation.</p>
+
+    <p>This means your AI coding assistant can check for SQL injection, XSS, hardcoded secrets, and 97 other vulnerability patterns in real time, as you write code together.</p>
+
+    <h2>What Is MCP?</h2>
+
+    <p><a href="https://modelcontextprotocol.io/">MCP (Model Context Protocol)</a> is a standard for connecting AI assistants to external tools. Instead of copy-pasting terminal output back into your chat, MCP lets the assistant call tools directly and get structured results. Think of it as a USB port for AI &mdash; one protocol, many tools.</p>
+
+    <p>mycop's MCP server communicates over STDIO (stdin/stdout), so it starts instantly and works with any client that supports the protocol.</p>
+
+    <h2>Setup</h2>
+
+    <p>First, install mycop if you have not already:</p>
+
+<pre>cargo install mycop</pre>
+
+    <p>Then configure your tool:</p>
+
+    <h3>Claude Code</h3>
+
+    <p>Add to <code>~/.claude/settings.json</code>:</p>
+
+<pre>{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"]
+    }
+  }
+}</pre>
+
+    <h3>Cursor</h3>
+
+    <p>Add to <code>.cursor/mcp.json</code> in your project root:</p>
+
+<pre>{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"],
+      "type": "stdio"
+    }
+  }
+}</pre>
+
+    <h3>Windsurf</h3>
+
+    <p>Add to <code>.windsurf/mcp.json</code>:</p>
+
+<pre>{
+  "mcpServers": {
+    "mycop": {
+      "command": "mycop",
+      "args": ["mcp"]
+    }
+  }
+}</pre>
+
+    <p>That is it. The next time your AI assistant starts, it will have access to all six mycop tools.</p>
+
+    <h2>The Six Tools</h2>
+
+    <p>The MCP server exposes six tools that cover mycop's full capability set:</p>
+
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>What It Does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>scan</code></td><td>Scan files or directories for vulnerabilities. Returns findings with severity, CWE/OWASP mappings, and fix hints. Supports severity filtering and git diff mode.</td></tr>
+        <tr><td><code>list_rules</code></td><td>Browse all 100 built-in security rules. Filter by language, severity, or search term.</td></tr>
+        <tr><td><code>explain_finding</code></td><td>Get an AI-powered explanation of a specific finding, including attack scenarios, impact analysis, and remediation guidance.</td></tr>
+        <tr><td><code>fix</code></td><td>Auto-fix vulnerabilities using AI. Defaults to <code>dry_run=true</code> so you see the diff before anything is written.</td></tr>
+        <tr><td><code>review</code></td><td>Deep AI security review that goes beyond pattern matching to find logic flaws, auth issues, and complex vulnerability patterns.</td></tr>
+        <tr><td><code>check_deps</code></td><td>Check <code>requirements.txt</code> and <code>package.json</code> for hallucinated or suspicious packages.</td></tr>
+      </tbody>
+    </table>
+
+    <p>There are also two MCP resources: <code>mycop://rules/catalog</code> gives the full JSON catalog of all 100 rules, and <code>mycop://config/schema</code> provides the default <code>.scanrc.yml</code> configuration template.</p>
+
+    <h2>What This Looks Like in Practice</h2>
+
+    <p>Here is a typical workflow with Claude Code:</p>
+
+    <p><strong>You:</strong> "Scan src/ for security issues."</p>
+
+    <p>Claude Code calls the <code>scan</code> tool with <code>{"paths": ["src/"]}</code> and gets back structured JSON with every finding, including rule ID, severity, line number, CWE mapping, and fix hint. No terminal output to parse &mdash; the agent works with clean data.</p>
+
+    <p><strong>You:</strong> "Fix the critical ones."</p>
+
+    <p>Claude Code calls the <code>fix</code> tool with <code>{"file": "src/auth.py", "severity": "critical"}</code>. By default, <code>dry_run</code> is true, so it gets back a diff preview and the fixed file content. The agent shows you the diff and asks for confirmation before writing.</p>
+
+    <p><strong>You:</strong> "Is the login handler in server.ts secure?"</p>
+
+    <p>Claude Code calls the <code>review</code> tool with <code>{"file": "src/server.ts"}</code>. mycop sends the file to its AI backend for a deep security review, returning findings about logic flaws, auth patterns, and architectural issues that rule-based scanning alone would miss.</p>
+
+    <h2>Why MCP Instead of Just Calling the CLI?</h2>
+
+    <p>AI agents <em>can</em> shell out to <code>mycop scan</code> and parse the terminal output. But MCP is better for three reasons:</p>
+
+    <ol>
+      <li><strong>Structured data.</strong> The agent gets JSON with typed fields (severity as an enum, CWE IDs as strings, line numbers as integers), not colored terminal text it has to regex apart. This means fewer misinterpretations and more reliable follow-up actions.</li>
+      <li><strong>Safety by default.</strong> The <code>fix</code> tool defaults to <code>dry_run=true</code>, so agents cannot accidentally overwrite files without showing you the diff first. The tool schema enforces this at the protocol level.</li>
+      <li><strong>Discoverability.</strong> MCP clients can list available tools and their parameter schemas. Your AI assistant knows what mycop can do, what parameters each tool accepts, and what the response shape looks like &mdash; without reading docs.</li>
+    </ol>
+
+    <h2>Architecture Notes</h2>
+
+    <p>If you are curious about the implementation:</p>
+
+    <ul>
+      <li><strong>Built with rmcp.</strong> The server uses the official <a href="https://crates.io/crates/rmcp">rmcp</a> Rust SDK for MCP. Tools are defined with the <code>#[tool]</code> proc macro and registered via a static <code>ToolBox</code>.</li>
+      <li><strong>Sync-to-async bridge.</strong> mycop's core scanning uses Rayon for parallelism, which is synchronous. The MCP server runs on tokio. We bridge the two with <code>tokio::task::spawn_blocking</code> &mdash; the standard pattern for running CPU-bound work inside an async runtime.</li>
+      <li><strong>No stdout leakage.</strong> In MCP mode, all diagnostic output goes to stderr. stdout is exclusively for JSON-RPC messages. This prevents scanning progress bars or warnings from corrupting the protocol stream.</li>
+      <li><strong>Separate MCP types.</strong> We use dedicated <code>FindingOutput</code> and <code>RuleOutput</code> structs for MCP responses rather than adding serialization concerns to the core <code>Finding</code> and <code>Rule</code> types. This keeps the MCP layer isolated from the scanner internals.</li>
+    </ul>
+
+    <h2>Coming Next</h2>
+
+    <p>This is the first release of the MCP server. A few things on the near-term roadmap:</p>
+
+    <ul>
+      <li><strong>MCP prompts.</strong> Pre-built prompt templates for common security review workflows (e.g., "review this PR for auth issues").</li>
+      <li><strong>Streaming scan results.</strong> For large codebases, stream findings as they are discovered rather than waiting for the full scan to complete.</li>
+      <li><strong>Remote transport.</strong> SSE and WebSocket transports for running mycop as a shared security service that multiple developers connect to.</li>
+    </ul>
+
+    <div class="cta-box">
+      <h3>Try it now</h3>
+      <p>Install mycop and connect it to your AI coding assistant in under a minute.</p>
+      <code style="display:block;background:var(--terminal-bg);color:var(--green);padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.9rem">cargo install mycop && mycop mcp</code>
+      <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <hr>
+
+    <p><em>mycop is MIT licensed and open source. The MCP server ships with the same binary &mdash; no additional installation required. See the <a href="https://github.com/AbdumajidRashidov/mycop/blob/main/CHANGELOG.md">full changelog</a> for everything in v0.3.0.</em></p>
+
+  </article>
+
+  <footer>
+    <div class="footer-inner">
+      <span>MIT License &middot; Built with Rust</span>
+      <div class="footer-links">
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank">GitHub</a>
+        <a href="https://crates.io/crates/mycop" target="_blank">Crates.io</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop/issues" target="_blank">Issues</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
