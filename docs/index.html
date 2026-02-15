@@ -764,6 +764,85 @@
       color: var(--text-secondary);
     }
 
+    /* Blog */
+    .blog {
+      padding: 80px 0;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .blog-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      color: inherit;
+    }
+
+    .blog-card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card-tags {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .blog-card-tags span {
+      padding: 3px 10px;
+      background: #eef4ff;
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .blog-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .blog-card p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .blog-card-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .blog-card-footer .read-more {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
     /* FAQ */
     .faq {
       padding: 80px 0;
@@ -913,6 +992,7 @@
         <a href="#features" class="hide-mobile">Features</a>
         <a href="#install" class="hide-mobile">Install</a>
         <a href="#integrations" class="hide-mobile">Integrations</a>
+        <a href="#blog" class="hide-mobile">Blog</a>
         <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn btn-secondary" style="gap:6px;border:none">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path
@@ -1337,6 +1417,33 @@ mycop --version</code></div>
           </tr>
         </tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section class="blog" id="blog">
+    <div class="container">
+      <div class="section-label">Blog</div>
+      <h2 class="section-title">Latest from the blog</h2>
+      <p class="section-subtitle">Deep dives into AI code security, vulnerability patterns, and how to defend against them.</p>
+      <div class="blog-grid">
+        <a href="blog/security-bugs-ai-coding-assistants.html" class="blog-card">
+          <div class="blog-card-body">
+            <div class="blog-card-tags">
+              <span>Security</span>
+              <span>Python</span>
+              <span>JavaScript</span>
+              <span>AI</span>
+            </div>
+            <h3>The Security Bugs AI Coding Assistants Keep Writing</h3>
+            <p>I analyzed the patterns of security vulnerabilities that AI coding assistants repeatedly introduce &mdash; SQL injection, eval(), hardcoded secrets, and more. Real code examples and how to catch them.</p>
+          </div>
+          <div class="blog-card-footer">
+            <span>February 15, 2026</span>
+            <span class="read-more">Read article &rarr;</span>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 

