@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-02-15
+
+### Changed
+- Remove `fix` tool from MCP server — agentic tools should read scan findings (with `fix_hint`) and apply fixes directly, avoiding redundant AI-to-AI calls
+- Make `path` a required field in `review` and `explain_finding` MCP tools for reliable parameter passing
+- Add serde aliases (`file`, `filePath`, `file_path`, `target`) for broad MCP client compatibility
+- Add `test_mcp.py` for comprehensive MCP tool testing (16 tests covering all 5 tools)
+
 ## [0.3.0] - 2026-02-15
 
 ### Added
