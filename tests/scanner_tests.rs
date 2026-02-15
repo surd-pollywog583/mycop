@@ -125,8 +125,20 @@ fn test_rule_loading() {
     );
 }
 
+fn assert_rule_fires(findings: &[mycop::rules::matcher::Finding], rule_id: &str) {
+    assert!(
+        findings.iter().any(|f| f.rule_id == rule_id),
+        "Expected rule {} to fire but it didn't. Fired rules: {:?}",
+        rule_id,
+        findings
+            .iter()
+            .map(|f| &f.rule_id)
+            .collect::<std::collections::BTreeSet<_>>()
+    );
+}
+
 #[test]
-fn test_go_vulnerable_file_has_findings() {
+fn test_go_all_rules_fire() {
     let registry = mycop::rules::RuleRegistry::load(&rules_dir()).unwrap();
     let scanner = mycop::scanner::Scanner::new(registry);
 
@@ -134,23 +146,19 @@ fn test_go_vulnerable_file_has_findings() {
     let findings = scanner.scan_files(&files).unwrap();
 
     assert!(
-        !findings.is_empty(),
-        "Expected findings in vulnerable.go but found none"
+        findings.len() >= 40,
+        "Expected at least 40 Go findings, got {}",
+        findings.len()
     );
 
-    // Should detect SQL injection
-    let sql_findings: Vec<_> = findings
-        .iter()
-        .filter(|f| f.rule_id.contains("SEC-001") || f.rule_name.contains("sql"))
-        .collect();
-    assert!(
-        !sql_findings.is_empty(),
-        "Expected SQL injection findings in Go"
-    );
+    for i in 1..=50 {
+        let rule_id = format!("GO-SEC-{:03}", i);
+        assert_rule_fires(&findings, &rule_id);
+    }
 }
 
 #[test]
-fn test_java_vulnerable_file_has_findings() {
+fn test_java_all_rules_fire() {
     let registry = mycop::rules::RuleRegistry::load(&rules_dir()).unwrap();
     let scanner = mycop::scanner::Scanner::new(registry);
 
@@ -158,19 +166,15 @@ fn test_java_vulnerable_file_has_findings() {
     let findings = scanner.scan_files(&files).unwrap();
 
     assert!(
-        !findings.is_empty(),
-        "Expected findings in vulnerable.java but found none"
+        findings.len() >= 40,
+        "Expected at least 40 Java findings, got {}",
+        findings.len()
     );
 
-    // Should detect SQL injection
-    let sql_findings: Vec<_> = findings
-        .iter()
-        .filter(|f| f.rule_id.contains("SEC-001") || f.rule_name.contains("sql"))
-        .collect();
-    assert!(
-        !sql_findings.is_empty(),
-        "Expected SQL injection findings in Java"
-    );
+    for i in 1..=50 {
+        let rule_id = format!("JAVA-SEC-{:03}", i);
+        assert_rule_fires(&findings, &rule_id);
+    }
 }
 
 #[test]
